@@ -47,6 +47,11 @@ public class SimpleJobServer {
         return simpleJobMonitorMapper.selectByExample(example);
     }
 
+    public void handleWaitingSimpleJob(SimpleJobDO simpleJob){
+        //依赖子任务触发
+        final List<SimpleJobMonitorDO> simpleJobMonitorDOS = queryWaitingSimpleJob(simpleJob);
+    }
+
     public boolean isParentSuccess(SimpleJobDO simpleJob){
         List<SimpleJobMonitorDO> simpleJobMonitorDOS = queryParentJobStatus(simpleJob);
         if (null == simpleJobMonitorDOS || simpleJobMonitorDOS.isEmpty()){

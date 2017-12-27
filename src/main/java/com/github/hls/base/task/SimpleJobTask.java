@@ -3,6 +3,7 @@ package com.github.hls.base.task;
 import com.github.hls.base.enums.SimpleJobEnum;
 import com.github.hls.base.simplejob.SimpleJobStrategy;
 import com.github.hls.domain.SimpleJobDO;
+import com.github.hls.domain.SimpleJobMonitorDO;
 import com.github.hls.service.SimpleJobServer;
 import com.github.hls.utils.DateUtils;
 import com.github.hls.utils.SpringUtil;
@@ -47,6 +48,8 @@ public class SimpleJobTask implements Runnable{
             }
             //一组任务完成
             simpleJobServer.insert(jobList.get(0));
+            //每组完成后，依赖子任务触发
+            simpleJobServer.handleWaitingSimpleJob(jobList.get(0));
 
         }
 
