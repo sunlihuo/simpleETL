@@ -1,8 +1,10 @@
 package com.github.hls.utils;
 
+import com.github.hls.domain.SimpleJobDO;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -40,6 +42,17 @@ public class SimpleJobUtils {
             sql = sql.replaceAll(key, "NULL");
         }
         return sql;
+    }
+
+    public static Map<String, List<SimpleJobDO>> transList2Map(List<SimpleJobDO> list) {
+        Map<String, List<SimpleJobDO>> map = new HashMap<>();
+        for (SimpleJobDO simpleJobDO : list) {
+            if (map.get(simpleJobDO.getJobName()) == null) {
+                map.put(simpleJobDO.getJobName(), new ArrayList<>());
+            }
+            map.get(simpleJobDO.getJobName()).add(simpleJobDO);
+        }
+        return map;
     }
 
 }
