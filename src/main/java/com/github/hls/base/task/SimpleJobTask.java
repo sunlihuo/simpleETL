@@ -3,6 +3,7 @@ package com.github.hls.base.task;
 import com.github.hls.base.enums.SimpleJobEnum;
 import com.github.hls.base.simplejob.SimpleJobStrategy;
 import com.github.hls.domain.SimpleJobDO;
+import com.github.hls.service.SimpleJobServer;
 import com.github.hls.utils.DateUtils;
 import com.github.hls.utils.SpringUtil;
 import lombok.extern.log4j.Log4j;
@@ -31,10 +32,10 @@ public class SimpleJobTask implements Runnable{
                 Long current = System.currentTimeMillis();
                 log.info("开始第"+ ++i +"个任务 jobId = " + simpleJob.getSimpleJobId() + " ; jobName = " + simpleJob.getJobName() + " ;SourceType="+simpleJob.getSourceType());
 
-                String beanName = SimpleJobEnum.SOURCE_TYPE.valueOf(simpleJob.getSourceType()).getBeanName();
-                SimpleJobStrategy simpleJobStrategy = (SimpleJobStrategy) SpringUtil.getBean(beanName);
                 try {
-                   simpleJobStrategy.handle(simpleJob);
+                    String beanName = SimpleJobEnum.SOURCE_TYPE.valueOf(simpleJob.getSourceType()).getBeanName();
+                    SimpleJobStrategy simpleJobStrategy = (SimpleJobStrategy) SpringUtil.getBean(beanName);
+                    simpleJobStrategy.handle(simpleJob);
                 } catch (Exception e) {
                    log.error("SimpleJobTask error", e);
                    if (!"Y".equalsIgnoreCase(simpleJob.getErrorGoOn())){
@@ -44,6 +45,9 @@ public class SimpleJobTask implements Runnable{
 
                 log.info("结束第"+ i +"个任务 jobId = " + simpleJob.getSimpleJobId() + " ; jobName = " + simpleJob.getJobName() + " ;耗时 = " + DateUtils.dateDiff(current, System.currentTimeMillis()));
             }
+            //一组任务完成
+            simpleJobServer.insert(jobList.get(0));
+
         }
 
         log.info("end JobThreadService" + " ;耗时 = " + DateUtils.dateDiff(countCurrent, System.currentTimeMillis()));
@@ -52,6 +56,7 @@ public class SimpleJobTask implements Runnable{
 
 
     private List<SimpleJobDO> simpleJobList;
+    private SimpleJobServer simpleJobServer;
 
     public SimpleJobTask(List<SimpleJobDO> simpleJobList){
         this.simpleJobList = simpleJobList;

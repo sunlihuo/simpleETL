@@ -22,7 +22,7 @@ public class JobController {
 
 
     @RequestMapping("/job2")
-    public boolean job(SimpleJobMonitorDO simpleJobMonitorDO){
-        return simpleJobServer.isParentSuccess(simpleJobMonitorDO);
+    public boolean job2(SimpleJobDO simpleJob){
+        return simpleJobServer.isParentSuccess(simpleJob);
     }
 }

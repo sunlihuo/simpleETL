@@ -25,7 +25,8 @@ public class SimpleJobMonitorDO {
     private String jobName;
     // 描述
     private String description;
-    private String isSuccess;
+    private String status;
+    private String parentJobName;
     // 录入时间
     private Date inputDate;
     // 记录修改时间

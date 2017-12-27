@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
 
 @Repository("simpleJobStatusMapper")
-public interface SimpleJobStatusMapper extends Mapper<SimpleJobMonitorDO> {
+public interface SimpleJobMonitorMapper extends Mapper<SimpleJobMonitorDO> {
 }
