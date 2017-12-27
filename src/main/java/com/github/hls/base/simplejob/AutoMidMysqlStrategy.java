@@ -17,7 +17,7 @@ public class AutoMidMysqlStrategy extends SimpleJobStrategy{
     private DataSource midDataSource;
 
     public void handle(SimpleJobDO simpleJob){
-        for (Map<String, Object> map : super.sectionList) {
+        for (Map<String, Object> map : SimpleJobUtils.sectionList) {
             String selectSQL = simpleJob.getSelectSQL();
             String sql = SimpleJobUtils.getReplaceSql(selectSQL, map, 0);
 

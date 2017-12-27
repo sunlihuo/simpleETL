@@ -6,6 +6,7 @@ import com.github.hls.utils.QueryRunnerUtils;
 import com.github.hls.utils.SimpleDBUtils;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -18,24 +19,17 @@ import java.util.regex.Pattern;
 
 import static com.github.hls.utils.SimpleJobUtils.getReplaceSql;
 
+@Service
 @Log4j
 public abstract class SimpleJobStrategy {
 
     private static final String BATCH_LOWERCASE_STR = "batch€_";
     private static final String BATCH_UPPERCASE_STR = "BATCH€_";
 
-    protected final List<Map<String, Object>> sectionList = new ArrayList<>();
     private Producer producer;
 
-    public void handle(MysqlStrategy mysqlSimpleJob, SimpleJobDO simpleJob){
-        mysqlSimpleJob.handle(simpleJob);
-    }
+    public abstract void handle(SimpleJobDO simpleJob);
 
-    public void handle(AutoMysqlStrategy mysqlSimpleJob, SimpleJobDO simpleJob){
-        mysqlSimpleJob.handle(simpleJob);
-    }
-
-    
     protected void doCheckUpIn(SimpleJobDO job, List<Map<String, Object>> recordList) {
         if (null == recordList || recordList.size() == 0) {
             log.error(" jobNme = " + job.getJobName() + " ;jobId = " + job.getSimpleJobId() + " recordList is null");
@@ -66,7 +60,7 @@ public abstract class SimpleJobStrategy {
         } catch (InterruptedException e) {
             log.error("latchFinal.await();",e);
         }
-        
+
         log.info("end doCheckUpIn ; jobNme = " + job.getJobName() + " ;jobId = " + job.getSimpleJobId() + latch);
     }
 
@@ -206,6 +200,7 @@ public abstract class SimpleJobStrategy {
             }
         }
     }
+
 
 
 

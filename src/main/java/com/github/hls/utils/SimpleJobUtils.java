@@ -1,10 +1,16 @@
 package com.github.hls.utils;
 
+import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SimpleJobUtils {
+
+    public final static List<Map<String, Object>> sectionList = new ArrayList<>();
 
     public static String getReplaceSql(String sql, Map<String, Object> map, Object defaultValue) {
         if (defaultValue == null) {

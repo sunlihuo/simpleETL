@@ -15,14 +15,14 @@ public class SimpleJobEnum {
             this.val = val;
         }
     }
-
+    @Getter
     public static enum SOURCE_TYPE{
-        section_value("sectionValue"),//分段sql,提取共同部分
+        section_value("sectionValueStrategy"),//分段sql,提取共同部分
         mysql("mysqlStrategy"),//本地库
         auto_mysql("autoMysqlStrategy"),//从本地中查询，自动生成insert,update语句
         midDataMart("midMysqlStrategy"),//中间库
         auto_midDataMart("autoMidMysqlStrategy"),//从中间库中查询，自动生成insert,update语句
-        clear_mid_mysql(""),//查询中间库是否存在，存在 就清表
+        clear_mid_mysql("clearMidMysqlStrategy"),//查询中间库是否存在，存在 就清表
         /**
          * //查询本地库，填充分段sqlValue到sql中，并支持多sql
          * [
