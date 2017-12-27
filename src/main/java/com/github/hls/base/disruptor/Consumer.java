@@ -49,9 +49,13 @@ public class Consumer implements WorkHandler<CheckUpInInfo> {
 					SimpleDBUtils.insert(sql, realDatesource);
 				}
 				
+			} else if (HandleType.DELETE_HANDLE == info.getHandleType()) {
+				sql = info.getUpdateSql();
+				SimpleDBUtils.update(sql, realDatesource);
 			} else {
 				logger.error("！！！！！！！！The data may be missing！！！！！！！！！！！");
 			}
+
 		} catch (Exception e) {
 			logger.error("checkUpIn error", e);
 
