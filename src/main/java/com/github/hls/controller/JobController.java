@@ -1,7 +1,7 @@
 package com.github.hls.controller;
 
 import com.github.hls.domain.SimpleJobDO;
-import com.github.hls.domain.SimpleJobStatusDO;
+import com.github.hls.domain.SimpleJobMonitorDO;
 import com.github.hls.service.SimpleJobServer;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +22,7 @@ public class JobController {
 
 
     @RequestMapping("/job2")
-    public boolean job(SimpleJobStatusDO simpleJobStatusDO){
-        return simpleJobServer.isParentSuccess(simpleJobStatusDO);
+    public boolean job(SimpleJobMonitorDO simpleJobMonitorDO){
+        return simpleJobServer.isParentSuccess(simpleJobMonitorDO);
     }
 }

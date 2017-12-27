@@ -1,7 +1,7 @@
 package com.github.hls.service;
 
 import com.github.hls.domain.SimpleJobDO;
-import com.github.hls.domain.SimpleJobStatusDO;
+import com.github.hls.domain.SimpleJobMonitorDO;
 import com.github.hls.mapper.SimpleJobMapper;
 import com.github.hls.mapper.SimpleJobStatusMapper;
 import org.springframework.stereotype.Service;
@@ -9,8 +9,6 @@ import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.List;
-
-import static org.springframework.util.StringUtils.isEmpty;
 
 @Service
 public class SimpleJobServer {
@@ -30,21 +28,21 @@ public class SimpleJobServer {
         return jobList;
     }
 
-    public List<SimpleJobStatusDO> queryParentJobStatus(SimpleJobStatusDO simpleJobStatusDO){
-        final Example example = new Example(SimpleJobStatusDO.class);
+    public List<SimpleJobMonitorDO> queryParentJobStatus(SimpleJobMonitorDO simpleJobMonitorDO){
+        final Example example = new Example(SimpleJobMonitorDO.class);
         final Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("jobName", simpleJobStatusDO.getJobName());
+        criteria.andEqualTo("jobName", simpleJobMonitorDO.getJobName());
         criteria.andCondition("DATE_FORMAT(stampDate,'%Y-%m-%d')=DATE_FORMAT(CURDATE(),'%Y-%m-%d')");
         return simpleJobStatusMapper.selectByExample(example);
     }
 
-    public boolean isParentSuccess(SimpleJobStatusDO simpleJobStatusDO){
-        List<SimpleJobStatusDO> simpleJobStatusDOS = queryParentJobStatus(simpleJobStatusDO);
-        if (null == simpleJobStatusDOS || simpleJobStatusDOS.isEmpty()){
+    public boolean isParentSuccess(SimpleJobMonitorDO simpleJobMonitorDO){
+        List<SimpleJobMonitorDO> simpleJobMonitorDOS = queryParentJobStatus(simpleJobMonitorDO);
+        if (null == simpleJobMonitorDOS || simpleJobMonitorDOS.isEmpty()){
             return true;
         }
 
-        for (SimpleJobStatusDO jobStatus : simpleJobStatusDOS) {
+        for (SimpleJobMonitorDO jobStatus : simpleJobMonitorDOS) {
             if ("success".equalsIgnoreCase(jobStatus.getIsSuccess())){
                 return true;
             }

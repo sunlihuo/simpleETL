@@ -12,14 +12,14 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
-@Table(name = "SimpleJobStatus")
+@Table(name = "SimpleJobMonitor")
 @NameStyle(value = Style.normal)
 @Getter@Setter@ToString
-public class SimpleJobStatusDO {
+public class SimpleJobMonitorDO {
 
     // 主键
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long simpleJobStatusId;
+    private Long simpleJobMonitorId;
     private Long simpleJobId;
     // 任务名称
     private String jobName;
