@@ -1,15 +1,15 @@
 package com.github.hls.base.task;
 
 import com.github.hls.base.enums.SimpleJobEnum;
-import com.github.hls.base.simplejob.MysqlStrategy;
 import com.github.hls.base.simplejob.SimpleJobStrategy;
 import com.github.hls.domain.SimpleJobDO;
 import com.github.hls.utils.DateUtils;
-import com.github.hls.utils.SimpleJobUtils;
 import com.github.hls.utils.SpringUtil;
 import lombok.extern.log4j.Log4j;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import static com.github.hls.utils.SimpleJobUtils.transList2Map;
 

@@ -1,7 +1,6 @@
 package com.github.hls.base.enums;
 
 import lombok.Getter;
-import lombok.Setter;
 
 public class SimpleJobEnum {
     @Getter
@@ -15,8 +14,9 @@ public class SimpleJobEnum {
             this.val = val;
         }
     }
+
     @Getter
-    public static enum SOURCE_TYPE{
+    public static enum SOURCE_TYPE {
         section_value("sectionValueStrategy"),//分段sql,提取共同部分
         mysql("mysqlStrategy"),//本地库
         auto_mysql("autoMysqlStrategy"),//从本地中查询，自动生成insert,update语句
@@ -26,16 +26,17 @@ public class SimpleJobEnum {
         /**
          * //查询本地库，填充分段sqlValue到sql中，并支持多sql
          * [
-         {
-         "sqlStr":"SELECT  DATE_FORMAT(dataTime, '%Y-%m') as dataTime,region,wayport,partyId,partyName,warehouseId,warehouseName,warehouseType,endWarehouseId,endWarehouseName,fromSystem,warehouseProperty,'WHM' AS isInsert,'NO' AS isAll,#selectValue# FROM JobShippingOrderSys WHERE  DATE_FORMAT(dataTime, '%Y-%m') = DATE_FORMAT('#toDate#', '%Y-%m') AND isInsert='WHD' AND isAll='NO' GROUP BY  DATE_FORMAT(dataTime, '%Y-%m'), region,wayport,partyid,partyName,warehouseId,warehouseName,endWarehouseId,endWarehouseName,fromSystem,warehouseProperty",
-         "checkExistSQL":"batch€_JobShippingOrderSys_where isInsert='WHM' AND DATE_FORMAT(CONCAT(dataTime,'-01'), '%Y-%m') = DATE_FORMAT('#toDate#', '%Y-%m')"
-         }
-         ]
+         * {
+         * "sqlStr":"SELECT  DATE_FORMAT(dataTime, '%Y-%m') as dataTime,region,wayport,partyId,partyName,warehouseId,warehouseName,warehouseType,endWarehouseId,endWarehouseName,fromSystem,warehouseProperty,'WHM' AS isInsert,'NO' AS isAll,#selectValue# FROM JobShippingOrderSys WHERE  DATE_FORMAT(dataTime, '%Y-%m') = DATE_FORMAT('#toDate#', '%Y-%m') AND isInsert='WHD' AND isAll='NO' GROUP BY  DATE_FORMAT(dataTime, '%Y-%m'), region,wayport,partyid,partyName,warehouseId,warehouseName,endWarehouseId,endWarehouseName,fromSystem,warehouseProperty",
+         * "checkExistSQL":"batch€_JobShippingOrderSys_where isInsert='WHM' AND DATE_FORMAT(CONCAT(dataTime,'-01'), '%Y-%m') = DATE_FORMAT('#toDate#', '%Y-%m')"
+         * }
+         * ]
          */
         auto_mysql_json("");
 
         private String beanName;
-        SOURCE_TYPE(String beanName){
+
+        SOURCE_TYPE(String beanName) {
             this.beanName = beanName;
         }
     }

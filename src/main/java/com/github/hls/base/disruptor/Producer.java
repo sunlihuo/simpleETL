@@ -50,10 +50,7 @@ public class Producer {
 	public void onData(String checkExistSql, String updateSql, String insertSql, Long skynetJobId, CountDownLatch latch, String dateSource){
 		onData(checkExistSql, updateSql, insertSql, skynetJobId, latch, HandleType.CKUPIN_HANDLE, null, null, dateSource);
 	}
-	
-	public void onDataUpById(String checkExistSql, String updateSql, String insertSql, Long skynetJobId, CountDownLatch latch, String dateSource){
-//		onData(checkExistSql, updateSql, insertSql, skynetJobId, latch, HandleType.UPBYID_HANDLE, null, null, dateSource);
-	}
+
 	public void onData(String batchSql, Object[][] batchParams, CountDownLatch latch, String dateSource){
 		onData(null, null, null, null, latch, HandleType.BATCH_HANDLE, batchSql, batchParams, dateSource);
 	}

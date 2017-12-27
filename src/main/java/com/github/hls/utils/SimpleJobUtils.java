@@ -1,7 +1,6 @@
 package com.github.hls.utils;
 
 import com.github.hls.domain.SimpleJobDO;
-import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +19,7 @@ public class SimpleJobUtils {
         }
         Pattern p = Pattern.compile("\\#(.*?)\\#");//正则表达式，取#和#之间的字符串，不包括#和#
         Matcher m = p.matcher(sql);
-        while(m.find()) {
+        while (m.find()) {
             String key = m.group(0);//m.group(1)不包括这两个字符
             Object value = map.get(m.group(1));
             if (null == value) {
@@ -37,7 +36,7 @@ public class SimpleJobUtils {
     public static String check2NULL(String sql) {
         Pattern p = Pattern.compile("\\'\\#(.*?)\\#\\'");//正则表达式，取#和#之间的字符串，不包括#和#
         Matcher m = p.matcher(sql);
-        while(m.find()) {
+        while (m.find()) {
             String key = m.group(0);//m.group(1)不包括这两个字符
             sql = sql.replaceAll(key, "NULL");
         }
