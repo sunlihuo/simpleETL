@@ -16,8 +16,14 @@ public class DependenceTask {
     private SimpleJobServer simpleJobServer;
 
     public void handle(SimpleJobDO simpleJob){
-        simpleJobServer.isParentSuccess(simpleJob);
+        //未完成
+        if (simpleJobServer.isParentWaiting(simpleJob)){
+            simpleJobServer.insertWaiting(simpleJob);
+            return;
+        } else {
+        //已经完成
 
+        }
 
     }
 }

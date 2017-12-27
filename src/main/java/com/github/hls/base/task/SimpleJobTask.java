@@ -47,7 +47,7 @@ public class SimpleJobTask implements Runnable{
                 log.info("结束第"+ i +"个任务 jobId = " + simpleJob.getSimpleJobId() + " ; jobName = " + simpleJob.getJobName() + " ;耗时 = " + DateUtils.dateDiff(current, System.currentTimeMillis()));
             }
             //一组任务完成
-            simpleJobServer.insert(jobList.get(0));
+            simpleJobServer.insertSuccess(jobList.get(0));
             //每组完成后，依赖子任务触发
             simpleJobServer.handleWaitingSimpleJob(jobList.get(0));
 

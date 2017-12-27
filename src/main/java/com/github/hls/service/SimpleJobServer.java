@@ -4,6 +4,7 @@ import com.github.hls.domain.SimpleJobDO;
 import com.github.hls.domain.SimpleJobMonitorDO;
 import com.github.hls.mapper.SimpleJobMapper;
 import com.github.hls.mapper.SimpleJobMonitorMapper;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -32,7 +33,7 @@ public class SimpleJobServer {
     public List<SimpleJobMonitorDO> queryParentJobStatus(SimpleJobDO simpleJob){
         final Example example = new Example(SimpleJobMonitorDO.class);
         final Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("jobName", simpleJob.getJobName());
+        criteria.andEqualTo("jobName", simpleJob.getParentJobName());
         criteria.andEqualTo("status", "success");
         criteria.andCondition("DATE_FORMAT(stampDate,'%Y-%m-%d')=DATE_FORMAT(CURDATE(),'%Y-%m-%d')");
         return simpleJobMonitorMapper.selectByExample(example);
@@ -52,26 +53,33 @@ public class SimpleJobServer {
         final List<SimpleJobMonitorDO> simpleJobMonitorDOS = queryWaitingSimpleJob(simpleJob);
     }
 
-    public boolean isParentSuccess(SimpleJobDO simpleJob){
+    public boolean isParentWaiting(SimpleJobDO simpleJob){
+        if (StringUtils.isBlank(simpleJob.getParentJobName())){
+            return false;
+        }
+
         List<SimpleJobMonitorDO> simpleJobMonitorDOS = queryParentJobStatus(simpleJob);
         if (null == simpleJobMonitorDOS || simpleJobMonitorDOS.isEmpty()){
             return true;
+        } else {
+            return false;
         }
-
-        for (SimpleJobMonitorDO jobStatus : simpleJobMonitorDOS) {
-            if ("success".equalsIgnoreCase(jobStatus.getStatus())){
-                return true;
-            }
-        }
-
-        return false;
     }
 
-    public void insert(SimpleJobDO simpleJob){
+    public void insertSuccess(SimpleJobDO simpleJob){
         SimpleJobMonitorDO simpleJobMonitor = new SimpleJobMonitorDO();
         simpleJobMonitor.setSimpleJobId(simpleJob.getSimpleJobId());
         simpleJobMonitor.setJobName(simpleJob.getJobName());
         simpleJobMonitor.setStatus("success");
+        simpleJobMonitor.setInputDate(new Date());
+        simpleJobMonitorMapper.insertSelective(simpleJobMonitor);
+    }
+
+    public void insertWaiting(SimpleJobDO simpleJob){
+        SimpleJobMonitorDO simpleJobMonitor = new SimpleJobMonitorDO();
+        simpleJobMonitor.setSimpleJobId(simpleJob.getSimpleJobId());
+        simpleJobMonitor.setJobName(simpleJob.getJobName());
+        simpleJobMonitor.setStatus("waiting");
         simpleJobMonitor.setInputDate(new Date());
         simpleJobMonitorMapper.insertSelective(simpleJobMonitor);
     }
