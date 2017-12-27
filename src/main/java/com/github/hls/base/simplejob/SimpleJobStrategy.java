@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang.StringUtils;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -23,6 +24,7 @@ public abstract class SimpleJobStrategy {
     private static final String BATCH_LOWERCASE_STR = "batch€_";
     private static final String BATCH_UPPERCASE_STR = "BATCH€_";
 
+    protected final List<Map<String, Object>> sectionList = new ArrayList<>();
     private Producer producer;
 
     public void handle(MysqlStrategy mysqlSimpleJob, SimpleJobDO simpleJob){
@@ -65,7 +67,6 @@ public abstract class SimpleJobStrategy {
             log.error("latchFinal.await();",e);
         }
         
-
         log.info("end doCheckUpIn ; jobNme = " + job.getJobName() + " ;jobId = " + job.getSimpleJobId() + latch);
     }
 
@@ -150,11 +151,11 @@ public abstract class SimpleJobStrategy {
         doCheckUpIn(job, recordList);
     }
 
-    protected void doBatchOrSelUpIn(SimpleJobDO job, DataSource dataSource, boolean isAuto, String sql, Map<String, Object> sectionMap) {
-        List<Map<String, Object>> recordList = SimpleDBUtils.queryListMap(sql, dataSource);
-        if (null == recordList || recordList.size() == 0) {
+    protected void doBatchOrSelUpIn(SimpleJobDO job, boolean isAuto, List<Map<String, Object>> resultList, Map<String, Object> sectionMap) {
+
+        if (null == resultList || resultList.size() == 0) {
             log.error("jobId="+job.getSimpleJobId()+",JobName="+job.getJobName()+"recordList is null");
-            //smsService.sendSMS(job);
+
             return;
         }
 
@@ -192,16 +193,16 @@ public abstract class SimpleJobStrategy {
                     }
                 }
 
-                QueryRunnerUtils.insertBatchByDisruptor(producer, recordList, insertTable ,job.getUpDateSource());
+                QueryRunnerUtils.insertBatchByDisruptor(producer, resultList, insertTable ,job.getUpDateSource());
             } catch (Exception e) {
                 log.error("insertTable = checkSql.split(_)[1]; error", e);
             }
         } else {
             //普通流程
             if (isAuto) {
-                doAutoCheckUpIn(job, recordList);
+                doAutoCheckUpIn(job, resultList);
             } else {
-                doCheckUpIn(job, recordList);
+                doCheckUpIn(job, resultList);
             }
         }
     }

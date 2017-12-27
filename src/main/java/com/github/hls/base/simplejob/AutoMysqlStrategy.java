@@ -2,6 +2,7 @@ package com.github.hls.base.simplejob;
 
 import com.github.hls.domain.SimpleJobDO;
 import com.github.hls.utils.SimpleDBUtils;
+import com.github.hls.utils.SimpleJobUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -16,7 +17,14 @@ public class AutoMysqlStrategy extends SimpleJobStrategy{
     private DataSource dataSource;
 
     public void handle(SimpleJobDO simpleJob){
-        List<Map<String, Object>> resultList = SimpleDBUtils.queryListMap(simpleJob.getSelectSQL(), dataSource);
-        doAutoCheckUpIn(simpleJob, resultList);
+        for (Map<String, Object> map : super.sectionList) {
+            String selectSQL = simpleJob.getSelectSQL();
+            String sql = SimpleJobUtils.getReplaceSql(selectSQL, map, 0);
+
+            List<Map<String, Object>> resultList = SimpleDBUtils.queryListMap(sql, dataSource);
+            Map<String, Object> sectionMap = null;
+            doBatchOrSelUpIn(simpleJob, true, resultList, sectionMap);
+        }
+
     }
 }
