@@ -1,4 +1,4 @@
-package com.github.hls.datasource;
+package com.github.hls.base.datasource;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;

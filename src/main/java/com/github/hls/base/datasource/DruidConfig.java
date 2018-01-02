@@ -1,10 +1,13 @@
-package com.github.hls.datasource;
+package com.github.hls.base.datasource;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
 import lombok.extern.log4j.Log4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -88,7 +91,8 @@ public class DruidConfig {
         return filterRegistrationBean;
     }
 
-    @Bean
+    @Bean(name = "dataSource")
+    @Qualifier("dataSource")
     @Primary
     public DataSource druidDataSource(){
         DruidDataSource datasource = new DruidDataSource();

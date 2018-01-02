@@ -20,9 +20,4 @@ public class JobController {
         return simpleJobServer.queryJob(simpleJobDO);
     }
 
-
-    @RequestMapping("/job2")
-    public boolean job2(SimpleJobDO simpleJob){
-        return simpleJobServer.isParentSuccess(simpleJob);
-    }
 }
