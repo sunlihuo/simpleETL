@@ -69,6 +69,9 @@ public class DruidConfig {
     @Value("${spring.datasource.filters}")
     private String filters;
 
+    @Value("${spring.datasource.useGlobalDataSourceStat}")
+    private boolean useGlobalDataSourceStat;
+
     @Bean
     public ServletRegistrationBean druidServlet() {
         ServletRegistrationBean reg = new ServletRegistrationBean();
@@ -112,6 +115,7 @@ public class DruidConfig {
         datasource.setTestOnBorrow(testOnBorrow);
         datasource.setTestOnReturn(testOnReturn);
         datasource.setPoolPreparedStatements(poolPreparedStatements);
+        datasource.setUseGlobalDataSourceStat(useGlobalDataSourceStat);
         try {
             datasource.setFilters(filters);
         } catch (SQLException e) {
