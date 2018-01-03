@@ -8,12 +8,8 @@ import com.github.hls.domain.SimpleJobDO;
 import com.github.hls.service.SimpleJobServer;
 import com.github.hls.utils.DateUtils;
 import com.github.hls.utils.SpringUtil;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.log4j.Log4j;
-import org.apache.commons.lang.StringUtils;
 import org.apache.rocketmq.common.message.Message;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -39,6 +35,7 @@ public class SimpleJobTask{
     public boolean handleHttp(SimpleJobDO simpleJobDO) {
         final List<SimpleJobDO> simpleJobS = simpleJobServer.queryJob(simpleJobDO);
         if (simpleJobS == null || simpleJobS.size() == 0){
+            log.error("simplejob is null");
             return false;
         }
 
