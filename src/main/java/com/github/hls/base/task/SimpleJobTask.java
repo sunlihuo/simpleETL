@@ -27,6 +27,8 @@ public class SimpleJobTask{
     private SimpleJobServer simpleJobServer;
     @Resource
     private Disruptor disruptor;
+    @Resource
+    private DependenceTask dependenceTask;
 
     public boolean handleMessage(Message msg) {
         return true;
@@ -44,6 +46,8 @@ public class SimpleJobTask{
     }
 
     private void handleJob(List<SimpleJobDO> simpleJobList) {
+
+
         Producer producer = disruptor.getProducer();
 
         try {
@@ -75,7 +79,7 @@ public class SimpleJobTask{
                     log.info("结束第"+ i +"个任务 jobId = " + simpleJob.getSimpleJobId() + " ; jobName = " + simpleJob.getJobName() + " ;耗时 = " + DateUtils.dateDiff(current, System.currentTimeMillis()));
                 }
                 //一组任务完成
-                simpleJobServer.insertSuccess(jobList.get(0));
+                simpleJobServer.insertJobMonitor(jobList.get(0), "success");
                 //每组完成后，依赖子任务触发
                 simpleJobServer.handleWaitingSimpleJob(jobList.get(0));
 

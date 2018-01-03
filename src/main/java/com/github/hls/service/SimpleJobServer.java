@@ -67,21 +67,26 @@ public class SimpleJobServer {
         }
     }
 
-    public void insertSuccess(SimpleJobDO simpleJob){
-        SimpleJobMonitorDO simpleJobMonitor = new SimpleJobMonitorDO();
-        simpleJobMonitor.setSimpleJobId(simpleJob.getSimpleJobId());
-        simpleJobMonitor.setJobName(simpleJob.getJobName());
-        simpleJobMonitor.setStatus("success");
-        simpleJobMonitor.setInputDate(new Date());
-        simpleJobMonitorMapper.insertSelective(simpleJobMonitor);
+    public void insertJobMonitor(SimpleJobDO simpleJob, String isSuccess){
+        final Example example = new Example(SimpleJobMonitorDO.class);
+        example.createCriteria().andEqualTo("simpleJobId", simpleJob.getSimpleJobId())
+                .andEqualTo("jobName", simpleJob.getJobName())
+                .andCondition("DATE_FORMAT(inputDate,'%Y-%m-%d')=DATE_FORMAT(CURDATE(),'%Y-%m-%d')");
+        List<SimpleJobMonitorDO> jobMonitors = simpleJobMonitorMapper.selectByExample(example);
+
+        if (null == jobMonitors || jobMonitors.size() == 0) {
+            SimpleJobMonitorDO simpleJobMonitor = new SimpleJobMonitorDO();
+            simpleJobMonitor.setSimpleJobId(simpleJob.getSimpleJobId());
+            simpleJobMonitor.setJobName(simpleJob.getJobName());
+            simpleJobMonitor.setStatus(isSuccess);
+            simpleJobMonitor.setInputDate(new Date());
+            simpleJobMonitorMapper.insertSelective(simpleJobMonitor);
+        } else {
+            for (SimpleJobMonitorDO jobMonitor : jobMonitors) {
+                jobMonitor.setStatus(isSuccess);
+                simpleJobMonitorMapper.updateByPrimaryKeySelective(jobMonitor);
+            }
+        }
     }
 
-    public void insertWaiting(SimpleJobDO simpleJob){
-        SimpleJobMonitorDO simpleJobMonitor = new SimpleJobMonitorDO();
-        simpleJobMonitor.setSimpleJobId(simpleJob.getSimpleJobId());
-        simpleJobMonitor.setJobName(simpleJob.getJobName());
-        simpleJobMonitor.setStatus("waiting");
-        simpleJobMonitor.setInputDate(new Date());
-        simpleJobMonitorMapper.insertSelective(simpleJobMonitor);
-    }
 }
