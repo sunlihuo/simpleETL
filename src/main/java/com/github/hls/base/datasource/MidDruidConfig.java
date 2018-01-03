@@ -95,7 +95,6 @@ public class MidDruidConfig {
     }
 
     @Bean(name="midDataSource")
-    @Qualifier("midDataSource")
     public DataSource druidDataSource(){
         DruidDataSource datasource = new DruidDataSource();
 

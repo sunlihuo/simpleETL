@@ -17,12 +17,16 @@ public class AutoMidMysqlStrategy extends SimpleJobStrategy{
     private DataSource midDataSource;
 
     public void handle(SimpleJobDO simpleJob){
-        for (Map<String, Object> map : SimpleJobUtils.sectionList) {
+        if (SimpleJobUtils.sectionList == null || SimpleJobUtils.sectionList.size() == 0){
+            List<Map<String, Object>> resultList = SimpleDBUtils.queryListMap(simpleJob.getSelectSQL(), midDataSource);
+            doBatchOrSelUpIn(simpleJob, true, resultList, null);
+        }
+
+        for (Map<String, Object> sectionMap : SimpleJobUtils.sectionList) {
             String selectSQL = simpleJob.getSelectSQL();
-            String sql = SimpleJobUtils.getReplaceSql(selectSQL, map, 0);
+            String sql = SimpleJobUtils.getReplaceSql(selectSQL, sectionMap, 0);
 
             List<Map<String, Object>> resultList = SimpleDBUtils.queryListMap(sql, midDataSource);
-            Map<String, Object> sectionMap = null;
             doBatchOrSelUpIn(simpleJob, true, resultList, sectionMap);
         }
     }

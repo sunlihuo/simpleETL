@@ -5,8 +5,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 
+import com.github.hls.base.datasource.DruidConfig;
 import com.github.hls.base.disruptor.info.CheckUpInInfo;
 import org.apache.log4j.Logger;
 
@@ -17,6 +20,9 @@ import com.lmax.disruptor.SequenceBarrier;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.WorkerPool;
 import com.lmax.disruptor.dsl.ProducerType;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 
 /**
@@ -25,14 +31,15 @@ import com.lmax.disruptor.dsl.ProducerType;
  * @author sunlihuo
  *
  */
+@Component
 public class Disruptor {
     private static final Logger logger = Logger.getLogger(Disruptor.class);
     private RingBuffer<CheckUpInInfo> ringBuffer;
 
     private static final int CONSUMER_SIZE = 10;
-    private final Producer producer;
-    private final WorkerPool<CheckUpInInfo> workerPool;
-    private final ExecutorService executor;
+    private Producer producer;
+    private WorkerPool<CheckUpInInfo> workerPool;
+    private ExecutorService executor;
     /**引用记数*/
     private final AtomicInteger callCount = new AtomicInteger(0);
 
@@ -43,6 +50,11 @@ public class Disruptor {
     public ExecutorService getExecutor() {
         return executor;
     }
+
+    @Resource
+    private DataSource dataSource;
+    @Resource
+    private DataSource midDataSource;
 
     /**
      * 几次getProducer 要对应几次 drainAndHalt
@@ -77,7 +89,8 @@ public class Disruptor {
         return ringBuffer;
     }
 
-    public Disruptor(DataSource dataSource, DataSource quotaBossDataSource) {
+    @PostConstruct
+    public void init() {
         // 创建缓冲池
         executor = Executors.newFixedThreadPool(CONSUMER_SIZE);
         // 创建工厂
@@ -98,7 +111,7 @@ public class Disruptor {
 
         Consumer[] consumers = new Consumer[CONSUMER_SIZE];
         for (int i = 0; i < consumers.length; i++) {
-            consumers[i] = new Consumer(dataSource, quotaBossDataSource);
+            consumers[i] = new Consumer(dataSource, midDataSource);
         }
 
         workerPool = new WorkerPool<CheckUpInInfo>(ringBuffer, barriers,

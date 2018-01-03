@@ -25,8 +25,13 @@ public abstract class SimpleJobStrategy {
 
     private static final String BATCH_LOWERCASE_STR = "batch€_";
     private static final String BATCH_UPPERCASE_STR = "BATCH€_";
+    private static final String NOUP_STR = "noup€";
 
     private Producer producer;
+
+    public void setProducer(Producer producer) {
+        this.producer = producer;
+    }
 
     public abstract void handle(SimpleJobDO simpleJob);
 
@@ -94,7 +99,8 @@ public abstract class SimpleJobStrategy {
 
         StringBuilder upSql = new StringBuilder();
         int i = 0;
-        if (StringUtils.isBlank(updateSql)) {
+
+        if (NOUP_STR.equals(updateSql)) {
             log.debug("updateSql is " + updateSql);
         } else {
             //UPDATE 表名称 SET 列名称 = 新值 WHERE id in (select a.id from (select id from 表 where 列名称 = 某值)a)
@@ -103,7 +109,6 @@ public abstract class SimpleJobStrategy {
                 String key = entry.getKey();
                 if (i == 0) {
                     i++;
-                    upSql.append("updateTime=").append("SYSDATE(),");
                     upSql.append("isDelete=").append("'NO',");
                     upSql.append(key).append("='#").append(key).append("#'");
                 } else {
@@ -125,8 +130,6 @@ public abstract class SimpleJobStrategy {
             String key = entry.getKey();
             if (i == 0) {
                 i++;
-                columnSql.append("inputDate,");
-                valuesSql.append("SYSDATE(),");
                 columnSql.append("isDelete,");
                 valuesSql.append("'NO',");
                 columnSql.append(key);

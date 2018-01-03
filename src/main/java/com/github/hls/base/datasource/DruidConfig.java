@@ -95,7 +95,6 @@ public class DruidConfig {
     }
 
     @Bean(name = "dataSource")
-    @Qualifier("dataSource")
     @Primary
     public DataSource druidDataSource(){
         DruidDataSource datasource = new DruidDataSource();

@@ -30,12 +30,8 @@ public class JobController {
 
     @RequestMapping("/job")
     public String job(SimpleJobDO simpleJobDO){
-        new Runnable(){
-            @Override
-            public void run() {
-                simpleJobTask.handleHttp(simpleJobDO);
-            }
-        };
+        simpleJobTask.handleHttp(simpleJobDO);
+        /*new Thread(() -> simpleJobTask.handleHttp(simpleJobDO));*/
         return "success";
     }
 

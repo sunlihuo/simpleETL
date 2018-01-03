@@ -24,6 +24,7 @@ public class SimpleJobServer {
         final Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("simpleJobId", simpleJobDO.getSimpleJobId());
         criteria.andEqualTo("jobName", simpleJobDO.getJobName());
+        criteria.andEqualTo("status", "RUNING");
         example.orderBy("jobName");
         example.orderBy("executeOrder");
         List<SimpleJobDO> jobList = simpleJobMapper.selectByExample(example);
