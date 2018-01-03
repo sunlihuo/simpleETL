@@ -1,4 +1,4 @@
-package com.github.hls.base.simplejob;
+package com.github.hls.base.simplejob.base;
 
 import com.github.hls.base.disruptor.Producer;
 import com.github.hls.domain.SimpleJobDO;
@@ -7,6 +7,7 @@ import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -16,7 +17,6 @@ import java.util.regex.Pattern;
 
 import static com.github.hls.utils.SimpleJobUtils.getReplaceSql;
 
-@Service
 @Log4j
 public abstract class SimpleJobStrategy {
 
@@ -24,10 +24,18 @@ public abstract class SimpleJobStrategy {
     private static final String BATCH_UPPERCASE_STR = "BATCH€_";
     private static final String NOUP_STR = "noup€";
 
+    private DataSource dataSource;
     private Producer producer;
 
     public void setProducer(Producer producer) {
         this.producer = producer;
+    }
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public DataSource getDataSource() {
+        return dataSource;
     }
 
     public abstract void handle(SimpleJobDO simpleJob);

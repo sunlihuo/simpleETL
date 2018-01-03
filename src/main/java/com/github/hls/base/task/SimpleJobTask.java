@@ -3,7 +3,7 @@ package com.github.hls.base.task;
 import com.github.hls.base.disruptor.Disruptor;
 import com.github.hls.base.disruptor.Producer;
 import com.github.hls.base.enums.SimpleJobEnum;
-import com.github.hls.base.simplejob.SimpleJobStrategy;
+import com.github.hls.base.simplejob.base.SimpleJobStrategy;
 import com.github.hls.domain.SimpleJobDO;
 import com.github.hls.service.SimpleJobServer;
 import com.github.hls.utils.DateUtils;

@@ -1,5 +1,6 @@
 package com.github.hls.base.simplejob;
 
+import com.github.hls.base.simplejob.base.SimpleJobStrategy;
 import com.github.hls.domain.SimpleJobDO;
 import com.github.hls.utils.SimpleDBUtils;
 import org.springframework.stereotype.Service;
