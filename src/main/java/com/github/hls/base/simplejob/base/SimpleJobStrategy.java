@@ -30,6 +30,7 @@ public abstract class SimpleJobStrategy {
     public void setProducer(Producer producer) {
         this.producer = producer;
     }
+
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
