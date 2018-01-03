@@ -1,5 +1,6 @@
 package com.github.hls.service;
 
+import com.github.hls.base.task.SimpleJobTask;
 import com.github.hls.domain.SimpleJobDO;
 import com.github.hls.domain.SimpleJobMonitorDO;
 import com.github.hls.mapper.SimpleJobMapper;
@@ -18,6 +19,8 @@ public class SimpleJobServer {
     private SimpleJobMapper simpleJobMapper;
     @Resource
     private SimpleJobMonitorMapper simpleJobMonitorMapper;
+    @Resource
+    private SimpleJobTask simpleJobTask;
 
     public List<SimpleJobDO> queryJob(SimpleJobDO simpleJobDO){
         final Example example = new Example(SimpleJobDO.class);
@@ -52,6 +55,8 @@ public class SimpleJobServer {
     public void handleWaitingSimpleJob(SimpleJobDO simpleJob){
         //依赖子任务触发
         final List<SimpleJobMonitorDO> simpleJobMonitorDOS = queryWaitingSimpleJob(simpleJob);
+        //发mq
+
     }
 
     public boolean isParentWaiting(SimpleJobDO simpleJob){
@@ -87,6 +92,6 @@ public class SimpleJobServer {
                 simpleJobMonitorMapper.updateByPrimaryKeySelective(jobMonitor);
             }
         }
-        }
+    }
 
 }

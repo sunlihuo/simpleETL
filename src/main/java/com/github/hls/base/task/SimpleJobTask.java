@@ -45,7 +45,7 @@ public class SimpleJobTask{
         return true;
     }
 
-    private void handleJob(List<SimpleJobDO> simpleJobList) {
+    public void handleJob(List<SimpleJobDO> simpleJobList) {
         Producer producer = disruptor.getProducer();
 
         try {
