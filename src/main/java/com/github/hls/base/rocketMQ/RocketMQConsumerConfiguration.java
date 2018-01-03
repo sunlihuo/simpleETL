@@ -30,32 +30,31 @@ public class RocketMQConsumerConfiguration {
     @Resource
     private MessageListener messageListener;
 
-
     @Bean
     public DefaultMQPushConsumer getRocketMQConsumer() throws RocketMQException {
-        if (StringUtils.isBlank(groupName)) {
+        if (StringUtils.isBlank(this.groupName)) {
             throw new RocketMQException("groupName is null !!!");
         }
-        if (StringUtils.isBlank(namesrvAddr)) {
+        if (StringUtils.isBlank(this.namesrvAddr)) {
             throw new RocketMQException("namesrvAddr is null !!!");
         }
-        if (StringUtils.isBlank(topic)) {
+        if (StringUtils.isBlank(this.topic)) {
             throw new RocketMQException("topic is null !!!");
         }
-        if (StringUtils.isBlank(tag)) {
+        if (StringUtils.isBlank(this.tag)) {
             throw new RocketMQException("tag is null !!!");
         }
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(groupName);
-        consumer.setNamesrvAddr(namesrvAddr);
-        consumer.setConsumeThreadMin(consumeThreadMin);
-        consumer.setConsumeThreadMax(consumeThreadMax);
-        consumer.registerMessageListener(messageListener);
+        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(this.groupName);
+        consumer.setNamesrvAddr(this.namesrvAddr);
+        consumer.setConsumeThreadMin(this.consumeThreadMin);
+        consumer.setConsumeThreadMax(this.consumeThreadMax);
+        consumer.registerMessageListener(this.messageListener);
         try {
-            consumer.subscribe(topic, this.tag);
+            consumer.subscribe(this.topic, this.tag);
             consumer.start();
-            log.info(String.format("consumer is start !!! groupName:[%s],topic:[%s],namesrvAddr:[%s]", groupName, topic, namesrvAddr));
+            log.info(String.format("consumer is start !!! groupName:[%s],topic:[%s],namesrvAddr:[%s]", this.groupName, this.topic, this.namesrvAddr));
         } catch (MQClientException e) {
-            log.error(String.format("consumer is start !!! groupName:[%s],topic:[%s],namesrvAddr:[%s]", groupName, topic, namesrvAddr), e);
+            log.error(String.format("consumer is start !!! groupName:[%s],topic:[%s],namesrvAddr:[%s]", this.groupName, this.topic, this.namesrvAddr), e);
             throw new RocketMQException(e);
         }
         return consumer;
