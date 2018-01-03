@@ -1,5 +1,6 @@
 package com.github.hls.base.rocketMQ;
 
+import com.github.hls.base.task.SimpleJobTask;
 import lombok.extern.log4j.Log4j;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
@@ -16,14 +17,14 @@ import java.util.List;
 public class MessageListener implements MessageListenerConcurrently {
 
     @Resource
-    private MessageProcessor messageProcessor;
+    private SimpleJobTask simpleJobTask;
 
     @Override
     public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext consumeConcurrentlyContext) {
         Message msg = msgs.get(0);
 
         try {
-            boolean result = messageProcessor.handleMessage(msg);
+            boolean result = simpleJobTask.handleMessage(msg);
             if (!result){
                 return ConsumeConcurrentlyStatus.RECONSUME_LATER;
             }

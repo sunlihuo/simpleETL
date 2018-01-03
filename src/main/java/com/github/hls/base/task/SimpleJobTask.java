@@ -3,26 +3,50 @@ package com.github.hls.base.task;
 import com.github.hls.base.enums.SimpleJobEnum;
 import com.github.hls.base.simplejob.SimpleJobStrategy;
 import com.github.hls.domain.SimpleJobDO;
-import com.github.hls.domain.SimpleJobMonitorDO;
 import com.github.hls.service.SimpleJobServer;
 import com.github.hls.utils.DateUtils;
 import com.github.hls.utils.SpringUtil;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
+import org.apache.commons.lang.StringUtils;
+import org.apache.rocketmq.common.message.Message;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import static com.github.hls.utils.SimpleJobUtils.transList2Map;
 
+@Component
 @Log4j
-public class SimpleJobTask implements Runnable{
+@Getter
+@Setter
+public class SimpleJobTask{
 
-    @Override
-    public void run() {
+    @Resource
+    private SimpleJobServer simpleJobServer;
+
+    public boolean handleMessage(Message msg) {
+        return true;
+    }
+
+    public boolean handleHttp(SimpleJobDO simpleJobDO) {
+        final List<SimpleJobDO> simpleJobS = simpleJobServer.queryJob(simpleJobDO);
+        if (simpleJobS == null || simpleJobS.size() == 0){
+            return false;
+        }
+
+        handleJob(simpleJobS);
+        return true;
+    }
+
+    private void handleJob(List<SimpleJobDO> simpleJobList) {
         long countCurrent = System.currentTimeMillis();
         int i = 0;
-        final Map<String, List<SimpleJobDO>> simpleJobMap = transList2Map(this.simpleJobList);
+        final Map<String, List<SimpleJobDO>> simpleJobMap = transList2Map(simpleJobList);
 
         log.info("begin JobThreadService list  = " + simpleJobMap.values().size());
 
@@ -58,10 +82,4 @@ public class SimpleJobTask implements Runnable{
     }
 
 
-    private List<SimpleJobDO> simpleJobList;
-    private SimpleJobServer simpleJobServer;
-
-    public SimpleJobTask(List<SimpleJobDO> simpleJobList){
-        this.simpleJobList = simpleJobList;
-    }
 }

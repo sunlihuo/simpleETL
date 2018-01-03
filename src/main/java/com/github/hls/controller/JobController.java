@@ -1,5 +1,6 @@
 package com.github.hls.controller;
 
+import com.github.hls.base.task.SimpleJobTask;
 import com.github.hls.domain.SimpleJobDO;
 import com.github.hls.domain.SimpleJobMonitorDO;
 import com.github.hls.service.SimpleJobServer;
@@ -18,6 +19,8 @@ import java.util.List;
 @RestController
 public class JobController {
     @Resource
+    private SimpleJobTask simpleJobTask;
+    @Resource
     private SimpleJobServer simpleJobServer;
     @Resource
     private DefaultMQPushConsumer rocketMQConsumer;
@@ -26,8 +29,14 @@ public class JobController {
 
 
     @RequestMapping("/job")
-    public List<SimpleJobDO> job(SimpleJobDO simpleJobDO){
-        return simpleJobServer.queryJob(simpleJobDO);
+    public String job(SimpleJobDO simpleJobDO){
+        new Runnable(){
+            @Override
+            public void run() {
+                simpleJobTask.handleHttp(simpleJobDO);
+            }
+        };
+        return "success";
     }
 
     @RequestMapping("/sendmq")
