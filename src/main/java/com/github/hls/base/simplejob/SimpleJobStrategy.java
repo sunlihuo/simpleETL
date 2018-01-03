@@ -3,13 +3,10 @@ package com.github.hls.base.simplejob;
 import com.github.hls.base.disruptor.Producer;
 import com.github.hls.domain.SimpleJobDO;
 import com.github.hls.utils.QueryRunnerUtils;
-import com.github.hls.utils.SimpleDBUtils;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
-import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -100,7 +97,7 @@ public abstract class SimpleJobStrategy {
         StringBuilder upSql = new StringBuilder();
         int i = 0;
 
-        if (NOUP_STR.equals(updateSql)) {
+        if (NOUP_STR.equalsIgnoreCase(updateSql)) {
             log.debug("updateSql is " + updateSql);
         } else {
             //UPDATE 表名称 SET 列名称 = 新值 WHERE id in (select a.id from (select id from 表 where 列名称 = 某值)a)
