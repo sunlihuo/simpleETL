@@ -87,6 +87,6 @@ public class SimpleJobServer {
                 simpleJobMonitorMapper.updateByPrimaryKeySelective(jobMonitor);
             }
         }
-    }
+        }
 
 }

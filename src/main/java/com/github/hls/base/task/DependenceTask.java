@@ -17,15 +17,13 @@ public class DependenceTask {
     @Resource
     private SimpleJobServer simpleJobServer;
 
-    public boolean isNotKeepGoing(SimpleJobDO simpleJob){
+    public void isNotKeepGoing(SimpleJobDO simpleJob){
         //未完成
         if (simpleJobServer.isParentWaiting(simpleJob)){
             log.info("simpleJob isParentWaiting true; simpleJob"+simpleJob);
-            simpleJobServer.insertJobMonitor(simpleJob, "waiting");
-            return true;
+            throw new RuntimeException();
         } else {
-        //已经完成
-            return false;
+            return;
         }
 
     }

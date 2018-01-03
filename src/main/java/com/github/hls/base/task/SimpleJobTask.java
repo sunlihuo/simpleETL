@@ -46,8 +46,6 @@ public class SimpleJobTask{
     }
 
     private void handleJob(List<SimpleJobDO> simpleJobList) {
-
-
         Producer producer = disruptor.getProducer();
 
         try {
@@ -58,19 +56,25 @@ public class SimpleJobTask{
             log.info("begin JobThreadService list  = " + simpleJobMap.values().size());
 
             final Iterator<List<SimpleJobDO>> iterator = simpleJobMap.values().iterator();
-            while (iterator.hasNext()){
+            while (iterator.hasNext()) {
+                boolean isSuccess = true;
                 List<SimpleJobDO> jobList = iterator.next();
-                for (SimpleJobDO simpleJob : jobList){
+
+                for (SimpleJobDO simpleJob : jobList) {
                     Long current = System.currentTimeMillis();
                     log.info("开始第"+ ++i +"个任务 jobId = " + simpleJob.getSimpleJobId() + " ; jobName = " + simpleJob.getJobName() + " ;SourceType="+simpleJob.getSourceType());
 
                     try {
+                        dependenceTask.isNotKeepGoing(simpleJob);
+
                         String beanName = SimpleJobEnum.SOURCE_TYPE.valueOf(simpleJob.getSourceType()).getBeanName();
                         SimpleJobStrategy simpleJobStrategy = (SimpleJobStrategy) SpringUtil.getBean(beanName);
                         simpleJobStrategy.setProducer(producer);
                         simpleJobStrategy.handle(simpleJob);
                     } catch (Exception e) {
                        log.error("SimpleJobTask error", e);
+                       simpleJobServer.insertJobMonitor(jobList.get(0), "waiting");
+                       isSuccess = false;
                        if (!"Y".equalsIgnoreCase(simpleJob.getErrorGoOn())){
                            break;
                        }
@@ -78,10 +82,13 @@ public class SimpleJobTask{
 
                     log.info("结束第"+ i +"个任务 jobId = " + simpleJob.getSimpleJobId() + " ; jobName = " + simpleJob.getJobName() + " ;耗时 = " + DateUtils.dateDiff(current, System.currentTimeMillis()));
                 }
-                //一组任务完成
-                simpleJobServer.insertJobMonitor(jobList.get(0), "success");
-                //每组完成后，依赖子任务触发
-                simpleJobServer.handleWaitingSimpleJob(jobList.get(0));
+
+                if (isSuccess) {
+                    //一组任务完成
+                    simpleJobServer.insertJobMonitor(jobList.get(0), "success");
+                    //每组完成后，依赖子任务触发
+                    simpleJobServer.handleWaitingSimpleJob(jobList.get(0));
+                }
 
             }
 
