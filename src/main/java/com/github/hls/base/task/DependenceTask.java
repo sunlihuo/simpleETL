@@ -28,8 +28,6 @@ public class DependenceTask {
         if (simpleJobServer.isParentWaiting(simpleJob)){
             log.info("父任务没有完成,此任务不执行 simpleJob parent job is waiting; jobName=" + simpleJob.getJobName());
             throw new DependenceException("父任务没有完成");
-        } else {
-            return;
         }
     }
 
