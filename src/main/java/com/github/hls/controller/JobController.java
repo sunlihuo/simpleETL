@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.io.UnsupportedEncodingException;
 
 @RestController
 public class JobController {
@@ -35,14 +36,14 @@ public class JobController {
     }
 
     @RequestMapping("/sendmq")
-    public String sendmq(SimpleJobDO simpleJobDO) throws InterruptedException, RemotingException, MQClientException, MQBrokerException {
+    public String sendmq(SimpleJobDO simpleJobDO) throws InterruptedException, RemotingException, MQClientException, MQBrokerException, UnsupportedEncodingException {
         Message message = new Message();
         message.setTopic("simple_job");
         message.setTags("notify");
-        message.setBody("ffffffffff".getBytes());
+        message.setBody(simpleJobDO.getJobName().getBytes("UTF-8"));
         SendResult sendResult = rocketMQProducer.send(message);
         System.out.println(sendResult.getSendStatus()+";"+sendResult.toString());
-        return "ffff";
+        return "success";
     }
 
 }
