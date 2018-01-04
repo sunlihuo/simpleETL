@@ -19,8 +19,6 @@ public class SimpleJobServer {
     private SimpleJobMapper simpleJobMapper;
     @Resource
     private SimpleJobMonitorMapper simpleJobMonitorMapper;
-    @Resource
-    private SimpleJobTask simpleJobTask;
 
     public List<SimpleJobDO> queryJob(SimpleJobDO simpleJobDO){
         final Example example = new Example(SimpleJobDO.class);
@@ -50,13 +48,6 @@ public class SimpleJobServer {
         criteria.andEqualTo("status", "waiting");
         criteria.andCondition("DATE_FORMAT(inputDate,'%Y-%m-%d')=DATE_FORMAT(CURDATE(),'%Y-%m-%d')");
         return simpleJobMonitorMapper.selectByExample(example);
-    }
-
-    public void handleWaitingSimpleJob(SimpleJobDO simpleJob){
-        //依赖子任务触发
-        final List<SimpleJobMonitorDO> simpleJobMonitorDOS = queryWaitingSimpleJob(simpleJob);
-        //发mq
-
     }
 
     public boolean isParentWaiting(SimpleJobDO simpleJob){

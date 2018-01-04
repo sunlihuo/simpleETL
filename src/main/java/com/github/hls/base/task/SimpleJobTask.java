@@ -13,6 +13,7 @@ import org.apache.rocketmq.common.message.Message;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +31,13 @@ public class SimpleJobTask{
     @Resource
     private DependenceTask dependenceTask;
 
-    public boolean handleMessage(Message msg) {
-        return true;
+    public boolean handleMessage(Message msg) throws UnsupportedEncodingException {
+        String jobName = new String(msg.getBody(), "UTF-8");
+        log.info("MQ SimpleJobTask handleMessage jobName=" + jobName);
+
+        final SimpleJobDO simpleJobDO = new SimpleJobDO();
+        simpleJobDO.setJobName(jobName);
+        return handleHttp(simpleJobDO);
     }
 
     public boolean handleHttp(SimpleJobDO simpleJobDO) {
@@ -87,7 +93,7 @@ public class SimpleJobTask{
                     //一组任务完成
                     simpleJobServer.insertJobMonitor(jobList.get(0), "success");
                     //每组完成后，依赖子任务触发
-                    simpleJobServer.handleWaitingSimpleJob(jobList.get(0));
+                    dependenceTask.handleWaitingSimpleJob(jobList.get(0));
                 }
 
             }
