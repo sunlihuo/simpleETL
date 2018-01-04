@@ -1,12 +1,12 @@
 package com.github.hls.base.rocketMQ;
 
+import com.alibaba.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
+import com.alibaba.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
+import com.alibaba.rocketmq.client.consumer.listener.MessageListenerConcurrently;
+import com.alibaba.rocketmq.common.message.Message;
+import com.alibaba.rocketmq.common.message.MessageExt;
 import com.github.hls.base.task.SimpleJobTask;
 import lombok.extern.log4j.Log4j;
-import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
-import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
-import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
-import org.apache.rocketmq.common.message.Message;
-import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -26,11 +26,11 @@ public class MessageListener implements MessageListenerConcurrently {
         try {
             boolean result = simpleJobTask.handleMessage(msg);
             if (!result){
-                return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
         } catch (Exception e) {
             log.error("mq handle error", e);
-            return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+            return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
         }
 
         return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;

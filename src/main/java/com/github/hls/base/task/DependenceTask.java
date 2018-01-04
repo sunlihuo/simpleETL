@@ -1,5 +1,6 @@
 package com.github.hls.base.task;
 
+import com.github.hls.base.exception.DependenceException;
 import com.github.hls.domain.SimpleJobDO;
 import com.github.hls.domain.SimpleJobMonitorDO;
 import com.github.hls.service.RocketMQProducerServer;
@@ -22,11 +23,11 @@ public class DependenceTask {
     @Resource
     private RocketMQProducerServer rocketMQProducerServer;
 
-    public void isNotKeepGoing(SimpleJobDO simpleJob){
+    public void isNotKeepGoing(SimpleJobDO simpleJob) throws DependenceException {
         //未完成
         if (simpleJobServer.isParentWaiting(simpleJob)){
-            log.info("simpleJob isParentWaiting true; simpleJob"+simpleJob);
-            throw new RuntimeException();
+            log.info("父任务没有完成,此任务不执行 simpleJob parent job is waiting; jobName=" + simpleJob.getJobName());
+            throw new DependenceException("父任务没有完成");
         } else {
             return;
         }

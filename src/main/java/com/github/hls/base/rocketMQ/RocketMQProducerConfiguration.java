@@ -1,10 +1,10 @@
 package com.github.hls.base.rocketMQ;
 
+import com.alibaba.rocketmq.client.exception.MQClientException;
+import com.alibaba.rocketmq.client.producer.DefaultMQProducer;
 import com.github.hls.base.exception.RocketMQException;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.rocketmq.client.exception.MQClientException;
-import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,7 +41,7 @@ public class RocketMQProducerConfiguration {
         producer.setInstanceName(instanceName);
         producer.setMaxMessageSize(this.maxMessageSize);
         producer.setSendMsgTimeout(this.sendMsgTimeout);
-        producer.setVipChannelEnabled(false);
+        //producer.setVipChannelEnabled(false);
         try {
             producer.start();
             // shutdown时关闭producer

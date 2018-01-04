@@ -76,6 +76,7 @@ public class SimpleJobServer {
             simpleJobMonitor.setJobName(simpleJob.getJobName());
             simpleJobMonitor.setStatus(isSuccess);
             simpleJobMonitor.setInputDate(new Date());
+            simpleJobMonitor.setParentJobName(simpleJob.getParentJobName());
             simpleJobMonitorMapper.insertSelective(simpleJobMonitor);
         } else {
             for (SimpleJobMonitorDO jobMonitor : jobMonitors) {

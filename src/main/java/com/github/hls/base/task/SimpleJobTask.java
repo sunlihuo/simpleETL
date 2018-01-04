@@ -1,15 +1,16 @@
 package com.github.hls.base.task;
 
+import com.alibaba.rocketmq.common.message.Message;
 import com.github.hls.base.disruptor.Disruptor;
 import com.github.hls.base.disruptor.Producer;
 import com.github.hls.base.enums.SimpleJobEnum;
+import com.github.hls.base.exception.DependenceException;
 import com.github.hls.base.simplejob.base.SimpleJobStrategy;
 import com.github.hls.domain.SimpleJobDO;
 import com.github.hls.service.SimpleJobServer;
 import com.github.hls.utils.DateUtils;
 import com.github.hls.utils.SpringUtil;
 import lombok.extern.log4j.Log4j;
-import org.apache.rocketmq.common.message.Message;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -33,7 +34,7 @@ public class SimpleJobTask{
 
     public boolean handleMessage(Message msg) throws UnsupportedEncodingException {
         String jobName = new String(msg.getBody(), "UTF-8");
-        log.info("MQ SimpleJobTask handleMessage jobName=" + jobName);
+        log.info("接收MQ消息 SimpleJobTask handleMessage jobName=" + jobName);
 
         final SimpleJobDO simpleJobDO = new SimpleJobDO();
         simpleJobDO.setJobName(jobName);
@@ -78,12 +79,17 @@ public class SimpleJobTask{
                         simpleJobStrategy.setProducer(producer);
                         simpleJobStrategy.handle(simpleJob);
                     } catch (Exception e) {
-                       log.error("SimpleJobTask error", e);
-                       simpleJobServer.insertJobMonitor(jobList.get(0), "waiting");
-                       isSuccess = false;
-                       if (!"Y".equalsIgnoreCase(simpleJob.getErrorGoOn())){
-                           break;
-                       }
+                        isSuccess = false;
+                        if (e instanceof DependenceException) {
+                            simpleJobServer.insertJobMonitor(jobList.get(0), "waiting");
+                            break;
+                        }
+
+                        log.error("SimpleJobTask error", e);
+                        simpleJobServer.insertJobMonitor(jobList.get(0), "waiting");
+                        if (!"Y".equalsIgnoreCase(simpleJob.getErrorGoOn())){
+                            break;
+                        }
                     }
 
                     log.info("结束第"+ i +"个任务 jobId = " + simpleJob.getSimpleJobId() + " ; jobName = " + simpleJob.getJobName() + " ;耗时 = " + DateUtils.dateDiff(current, System.currentTimeMillis()));
