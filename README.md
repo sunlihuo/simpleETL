@@ -40,7 +40,7 @@
 |stampDate|timestamp|记录更新时间|
 
 
-sourceType
+* sourceType
 
 ```
     @Getter
@@ -60,7 +60,7 @@ sourceType
     }
 ```
 
-#### sql自动生成：
+* sql自动生成：
 ```
 skynetJob.sourceType 为auto_开头。
 编写更新和插入sql,已经优化为自动生成。
@@ -73,31 +73,31 @@ table是从skynetJob.checkExistSQL 中截取，FROM WHERE  或者 from where，�
 
 在非自动生成，sql的情况下 skynetJob.updateSQL  和skynetJob.insertSQL为空就不执行sql;
 ```
-#### 分段sql:
+* 分段sql:
+```
 skynetJob.sourceType是section_value,//分段sql,提取共同部分
 section_value优点，提取共同部分，一处修改，处处生效。拥抱变化。
 更加强大的优点在上千万数据级时的细化，拆分能力！！！
-```
 SELECT '2017-01' as dataTime
 UNION all
 SELECT '2017-02' as dataTime
 UNION all
 SELECT '2017-03' as dataTime
-```
 原本一次查询千万数据处理时会系统崩溃。
 改成了分多批次执行，群狼战术。完美运行。
+```
 
-#### 批量插入：
+* 批量插入：
 ```
 skynetJob.checkExistSQL中写
-示例：batch?_JobTransportStatsSys_where dataTime>='#toDate#' and isInsert='WHD'
-batch?_table[_where condition]
-batch?_table   表示批量插入table表,不进行删除
-batch?_table_where condition    表示批量插入table表并按 table_where condition  来生成DELETE sql，写where 条件保证业务的幂等。不需要专门去清表。
+示例：batch€_JobTransportStatsSys_where dataTime>='#toDate#' and isInsert='WHD'
+batch€_table[_where condition]
+batch€_table   表示批量插入table表,不进行删除
+batch€_table_where condition    表示批量插入table表并按 table_where condition  来生成DELETE sql，写where 条件保证业务的幂等。不需要专门去清表。
 ```
 ###### 优点，批量入库的速度可以让时光倒流。
+* 表死锁及解决办法：
 ```
-表死锁及解决办法：
 引入Disruptor，sql高并发执行，引起mysql死锁，主要原因是update语句条件范围过大，多条sql锁住了相同一批数据，
 解决方法是按主键更新，skynetJob会自动生成如下sql
 UPDATE 表名称 SET 列名称 = 新值 WHERE id in (select a.id from (select id from 表 where 列名称 = 某值)a)
@@ -106,11 +106,11 @@ UPDATE 表名称 SET 列名称 = 新值 WHERE id in (select a.id from (select id
 ##### 注意点   FROM   WHERE  关键字必须要都大写 或 小写
 id 是生动生成 规则是  tableId
 
-#### 血缘任务依赖，使用MQ支持集群化任务处理
+* 血缘任务依赖，使用MQ支持集群化任务处理
 任务job1依赖job2,执行job1时job2没有执行，会记录到SimpleJobMonitor表status是waiting
 job2执行完成时job1会触发
 
-#### 示例
+* 示例
 
 ```
 INSERT INTO skynet.SimpleJob (simpleJobId, jobName, description, sourceType, upDateSource, selectSQL, checkExistSQL, updateSQL, insertSQL, status, executeOrder, errorGoOn, parentJobName, inputDate, updateTime, stampDate) VALUES ('12', 'TransportStatsSys_YesterDay', '运输分系统', 'section_value', '', 'SELECT\r\n	DATE_SUB(CURDATE(), INTERVAL 1 DAY) AS toDate,\r\n	CURDATE() AS loadDate,\r\n	\'SUM(IFNULL(warehouseIncreNum,0)) as warehouseIncreNum,\r\n	SUM(IFNULL(acceptordernum,0)) as acceptordernum,\r\n	SUM(IFNULL(shipordernum,0)) as shipordernum,\r\n	SUM(IFNULL(startnum,0)) as startnum,\r\n	SUM(IFNULL(arrivenum,0)) as arrivenum,\r\n	SUM(IFNULL(shippingfee,0)) as shippingfee,\r\n	SUM(IFNULL(insteadfee,0)) as insteadfee,\r\n	SUM(IFNULL(insurancefee,0)) as insurancefee,\r\n	SUM(IFNULL(carrierincrenum,0)) as carrierincrenum,\r\n	SUM(IFNULL(senderincrenum,0)) as senderincrenum,\r\n	SUM(IFNULL(receiverincrenum,0)) as receiverincrenum\' AS selectValue', '', '', '', 'RUNNING', '4', 'Y', '', NULL, NULL, '2018-01-08 15:20:47');
