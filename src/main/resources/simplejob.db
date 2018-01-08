@@ -1,0 +1,32 @@
+CREATE TABLE `SimpleJob` (
+  `simpleJobId` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `jobName` varchar(50) NOT NULL COMMENT '任务名称',
+  `description` varchar(1000) DEFAULT NULL COMMENT '描述',
+  `sourceType` varchar(50) NOT NULL COMMENT '数据源类型，mysql,hive',
+  `upDateSource` varchar(50) NOT NULL COMMENT '更新数据源类型',
+  `selectSQL` varchar(5000) NOT NULL COMMENT '查询SQL',
+  `checkExistSQL` varchar(1000) NOT NULL COMMENT '校对记录是否存在',
+  `updateSQL` varchar(5000) NOT NULL COMMENT '修改SQL',
+  `insertSQL` varchar(5000) NOT NULL COMMENT 'insert SQL',
+  `status` varchar(500) DEFAULT NULL COMMENT '状态，RUNNING 运行，PAUSE 暂停',
+  `executeOrder` int(11) NOT NULL COMMENT '执行顺序',
+  `errorGoOn` varchar(255) NOT NULL COMMENT '异常是否继续,Y 继续，N 不再接下去进行',
+  `parentJobName` varchar(255) NOT NULL COMMENT '依赖父任务',
+  `inputDate` datetime DEFAULT NULL COMMENT '录入时间',
+  `updateTime` datetime DEFAULT NULL COMMENT '记录修改时间',
+  `stampDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录更新时间',
+  PRIMARY KEY (`simpleJobId`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COMMENT='job记录表';
+
+CREATE TABLE `SimpleJobMonitor` (
+  `simpleJobMonitorId` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `simpleJobId` int(19) NOT NULL COMMENT 'SimpleJobId',
+  `jobName` varchar(50) NOT NULL COMMENT '任务名称',
+  `description` varchar(1000) DEFAULT NULL COMMENT '描述',
+  `status` varchar(150) DEFAULT NULL COMMENT '是否成功',
+  `parentJobName` varchar(255) DEFAULT NULL COMMENT '依赖父任务',
+  `inputDate` datetime DEFAULT NULL COMMENT '录入时间',
+  `updateTime` datetime DEFAULT NULL COMMENT '记录修改时间',
+  `stampDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录更新时间',
+  PRIMARY KEY (`simpleJobMonitorId`)
+) ENGINE=InnoDB AUTO_INCREMENT=152 DEFAULT CHARSET=utf8 COMMENT='job记录表';
