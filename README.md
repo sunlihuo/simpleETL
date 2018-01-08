@@ -1,8 +1,9 @@
 # simplejob
+```
 一个简单的sql处理框架，主要处理是查询，检查，更新或者插入
 
 支持多数据源查询，多数据源入库，支持集群，父子任务依赖
-
+```
 #### SimpleJob表
 
 |字段|类型|说明&备注|
@@ -60,6 +61,7 @@ sourceType
 ```
 
 #### sql自动生成：
+```
 skynetJob.sourceType 为auto_开头。
 编写更新和插入sql,已经优化为自动生成。
 原则是：
@@ -70,7 +72,7 @@ skynetJob.checkExistSQL 里写 SELECT count(1) FROM table WHERE 四个字段
 table是从skynetJob.checkExistSQL 中截取，FROM WHERE  或者 from where，必须一起大写，一起小写。
 
 在非自动生成，sql的情况下 skynetJob.updateSQL  和skynetJob.insertSQL为空就不执行sql;
-
+```
 #### 分段sql:
 skynetJob.sourceType是section_value,//分段sql,提取共同部分
 section_value优点，提取共同部分，一处修改，处处生效。拥抱变化。
@@ -86,20 +88,21 @@ SELECT '2017-03' as dataTime
 改成了分多批次执行，群狼战术。完美运行。
 
 #### 批量插入：
+```
 skynetJob.checkExistSQL中写
 示例：batch?_JobTransportStatsSys_where dataTime>='#toDate#' and isInsert='WHD'
 batch?_table[_where condition]
 batch?_table   表示批量插入table表,不进行删除
 batch?_table_where condition    表示批量插入table表并按 table_where condition  来生成DELETE sql，写where 条件保证业务的幂等。不需要专门去清表。
-
+```
 ###### 优点，批量入库的速度可以让时光倒流。
-
+```
 表死锁及解决办法：
 引入Disruptor，sql高并发执行，引起mysql死锁，主要原因是update语句条件范围过大，多条sql锁住了相同一批数据，
 解决方法是按主键更新，skynetJob会自动生成如下sql
 UPDATE 表名称 SET 列名称 = 新值 WHERE id in (select a.id from (select id from 表 where 列名称 = 某值)a)
 而你只要写 UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
-
+```
 ##### 注意点   FROM   WHERE  关键字必须要都大写 或 小写
 id 是生动生成 规则是  tableId
 
