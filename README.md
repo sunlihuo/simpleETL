@@ -2,6 +2,7 @@
 一个简单的sql处理框架
 
 ######## SimpleJob表
+
 |字段|类型|说明&备注|
 |--------| --------|--------|
 |simpleJobId|int(11)|主键|
@@ -22,17 +23,18 @@
 |stampDate|timestamp|记录更新时间|
 
 ######## SimpleJobMonitor表
-| 字段| 类型|说明&备注 |
-| -------- | -------- | -------- |
-| simpleJobMonitorId|int(11)|主键|
-| simpleJobId|int(19)|SimpleJobId|
-| jobName|varchar(50)|任务名称|
-| description|varchar(1000)|描述|
-| status|varchar(150)|是否成功|
-| parentJobName|varchar(255)|依赖父任务|
-| inputDate|datetime|录入时间|
-| updateTime|datetime|记录修改时间|
-| stampDate|timestamp|记录更新时间|
+
+|字段| 类型|说明&备注 |
+|-------- | -------- | -------- |
+|simpleJobMonitorId|int(11)|主键|
+|simpleJobId|int(19)|SimpleJobId|
+|jobName|varchar(50)|任务名称|
+|description|varchar(1000)|描述|
+|status|varchar(150)|是否成功|
+|parentJobName|varchar(255)|依赖父任务|
+|inputDate|datetime|录入时间|
+|updateTime|datetime|记录修改时间|
+|stampDate|timestamp|记录更新时间|
 
 
 sourceType
