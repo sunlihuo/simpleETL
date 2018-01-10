@@ -1,5 +1,6 @@
 package com.github.hls.service;
 
+import com.github.hls.base.enums.SimpleJobEnum;
 import com.github.hls.base.task.SimpleJobTask;
 import com.github.hls.domain.SimpleJobDO;
 import com.github.hls.domain.SimpleJobMonitorDO;
@@ -20,16 +21,30 @@ public class SimpleJobServer {
     @Resource
     private SimpleJobMonitorMapper simpleJobMonitorMapper;
 
+    public void update(SimpleJobDO simpleJobDO){
+        simpleJobMapper.updateByPrimaryKeySelective(simpleJobDO);
+    }
+
+    public void insert(SimpleJobDO simpleJobDO){
+        simpleJobMapper.insertSelective(simpleJobDO);
+    }
+
     public List<SimpleJobDO> queryJob(SimpleJobDO simpleJobDO){
         final Example example = new Example(SimpleJobDO.class);
         final Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("simpleJobId", simpleJobDO.getSimpleJobId());
         criteria.andEqualTo("jobName", simpleJobDO.getJobName());
-        criteria.andEqualTo("status", "RUNING");
+        criteria.andEqualTo("status", simpleJobDO.getStatus());
         example.orderBy("jobName");
         example.orderBy("executeOrder");
+        example.orderBy("stampDate");
         List<SimpleJobDO> jobList = simpleJobMapper.selectByExample(example);
         return jobList;
+    }
+
+    public List<SimpleJobDO> queryRunningJob(SimpleJobDO simpleJobDO){
+        simpleJobDO.setStatus(SimpleJobEnum.STATUS.RUNNING.name());
+        return queryJob(simpleJobDO);
     }
 
     public List<SimpleJobMonitorDO> queryParentJobStatus(SimpleJobDO simpleJob){

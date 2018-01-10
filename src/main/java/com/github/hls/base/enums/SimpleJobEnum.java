@@ -5,13 +5,11 @@ import lombok.Getter;
 public class SimpleJobEnum {
     @Getter
     public static enum STATUS {
-        RUNNING("运行", "RUNNING"), STOP("暂停", "STOP");
+        RUNNING("运行"), STOP("暂停");
         private String des;
-        private String val;
 
-        STATUS(String des, String val) {
+        STATUS(String des) {
             this.des = des;
-            this.val = val;
         }
     }
 

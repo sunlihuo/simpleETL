@@ -42,7 +42,7 @@ public class SimpleJobTask{
     }
 
     public boolean handleHttp(SimpleJobDO simpleJobDO) {
-        final List<SimpleJobDO> simpleJobS = simpleJobServer.queryJob(simpleJobDO);
+        final List<SimpleJobDO> simpleJobS = simpleJobServer.queryRunningJob(simpleJobDO);
         if (simpleJobS == null || simpleJobS.size() == 0){
             log.error("simplejob is null");
             return false;
