@@ -1,24 +1,25 @@
 <div th:fragment="menuHtml" xmlns:th="http://www.w3.org/1999/xhtml">
+
     <script type="text/javascript">
-        try{ace.settings.check('sidebar' , 'fixed')}catch(e){}
+        try{ace.settings.loadState('sidebar')}catch(e){}
     </script>
 
     <div class="sidebar-shortcuts" id="sidebar-shortcuts">
         <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
             <button class="btn btn-success">
-                <i class="icon-signal"></i>
+                <i class="ace-icon fa fa-signal"></i>
             </button>
 
             <button class="btn btn-info">
-                <i class="icon-pencil"></i>
+                <i class="ace-icon fa fa-pencil"></i>
             </button>
 
             <button class="btn btn-warning">
-                <i class="icon-group"></i>
+                <i class="ace-icon fa fa-users"></i>
             </button>
 
             <button class="btn btn-danger">
-                <i class="icon-cogs"></i>
+                <i class="ace-icon fa fa-cogs"></i>
             </button>
         </div>
 
@@ -31,41 +32,52 @@
 
             <span class="btn btn-danger"></span>
         </div>
-    </div><!-- #sidebar-shortcuts -->
+    </div><!-- /.sidebar-shortcuts -->
 
     <ul class="nav nav-list">
-        <li>
-            <a href="#" class="dropdown-toggle">
-                <i class="icon-desktop"></i>
-                <span class="menu-text"> 表数据 </span>
+        <li class="active">
+            <a href="indextml">
+                <i class="menu-icon fa fa-tachometer"></i>
+                <span class="menu-text"> Dashboard </span>
+            </a>
+            <b class="arrow"></b>
+        </li>
 
-                <b class="arrow icon-angle-down"></b>
+        <li class="">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-desktop"></i>
+                <span class="menu-text">
+                            表数据管理
+                </span>
+                <b class="arrow fa fa-angle-down"></b>
             </a>
 
+            <b class="arrow"></b>
+
             <ul class="submenu">
-                <li>
+                <li class="">
                     <a href="simpleJobHtml">
-                        <i class="icon-double-angle-right"></i>
-                        SimpleJob表
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        SimpleJob
                     </a>
+                    <b class="arrow"></b>
                 </li>
+            </ul>
 
-                <li>
-                    <a href="../../../webapp/buttons.html">
-                        <i class="icon-double-angle-right"></i>
-                        SimpleJobMonitor表
+            <ul class="submenu">
+                <li class="">
+                    <a href="simpleJobHtml">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        SimpleJobddd
                     </a>
+                    <b class="arrow"></b>
                 </li>
-
             </ul>
         </li>
+
     </ul><!-- /.nav-list -->
 
-    <div class="sidebar-collapse" id="sidebar-collapse">
-        <i class="icon-double-angle-left" data-icon1="icon-double-angle-left" data-icon2="icon-double-angle-right"></i>
+    <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+        <i id="sidebar-toggle-icon" class="ace-icon fa fa-angle-double-left ace-save-state" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
     </div>
-
-    <script type="text/javascript">
-        try{ace.settings.check('sidebar' , 'collapsed')}catch(e){}
-    </script>
 </div>

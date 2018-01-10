@@ -30,7 +30,7 @@ public class HtmlController {
 
     @RequestMapping("/simpleJobHtml")
     public String simpleJobHtml(Map<String,Object> map){
-        return "table/simpleJob";
+        return "table/jqgrid";
     }
 
 }
