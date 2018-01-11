@@ -24,7 +24,7 @@
 		<link rel="stylesheet" href="assets/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
 
 		<!--[if lte IE 9]>
-			<link rel="stylesheet" href="assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
+		<link rel="stylesheet" href="assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
 		<![endif]-->
 		<link rel="stylesheet" href="assets/css/ace-skins.min.css" />
 		<link rel="stylesheet" href="assets/css/ace-rtl.min.css" />
@@ -59,13 +59,13 @@
 						<ul class="breadcrumb">
 							<li>
 								<i class="ace-icon fa fa-home home-icon"></i>
-								<a href="#">Home</a>
+								<a th:text="${breadcrumb1}" href="#"></a>
 							</li>
 
 							<li>
-								<a href="#">Tables</a>
+								<a th:text="${breadcrumb2}" href="#"></a>
 							</li>
-							<li class="active">jqGrid plugin</li>
+							<li th:text="${breadcrumb3}" class="active"></li>
 						</ul><!-- /.breadcrumb -->
 
 						<div class="nav-search" id="nav-search">
@@ -244,14 +244,14 @@
 				  }
 				})
 				*/
-				
-				jQuery(grid_selector).jqGrid({
-                    url: "queryList",
-					datatype: "json",
-					height: 350,
-                    colNames:['操作', '任务ID', '任务名称', '描述', '状态', '数据源类型', '入库数据源','查询SQL','检验SQL','更新SQL','入库SQL','依赖任务名','执行顺序','异常是否继续'],
+
+                jQuery(grid_selector).jqGrid({
+                    url: "queryMonitorList",
+                    datatype: "json",
+                    height: 350,
+                    colNames:['任务监控ID', 'simpleJob任务ID', 'simpleJob任务名', '任务状态', '描述', '依赖父任务名','时间'],
                     colModel:[
-                        {name:'simpleJobId',index:'操作', width:80, fixed:true, sortable:false, resize:false,
+ 					/*	{name:'simpleJobMonitorId',index:'操作', width:80, fixed:true, sortable:false, resize:false,
                             formatter:'actions',
                             formatoptions:{
                                 keys:true,
@@ -259,64 +259,61 @@
                                 delOptions:{recreateForm: true, beforeShowForm:beforeDeleteCallback},
                                 //editformbutton:true, editOptions:{recreateForm: true, beforeShowForm:beforeEditCallback}
                             }
-                        },
-                        {name:'simpleJobId',index:'任务ID', width:60, sorttype:"int", editable: false, key:true},
-                        {name:'jobName',index:'任务名', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
+                        },*/
+                        {name:'simpleJobMonitorId',index:'任务监控ID', width:60, sorttype:"int", editable: false, key:true},
+                        {name:'simpleJobId',index:'simpleJob任务ID', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
+                        {name:'jobName',index:'simpleJob任务名', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
+                        {name:'status',index:'任务状态',  width:90, editable: true,edittype:"select",editoptions:{value:"success:success;waiting:waiting"},unformat: aceSwitch},
                         {name:'description',index:'描述', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
-                        {name:'status',index:'状态',  width:90, editable: true,edittype:"select",editoptions:{value:"RUNNING:RUNNING;STOP:STOP"},unformat: aceSwitch},
-                        {name:'sourceType',index:'数据源类型', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
-                        {name:'upDateSource',index:'入库数据源', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
-                        {name:'selectSQL',index:'查询SQL', width:300, sortable:false,editable: true,edittype:"textarea", editoptions:{rows:"2",cols:"10"}},
-                        {name:'checkExistSQL',index:'检验SQL', width:300, sortable:false,editable: true,edittype:"textarea", editoptions:{rows:"2",cols:"10"}},
-                        {name:'updateSQL',index:'更新SQL', width:250, sortable:false,editable: true,edittype:"textarea", editoptions:{rows:"2",cols:"10"}},
-                        {name:'insertSQL',index:'入库SQL', width:250, sortable:false,editable: true,edittype:"textarea", editoptions:{rows:"2",cols:"10"}},
-                        {name:'parentJobName',index:'依赖任务名', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
-                        {name:'executeOrder',index:'执行顺序', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
-                        {name:'errorGoOn',index:'异常是否继续', width:150,editable: true,editoptions:{value:"Y:Y;N:N"},unformat: aceSwitch}
+                        {name:'parentJobName',index:'依赖父任务名', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
+                        {name:'stampDate',index:'时间', width:150, sortable:false, editable: false,formatter:"date",formatoptions: {srcformat:'Y-m-d H:i:s',newformat:'Y-m-d H:i:s'},unformat: pickDate},
+
                     ],
-			
-					viewrecords : true,
-					rowNum:10,
-					rowList:[10,20,30],
-					pager : pager_selector,
-					altRows: true,
-					//toppager: true,
-					
-					multiselect: true,
-					//multikey: "ctrlKey",
-			        multiboxonly: true,
-			
-					loadComplete : function() {
-						var table = this;
-						setTimeout(function(){
-							styleCheckbox(table);
-							
-							updateActionIcons(table);
-							updatePagerIcons(table);
-							enableTooltips(table);
-						}, 0);
-					},
-			
-					editurl: "update",//nothing is saved
-					caption: "SimpleJob表"
-			
-					//,autowidth: true,
-			
-			
-					/**
-					,
-					grouping:true, 
-					groupingView : { 
-						 groupField : ['name'],
-						 groupDataSorted : true,
-						 plusicon : 'fa fa-chevron-down bigger-110',
-						 minusicon : 'fa fa-chevron-up bigger-110'
-					},
-					caption: "Grouping"
-					*/
-			
-				});
-				$(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
+
+                    viewrecords : true,
+                    rowNum:10,
+                    rowList:[10,20,30],
+                    pager : pager_selector,
+                    altRows: true,
+                    //toppager: true,
+
+                    multiselect: true,
+                    //multikey: "ctrlKey",
+                    multiboxonly: true,
+
+                    loadComplete : function() {
+                        var table = this;
+                        setTimeout(function(){
+                            styleCheckbox(table);
+
+                            updateActionIcons(table);
+                            updatePagerIcons(table);
+                            enableTooltips(table);
+                        }, 0);
+                    },
+
+                    editurl: "updateMonitor",//nothing is saved
+                    caption: "SimpleMonitorJob表",
+
+                    autowidth: true,
+
+
+                    /**
+                     ,
+                     grouping:true,
+                     groupingView : {
+                     groupField : ['name'],
+                     groupDataSorted : true,
+                     plusicon : 'fa fa-chevron-down bigger-110',
+                     minusicon : 'fa fa-chevron-up bigger-110'
+                },
+                     caption: "Grouping"
+                     */
+
+                });
+
+
+                //$(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
 				
 				
 			
@@ -345,11 +342,11 @@
 				//navButtons
 				jQuery(grid_selector).jqGrid('navGrid',pager_selector,
 					{ 	//navbar options
-						edit: true,
+						edit: false,
 						editicon : 'ace-icon fa fa-pencil blue',
-						add: true,
+						add: false,
 						addicon : 'ace-icon fa fa-plus-circle purple',
-						del: true,
+						del: false,
 						delicon : 'ace-icon fa fa-trash-o red',
 						search: true,
 						searchicon : 'ace-icon fa fa-search orange',

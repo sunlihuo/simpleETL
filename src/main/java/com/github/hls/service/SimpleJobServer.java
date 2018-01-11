@@ -1,12 +1,13 @@
 package com.github.hls.service;
 
 import com.github.hls.base.enums.SimpleJobEnum;
-import com.github.hls.base.task.SimpleJobTask;
+import com.github.hls.domain.BaseQueryInfo;
 import com.github.hls.domain.SimpleJobDO;
 import com.github.hls.domain.SimpleJobMonitorDO;
 import com.github.hls.mapper.SimpleJobMapper;
 import com.github.hls.mapper.SimpleJobMonitorMapper;
 import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -25,8 +26,26 @@ public class SimpleJobServer {
         simpleJobMapper.updateByPrimaryKeySelective(simpleJobDO);
     }
 
+    public void update(SimpleJobMonitorDO simpleJobMonitorDO){
+        simpleJobMonitorMapper.updateByPrimaryKeySelective(simpleJobMonitorDO);
+    }
+
     public void insert(SimpleJobDO simpleJobDO){
         simpleJobMapper.insertSelective(simpleJobDO);
+    }
+
+    public void insert(SimpleJobMonitorDO simpleJobMonitorDO){
+        simpleJobMonitorMapper.updateByPrimaryKeySelective(simpleJobMonitorDO);
+    }
+
+    public List<SimpleJobMonitorDO> queryMonitorList(SimpleJobDO simpleJobDO) {
+        final Example example = new Example(SimpleJobMonitorDO.class);
+        final Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("jobName", simpleJobDO.getJobName());
+        criteria.andEqualTo("status", simpleJobDO.getStatus());
+        example.orderBy("stampDate");
+        List<SimpleJobMonitorDO> jobList = simpleJobMonitorMapper.selectByExample(example);
+        return jobList;
     }
 
     public List<SimpleJobDO> queryJob(SimpleJobDO simpleJobDO){

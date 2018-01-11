@@ -9,9 +9,14 @@ import com.alibaba.rocketmq.common.message.Message;
 import com.alibaba.rocketmq.remoting.exception.RemotingException;
 import com.github.hls.base.enums.SimpleJobEnum;
 import com.github.hls.base.task.SimpleJobTask;
+import com.github.hls.domain.BaseQueryInfo;
 import com.github.hls.domain.SimpleJobDO;
+import com.github.hls.domain.SimpleJobMonitorDO;
 import com.github.hls.service.SimpleJobServer;
+import com.github.pagehelper.PageHelper;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -30,7 +35,9 @@ public class JobController {
     private DefaultMQProducer rocketMQProducer;
 
     @RequestMapping("/queryList")
-    public List<SimpleJobDO> queryList(SimpleJobDO simpleJobDO){
+    public List<SimpleJobDO> queryList(SimpleJobDO simpleJobDO, BaseQueryInfo queryInfo){
+        PageHelper.startPage(queryInfo.getPage(), queryInfo.getRows()); // 核心分页代码
+        //PageHelper.orderBy("inputDate desc");
         return simpleJobServer.queryJob(simpleJobDO);
     }
 
@@ -44,6 +51,25 @@ public class JobController {
             simpleJobServer.insert(simpleJobDO);
         } else {
             simpleJobServer.update(simpleJobDO);
+        }
+        return "success";
+    }
+
+    @ResponseBody
+    @RequestMapping("/queryMonitorList")
+    public List<SimpleJobMonitorDO> queryMonitorList(SimpleJobDO simpleJobDO){
+        return simpleJobServer.queryMonitorList(simpleJobDO);
+    }
+
+    @RequestMapping("/updateMonitor")
+    public String updateMonitor(SimpleJobMonitorDO simpleJobMonitorDO, String oper, String id){
+        if ("del".equalsIgnoreCase(oper)) {
+            simpleJobMonitorDO.setSimpleJobMonitorId(Long.valueOf(id));
+            simpleJobServer.update(simpleJobMonitorDO);
+        } else if ("add".equalsIgnoreCase(oper)) {
+            simpleJobServer.insert(simpleJobMonitorDO);
+        } else {
+            simpleJobServer.update(simpleJobMonitorDO);
         }
         return "success";
     }
