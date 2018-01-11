@@ -2,6 +2,13 @@
 
     <script type="text/javascript">
         try{ace.settings.loadState('sidebar')}catch(e){}
+
+        function menuOnClick(menuDoc, url) {
+            $("li.active").removeClass();
+            $(menuDoc).parent().addClass('active');
+            $("#iframepage").attr('src', url);
+        }
+        
     </script>
 
     <div class="sidebar-shortcuts" id="sidebar-shortcuts">
@@ -36,7 +43,7 @@
 
     <ul class="nav nav-list">
         <li class="active">
-            <a href="indexHtml">
+            <a onclick="menuOnClick(this, 'indexHtml')">
                 <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text"> Dashboard </span>
             </a>
@@ -56,7 +63,7 @@
 
             <ul class="submenu">
                 <li class="">
-                    <a href="simpleJobHtml">
+                    <a onclick="menuOnClick(this, 'simpleJobHtml')">
                         <i class="menu-icon fa fa-caret-right"></i>
                         SimpleJob
                     </a>
@@ -66,7 +73,7 @@
 
             <ul class="submenu">
                 <li class="">
-                    <a href="simpleJobHtml">
+                    <a onclick="menuOnClick(this, 'simpleJobHtml')">
                         <i class="menu-icon fa fa-caret-right"></i>
                         SimpleJobddd
                     </a>
