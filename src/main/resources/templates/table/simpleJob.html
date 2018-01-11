@@ -248,9 +248,9 @@
                 jQuery(grid_selector).jqGrid({
                     url: "queryList",
                     datatype: "json",
-                    height: 350,
+                    height: 550,
                     autowidth: true,
-                    colNames:['操作', '任务ID', '任务名称', '描述', '状态', '数据源类型', '入库数据源','查询SQL','检验SQL','更新SQL','入库SQL','依赖任务名','执行顺序','异常是否继续'],
+                    colNames:['操作','任务ID','任务名','描述','状态','数据源类型','入库数据源','查询SQL','检验SQL','更新SQL','入库SQL','依赖任务名','执行顺序','异常是否继续'],
                     colModel:[
                         {label:'操作',name:'simpleJobId',index:'simpleJobId', width:80, fixed:true, sortable:false, resize:false,
                             formatter:'actions',
@@ -261,10 +261,10 @@
                                 //editformbutton:true, editOptions:{recreateForm: true, beforeShowForm:beforeEditCallback}
                             }
                         },
-                        {label:'任务ID',name:'simpleJobId',index:'simpleJobId', width:60, sorttype:"int", editable: false, key:true},
+                        {label:'任务ID',name:'simpleJobId',index:'simpleJobId', width:100, sorttype:"int", editable: false, key:true},
                         {label:'任务名',name:'jobName',index:'jobName', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
                         {label:'描述',name:'description',index:'description', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
-                        {label:'状态',name:'status',index:'status',  width:90, editable: true,edittype:"select",editoptions:{value:"RUNNING:RUNNING;STOP:STOP"},unformat: aceSwitch},
+                        {label:'状态',name:'status',index:'status',  width:100, editable: true,edittype:"select",editoptions:{value:"RUNNING:RUNNING;STOP:STOP"},unformat: aceSwitch},
                         {label:'数据源类型',name:'sourceType',index:'sourceType', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
                         {label:'入库数据源',name:'upDateSource',index:'upDateSource', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
                         {label:'查询SQL',name:'selectSQL',index:'selectSQL', width:300, sortable:false,editable: true,edittype:"textarea", editoptions:{rows:"2",cols:"10"}},
@@ -301,7 +301,7 @@
                     editurl: "update",//nothing is saved
                     caption: "SimpleJob表",
 
-                    jsonReader : {
+                    //jsonReader : {
 						//root: "module",   // json中代表实际模型数据的入口
 						//page: "page",   // json中代表当前页码的数据
 						//total: "total", // json中代表页码总数的数据
@@ -315,7 +315,7 @@
 							repeatitems: true,
 							cell:"cell"
 						}*/
-                	},
+                	//},
 
                 /*prmNames : {
                     page:"page",    // 表示请求页码的参数名称
