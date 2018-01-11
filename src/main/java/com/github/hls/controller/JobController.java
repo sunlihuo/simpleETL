@@ -10,11 +10,12 @@ import com.alibaba.rocketmq.remoting.exception.RemotingException;
 import com.github.hls.base.enums.SimpleJobEnum;
 import com.github.hls.base.task.SimpleJobTask;
 import com.github.hls.domain.BaseQueryInfo;
+import com.github.hls.domain.JqGridVO;
 import com.github.hls.domain.SimpleJobDO;
 import com.github.hls.domain.SimpleJobMonitorDO;
 import com.github.hls.service.SimpleJobServer;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,10 +36,14 @@ public class JobController {
     private DefaultMQProducer rocketMQProducer;
 
     @RequestMapping("/queryList")
-    public List<SimpleJobDO> queryList(SimpleJobDO simpleJobDO, BaseQueryInfo queryInfo){
+    public JqGridVO<List<SimpleJobDO>> queryList(SimpleJobDO simpleJobDO, BaseQueryInfo queryInfo){
         PageHelper.startPage(queryInfo.getPage(), queryInfo.getRows()); // 核心分页代码
         //PageHelper.orderBy("inputDate desc");
-        return simpleJobServer.queryJob(simpleJobDO);
+
+        final Page<SimpleJobDO> simpleJobDOS = simpleJobServer.queryJob(simpleJobDO);
+
+        JqGridVO<List<SimpleJobDO>> result = new JqGridVO<>(simpleJobDOS.getResult(), simpleJobDOS);
+        return result;
     }
 
     @RequestMapping("/update")
@@ -57,8 +62,14 @@ public class JobController {
 
     @ResponseBody
     @RequestMapping("/queryMonitorList")
-    public List<SimpleJobMonitorDO> queryMonitorList(SimpleJobDO simpleJobDO){
-        return simpleJobServer.queryMonitorList(simpleJobDO);
+    public JqGridVO<List<SimpleJobMonitorDO>> queryMonitorList(SimpleJobDO simpleJobDO, BaseQueryInfo queryInfo){
+        PageHelper.startPage(queryInfo.getPage(), queryInfo.getRows()); // 核心分页代码
+        //PageHelper.orderBy("inputDate desc");
+
+        final Page<SimpleJobMonitorDO> simpleJobDOS = simpleJobServer.queryMonitorList(simpleJobDO);
+
+        JqGridVO<List<SimpleJobMonitorDO>> result = new JqGridVO<>(simpleJobDOS.getResult(), simpleJobDOS);
+        return result;
     }
 
     @RequestMapping("/updateMonitor")

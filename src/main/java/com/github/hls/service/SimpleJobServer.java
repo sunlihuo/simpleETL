@@ -6,6 +6,7 @@ import com.github.hls.domain.SimpleJobDO;
 import com.github.hls.domain.SimpleJobMonitorDO;
 import com.github.hls.mapper.SimpleJobMapper;
 import com.github.hls.mapper.SimpleJobMonitorMapper;
+import com.github.pagehelper.Page;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
@@ -38,17 +39,17 @@ public class SimpleJobServer {
         simpleJobMonitorMapper.updateByPrimaryKeySelective(simpleJobMonitorDO);
     }
 
-    public List<SimpleJobMonitorDO> queryMonitorList(SimpleJobDO simpleJobDO) {
+    public Page<SimpleJobMonitorDO> queryMonitorList(SimpleJobDO simpleJobDO) {
         final Example example = new Example(SimpleJobMonitorDO.class);
         final Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("jobName", simpleJobDO.getJobName());
         criteria.andEqualTo("status", simpleJobDO.getStatus());
         example.orderBy("stampDate");
-        List<SimpleJobMonitorDO> jobList = simpleJobMonitorMapper.selectByExample(example);
+        Page<SimpleJobMonitorDO> jobList = (Page<SimpleJobMonitorDO>) simpleJobMonitorMapper.selectByExample(example);
         return jobList;
     }
 
-    public List<SimpleJobDO> queryJob(SimpleJobDO simpleJobDO){
+    public Page<SimpleJobDO> queryJob(SimpleJobDO simpleJobDO){
         final Example example = new Example(SimpleJobDO.class);
         final Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("simpleJobId", simpleJobDO.getSimpleJobId());
@@ -57,7 +58,7 @@ public class SimpleJobServer {
         example.orderBy("jobName");
         example.orderBy("executeOrder");
         example.orderBy("stampDate");
-        List<SimpleJobDO> jobList = simpleJobMapper.selectByExample(example);
+        Page<SimpleJobDO> jobList = (Page<SimpleJobDO>) simpleJobMapper.selectByExample(example);
         return jobList;
     }
 

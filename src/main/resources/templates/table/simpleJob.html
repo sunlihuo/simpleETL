@@ -249,9 +249,10 @@
                     url: "queryList",
                     datatype: "json",
                     height: 350,
+                    autowidth: true,
                     colNames:['操作', '任务ID', '任务名称', '描述', '状态', '数据源类型', '入库数据源','查询SQL','检验SQL','更新SQL','入库SQL','依赖任务名','执行顺序','异常是否继续'],
                     colModel:[
-                        {name:'simpleJobId',index:'操作', width:80, fixed:true, sortable:false, resize:false,
+                        {label:'操作',name:'simpleJobId',index:'simpleJobId', width:80, fixed:true, sortable:false, resize:false,
                             formatter:'actions',
                             formatoptions:{
                                 keys:true,
@@ -260,19 +261,19 @@
                                 //editformbutton:true, editOptions:{recreateForm: true, beforeShowForm:beforeEditCallback}
                             }
                         },
-                        {name:'simpleJobId',index:'任务ID', width:60, sorttype:"int", editable: false, key:true},
-                        {name:'jobName',index:'任务名', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
-                        {name:'description',index:'描述', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
-                        {name:'status',index:'状态',  width:90, editable: true,edittype:"select",editoptions:{value:"RUNNING:RUNNING;STOP:STOP"},unformat: aceSwitch},
-                        {name:'sourceType',index:'数据源类型', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
-                        {name:'upDateSource',index:'入库数据源', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
-                        {name:'selectSQL',index:'查询SQL', width:300, sortable:false,editable: true,edittype:"textarea", editoptions:{rows:"2",cols:"10"}},
-                        {name:'checkExistSQL',index:'检验SQL', width:300, sortable:false,editable: true,edittype:"textarea", editoptions:{rows:"2",cols:"10"}},
-                        {name:'updateSQL',index:'更新SQL', width:250, sortable:false,editable: true,edittype:"textarea", editoptions:{rows:"2",cols:"10"}},
-                        {name:'insertSQL',index:'入库SQL', width:250, sortable:false,editable: true,edittype:"textarea", editoptions:{rows:"2",cols:"10"}},
-                        {name:'parentJobName',index:'依赖任务名', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
-                        {name:'executeOrder',index:'执行顺序', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
-                        {name:'errorGoOn',index:'异常是否继续', width:150,editable: true,editoptions:{value:"Y:Y;N:N"},unformat: aceSwitch}
+                        {label:'任务ID',name:'simpleJobId',index:'simpleJobId', width:60, sorttype:"int", editable: false, key:true},
+                        {label:'任务名',name:'jobName',index:'jobName', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
+                        {label:'描述',name:'description',index:'description', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
+                        {label:'状态',name:'status',index:'status',  width:90, editable: true,edittype:"select",editoptions:{value:"RUNNING:RUNNING;STOP:STOP"},unformat: aceSwitch},
+                        {label:'数据源类型',name:'sourceType',index:'sourceType', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
+                        {label:'入库数据源',name:'upDateSource',index:'upDateSource', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
+                        {label:'查询SQL',name:'selectSQL',index:'selectSQL', width:300, sortable:false,editable: true,edittype:"textarea", editoptions:{rows:"2",cols:"10"}},
+                        {label:'检验SQL',name:'checkExistSQL',index:'checkExistSQL', width:300, sortable:false,editable: true,edittype:"textarea", editoptions:{rows:"2",cols:"10"}},
+                        {label:'更新SQL',name:'updateSQL',index:'updateSQL', width:250, sortable:false,editable: true,edittype:"textarea", editoptions:{rows:"2",cols:"10"}},
+                        {label:'入库SQL',name:'insertSQL',index:'insertSQL', width:250, sortable:false,editable: true,edittype:"textarea", editoptions:{rows:"2",cols:"10"}},
+                        {label:'依赖任务名',name:'parentJobName',index:'parentJobName', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
+                        {label:'执行顺序',name:'executeOrder',index:'executeOrder', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
+                        {label:'异常是否继续',name:'errorGoOn',index:'errorGoOn', width:150,editable: true,editoptions:{value:"Y:Y;N:N"},unformat: aceSwitch}
                     ],
 
                     viewrecords : true,
@@ -300,10 +301,40 @@
                     editurl: "update",//nothing is saved
                     caption: "SimpleJob表",
 
-                    autowidth: true,
+                    jsonReader : {
+						//root: "module",   // json中代表实际模型数据的入口
+						//page: "page",   // json中代表当前页码的数据
+						//total: "total", // json中代表页码总数的数据
+						//records: "totalCount", // json中代表数据行总数的数据
+						//repeatitems: true, // 如果设为false，则jqGrid在解析json时，会根据name来搜索对应的数据元素（即可以json中元素可以不按顺序）；而所使用的name是来自于colModel中的name设定。
+						//cell: "cell",
+						//id: "id",
+						//userdata: "userdata",
+						/*subgrid: {
+							root:"rows",
+							repeatitems: true,
+							cell:"cell"
+						}*/
+                	},
 
+                /*prmNames : {
+                    page:"page",    // 表示请求页码的参数名称
+                    rows:"rows",    // 表示请求行数的参数名称
+                    sort: "sidx", // 表示用于排序的列名的参数名称
+                    order: "sord", // 表示采用的排序方式的参数名称
+                    search:"_search", // 表示是否是搜索请求的参数名称
+                    nd:"nd", // 表示已经发送请求的次数的参数名称
+                    id:"id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+                    oper:"oper",    // operation参数名称（我暂时还没用到）
+                    editoper:"edit", // 当在edit模式中提交数据时，操作的名称
+                    addoper:"add", // 当在add模式中提交数据时，操作的名称
+                    deloper:"del", // 当在delete模式中提交数据时，操作的名称
+                    subgridid:"id", // 当点击以载入数据到子表时，传递的数据名称
+                    npage: null,
+                    totalrows:"totalrows" // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+                }*/
 
-                    /**
+                /**
                      ,
                      grouping:true,
                      groupingView : {
