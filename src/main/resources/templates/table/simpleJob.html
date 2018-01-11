@@ -249,7 +249,7 @@
                     url: "queryList",
                     datatype: "json",
                     height: 550,
-                    colNames:['操作','任务ID','任务名称','任务名称','描述','状态','数据源类型','入库数据源','查询SQL','检验SQL','更新SQL','入库SQL','依赖任务名','执行顺序','异常是否继续'],
+                    colNames:['操作','任务ID','任务名称','描述','状态','数据源类型','入库数据源','查询SQL','检验SQL','更新SQL','入库SQL','依赖任务名','执行顺序','异常是否继续'],
                     colModel:[
                         {name:'myac',index:'', width:80, fixed:true, sortable:false, resize:false,
                             formatter:'actions',
@@ -260,9 +260,8 @@
                                 //editformbutton:true, editOptions:{recreateForm: true, beforeShowForm:beforeEditCallback}
                             }
                         },
-                        {name:'simpleJobId',index:'simpleJobId', width:60, sorttype:"int", editable: false, key:true},
-						{name:'jobName',index:'jobName', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
-                        {name:'jobName',index:'jobName', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
+                        {name:'simpleJobId',index:'simpleJobId', width:60, sorttype:"int", editable: true, key:true},
+                        {name:'jobName',index:'jobName', width:150,editable: true,edittype:"text",editoptions:{size:"20",maxlength:"30"}},
                         {name:'description',index:'description', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
                         {name:'status',index:'status', width:90, editable: true,edittype:"select",editoptions:{value:"RUNNING:RUNNING;STOP:STOP"},unformat: aceSwitch},
                         {name:'sourceType',index:'sourceType', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
