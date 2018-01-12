@@ -44,6 +44,8 @@
 		<script src="assets/js/html5shiv.min.js"></script>
 		<script src="assets/js/respond.min.js"></script>
 		<![endif]-->
+		<script src="jqGridExport/jqGridtoExcel.js"></script>
+
 	</head>
 
 <body class="no-skin">
@@ -157,7 +159,7 @@
 						</div><!-- /.page-header -->
 
 						<div class="row">
-							<div class="col-xs-12">
+							<div id="col-id" class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
 								<div class="alert alert-info">
 									<button class="close" data-dismiss="alert">
@@ -168,7 +170,12 @@
 									Please note that demo server is not configured to save the changes, therefore you may see an error message.
 								</div>
 
+								<iframe id="HideFrm" style="display: none"></iframe>
+								<button id="export" value="导出">导出</button>
+
 								<table id="grid-table"></table>
+
+
 
 								<div id="grid-pager"></div>
 
@@ -245,6 +252,11 @@
 				})
 				*/
 
+                var caption = "SimpleJob表";
+                $("#export").click(function() {
+                    jqGridtoExcel($("#col-id"),$("#grid-table"),caption);
+                });
+
                 jQuery(grid_selector).jqGrid({
                     url: "queryList",
                     datatype: "json",
@@ -298,7 +310,7 @@
                     },
 
                     editurl: "update",//nothing is saved
-                    caption: "SimpleJob表",
+                    caption: caption,
 
                     autowidth: true,
 
@@ -580,6 +592,11 @@
 					$('.navtable .ui-pg-button').tooltip({container:'body'});
 					$(table).find('.ui-pg-div').tooltip({container:'body'});
 				}
+
+                /*导出Excel*/
+                function exportExcel() {
+                	ExportJQGridDataToExcel('#grid-table', 'ccc.xlsx');
+                }
 			
 				//var selr = jQuery(grid_selector).jqGrid('getGridParam','selrow');
 			
