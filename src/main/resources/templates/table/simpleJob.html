@@ -253,7 +253,7 @@
                                 //editformbutton:true, editOptions:{recreateForm: true, beforeShowForm:beforeEditCallback}
                             }
                         },
-                        {name:'simpleJobId',index:'simpleJobId', width:60, sorttype:"int", editable: true, key:true},
+                        {name:'simpleJobId',index:'simpleJobId', width:90, sorttype:"int", editable: true, key:true},
                         {name:'jobName',index:'jobName', width:150,editable: true,edittype:"text",editoptions:{size:"20",maxlength:"30"}},
                         {name:'description',index:'description', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
                         {name:'status',index:'status', width:90, editable: true,edittype:"select",editoptions:{value:"RUNNING:RUNNING;STOP:STOP"},unformat: aceSwitch},
@@ -265,7 +265,7 @@
                         {name:'insertSQL',index:'insertSQL', width:250, sortable:false,editable: true,edittype:"textarea", editoptions:{rows:"2",cols:"10"}},
                         {name:'parentJobName',index:'parentJobName', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
                         {name:'executeOrder',index:'executeOrder', width:150,editable: true,editoptions:{size:"20",maxlength:"30"}},
-                        {name:'errorGoOn',index:'errorGoOn', width:150,editable: true,edittype:"select",editoptions:{value:"Y:Y;N:N"},unformat: aceSwitch}
+                        {name:'errorGoOn',index:'errorGoOn', width:150,editable: true,edittype:"checkbox",editoptions:{value:"Y:N"},unformat: aceSwitch}
                     ],
 
                     viewrecords : true,

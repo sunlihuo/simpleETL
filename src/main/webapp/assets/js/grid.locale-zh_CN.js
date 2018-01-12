@@ -81,7 +81,12 @@ $.extend($.jgrid,{
         alertcap: "注意",
         alerttext: "请选择记录",
         viewtext: "",
-        viewtitle: "查看所选记录"
+        viewtitle: "查看所选记录",
+        savetext: "",
+        savetitle: "保存行",
+        canceltext: "",
+        canceltitle: "取消",
+        selectcaption: "操作中..."
     },
     col : {
         caption: "选择列",
