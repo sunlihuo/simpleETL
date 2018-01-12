@@ -95,11 +95,10 @@
     };
 
 
-    window.jqGridtoExcel = function(Table,Tal,fileName) {
+    window.jqGridtoExcel = function(Tal,fileName) {
 
         var tableStr = '<table border="1"><thead>{thead}</thead>{tbody}</table>';
 
-        //var thtr = Table.children("div:eq(1)").children("div").children("table").children("thead").children('tr');//获取jqgrid的表头tr
         var thtr = $("#gview_grid-table").children("div.ui-jqgrid-hdiv")
             .children("div.ui-jqgrid-hbox").children("table")
             .children("thead").children('tr');//获取jqgrid的表头tr
