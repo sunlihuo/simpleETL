@@ -4,6 +4,6 @@ import com.github.hls.domain.SimpleJobMonitorDO;
 import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
 
-@Repository("simpleJobStatusMapper")
+@Repository
 public interface SimpleJobMonitorMapper extends Mapper<SimpleJobMonitorDO> {
 }
