@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    druid:
+      oldmain:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://ip:3306/db?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+        username: root
+        password: 123456
+        max-active: 30
+        min-idle: 5
+        max-wait: 10000
+        validation-query: "SELECT X"
+      store:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://ip:3306/db?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+        username: root
+        password: 123456
+        max-active: 30
+        min-idle: 5
+        max-wait: 10000
+        validation-query: "SELECT X"
+      datacenter:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://ip:3306/db?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+        username: root
+        password: 123456
+        max-active: 30
+        min-idle: 5
+        max-wait: 10000
+        validation-query: "SELECT X"
