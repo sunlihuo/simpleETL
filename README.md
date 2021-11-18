@@ -4,61 +4,8 @@
 
 支持多数据源查询，多数据源入库，支持集群，父子任务依赖
 ```
-#### SimpleJob表
-
-|字段|类型|说明&备注|
-|--------| --------|--------|
-|simpleJobId|int(11)|主键|
-|jobName|varchar(50)|任务名称|
-|description|varchar(1000)|描述|
-|sourceType|varchar(50)|数据源类型，mysql,hive|
-|upDateSource|varchar(50)|更新数据源类型|
-|selectSQL|varchar(5000)|查询SQL|
-|checkExistSQL|varchar(1000)|校对记录是否存在|
-|updateSQL|varchar(5000)|修改SQL|
-|insertSQL|varchar(5000)|insert SQL|
-|status|varchar(500)|状态，RUNNING 运行，PAUSE 暂停|
-|executeOrder|int(11)|执行顺序|
-|errorGoOn|varchar(255)|异常是否继续,Y 继续，N 不再接下去进行|
-|parentJobName|varchar(255)|依赖父任务|
-|inputDate|datetime|录入时间|
-|updateTime|datetime|记录修改时间|
-|stampDate|timestamp|记录更新时间|
-
-#### SimpleJobMonitor表
-
-|字段| 类型|说明&备注 |
-|-------- | -------- | -------- |
-|simpleJobMonitorId|int(11)|主键|
-|simpleJobId|int(19)|SimpleJobId|
-|jobName|varchar(50)|任务名称|
-|description|varchar(1000)|描述|
-|status|varchar(150)|是否成功|
-|parentJobName|varchar(255)|依赖父任务|
-|inputDate|datetime|录入时间|
-|updateTime|datetime|记录修改时间|
-|stampDate|timestamp|记录更新时间|
-
-
 * sourceType
 
-```
-    @Getter
-    public static enum SOURCE_TYPE {
-        section_value("sectionValueStrategy"),//分段sql,提取共同部分
-        mysql("mysqlStrategy"),//本地库
-        auto_mysql("autoMysqlStrategy"),//从本地中查询，自动生成insert,update语句
-        midDataMart("midMysqlStrategy"),//中间库
-        auto_midDataMart("autoMidMysqlStrategy"),//从中间库中查询，自动生成insert,update语句
-        clear_mid_mysql("clearMidMysqlStrategy"),//查询中间库是否存在，存在 就清表
-
-        private String beanName;
-
-        SOURCE_TYPE(String beanName) {
-            this.beanName = beanName;
-        }
-    }
-```
 
 * sql自动生成：
 ```
