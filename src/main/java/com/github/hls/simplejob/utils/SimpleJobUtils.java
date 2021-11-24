@@ -12,6 +12,9 @@ import java.util.regex.Pattern;
 
 public class SimpleJobUtils {
 
+    private final static Pattern replaceSqlPattern = Pattern.compile("\\#(.*?)\\#");//正则表达式，取#和#之间的字符串，不包括#和#
+    private final static Pattern check2NULLPattern = Pattern.compile("\\'\\#(.*?)\\#\\'");//正则表达式，取#和#之间的字符串，不包括#和#
+
     /**
      * 分段参数
      */
@@ -49,8 +52,8 @@ public class SimpleJobUtils {
         if (defaultValue == null) {
             defaultValue = "0";
         }
-        Pattern p = Pattern.compile("\\#(.*?)\\#");//正则表达式，取#和#之间的字符串，不包括#和#
-        Matcher m = p.matcher(sql);
+        //Pattern p = Pattern.compile("\\#(.*?)\\#");//正则表达式，取#和#之间的字符串，不包括#和#
+        Matcher m = replaceSqlPattern.matcher(sql);
         while (m.find()) {
             String key = m.group(0);//m.group(1)不包括这两个字符
             Object value = map.get(m.group(1));
@@ -66,8 +69,8 @@ public class SimpleJobUtils {
     }
 
     public static String check2NULL(String sql) {
-        Pattern p = Pattern.compile("\\'\\#(.*?)\\#\\'");//正则表达式，取#和#之间的字符串，不包括#和#
-        Matcher m = p.matcher(sql);
+        //Pattern p = Pattern.compile("\\'\\#(.*?)\\#\\'");//正则表达式，取#和#之间的字符串，不包括#和#
+        Matcher m = check2NULLPattern.matcher(sql);
         while (m.find()) {
             String key = m.group(0);//m.group(1)不包括这两个字符
             sql = sql.replaceAll(key, "NULL");
