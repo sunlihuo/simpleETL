@@ -24,12 +24,9 @@ import static com.github.hls.simplejob.utils.SimpleJobUtils.transList2Map;
 public class SimpleJobTask {
 
     @Resource
-    SimpleJobStrategy autoStrategy;
-    @Resource
     SimpleJobStrategy sectionValueStrategy;
     @Resource
-    SimpleJobStrategy normalStrategy;
-    ;
+    SimpleJobStrategy autoPageStrategy;
 
     @Resource
     private SimpleJobService simpleJobService;
@@ -81,12 +78,9 @@ public class SimpleJobTask {
                         if ("sectionValueStrategy".equalsIgnoreCase(beanName)) {
                             sectionValueStrategy.setProducer(producer);
                             sectionValueStrategy.handle(simpleJob);
-                        } else if ("autoStrategy".equalsIgnoreCase(beanName)) {
-                            autoStrategy.setProducer(producer);
-                            autoStrategy.handle(simpleJob);
-                        } else if ("normalStrategy".equalsIgnoreCase(beanName)) {
-                            normalStrategy.setProducer(producer);
-                            normalStrategy.handle(simpleJob);
+                        } else if ("autoPageStrategy".equalsIgnoreCase(beanName)) {
+                            autoPageStrategy.setProducer(producer);
+                            autoPageStrategy.handle(simpleJob);
                         }
 
                     } catch (Exception e) {

@@ -14,7 +14,6 @@ public class SimpleJobUtils {
 
     private final static Pattern replaceSqlPattern = Pattern.compile("\\#(.*?)\\#");//正则表达式，取#和#之间的字符串，不包括#和#
     private final static Pattern check2NULLPattern = Pattern.compile("\\'\\#(.*?)\\#\\'");//正则表达式，取#和#之间的字符串，不包括#和#
-
     /**
      * 分段参数
      */
@@ -40,6 +39,18 @@ public class SimpleJobUtils {
         }
         return sql;
     }
+
+    /**
+     * 分页总数查询sql
+     * @param sql
+     * @return
+     */
+    public static String getCountSql(String sql){
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT count(1) FROM(").append(sql).append(")a");
+        return sb.toString();
+    }
+
 
     /**
      * 替换分段参数

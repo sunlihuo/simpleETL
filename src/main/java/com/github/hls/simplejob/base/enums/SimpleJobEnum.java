@@ -16,8 +16,8 @@ public class SimpleJobEnum {
     @Getter
     public static enum SOURCE_TYPE {
         section_value("sectionValueStrategy"),//分段sql,提取共同部分
-        mysql("normalStrategy"),
-        auto_mysql("autoStrategy");
+        mysql("autoPageStrategy"),
+        auto_mysql("autoPageStrategy");
 
         private String beanName;
 

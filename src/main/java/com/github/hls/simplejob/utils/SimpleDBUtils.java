@@ -1,5 +1,6 @@
 package com.github.hls.simplejob.utils;
 
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.ArrayHandler;
@@ -16,12 +17,12 @@ import java.util.Map;
 
 /**
  * 园区通数据入库工具类
- * @author sunlihuo
  *
+ * @author sunlihuo
  */
 @Slf4j
 public class SimpleDBUtils {
-	
+
 	public static void insert(DataSource dataSource, String tableName, Map<String, Object> map) {
 		String[] insertFileds = map.keySet().toArray(new String[]{});
 		String sql = buildInsertSQL(tableName, insertFileds);
@@ -30,25 +31,25 @@ public class SimpleDBUtils {
 		try {
 			sqlRunner.insert(sql, new ScalarHandler<Long>(), params.toArray());
 		} catch (SQLException e) {
-			log.error("sqlRunner.insert error ",e);
+			log.error("sqlRunner.insert error ", e);
 		}
 	}
-	
+
 	private static void update(DataSource dataSource, String tableName, Map<String, Object> map, String idName, long id) {
 		String[] insertFileds = map.keySet().toArray(new String[]{});
 		String sql = buildUpdateSQL(tableName, insertFileds, idName);
-		
+
 		List<Object> params = getParams(insertFileds, map);
 		params.add(id);
-		
+
 		try {
 			QueryRunner sqlRunner = new QueryRunner(dataSource);
 			sqlRunner.update(sql, params.toArray());
 		} catch (SQLException e) {
-			log.error("sqlRunner.update error ",e);
+			log.error("sqlRunner.update error ", e);
 		}
 	}
-	
+
 	public static String buildInsertSQL(String tableName, String[] insertFileds) {
 		StringBuffer insertSB = new StringBuffer("INSERT INTO ");
 		// 表字段
@@ -67,97 +68,112 @@ public class SimpleDBUtils {
 		insertSB.append(")");
 		return insertSB.toString();
 	}
-	
-	private static String buildUpdateSQL(String tableName, String[] insertFileds, String idName){
+
+	private static String buildUpdateSQL(String tableName, String[] insertFileds, String idName) {
 		StringBuffer updateDB = new StringBuffer("update " + tableName + " set ");
 		getValueOrWhere(updateDB, insertFileds, ", ");
 		updateDB.append("where " + idName + " = ?");
 		return updateDB.toString();
 	}
-	
-	private static String buildSelectSQL(String tableName, String idName, String[] insertFileds){
+
+	private static String buildSelectSQL(String tableName, String idName, String[] insertFileds) {
 		StringBuffer sBuilder = new StringBuffer("select ");
 		sBuilder.append(idName).append(" from ").append(tableName).append(" where ");
-        getValueOrWhere(sBuilder, insertFileds, "and ");
+		getValueOrWhere(sBuilder, insertFileds, "and ");
 		return sBuilder.toString();
 	}
 
-	private static Object[] queryIsExist(String table, String idName, DataSource dataSource, Map<String, Object> whereMap){
+	private static Object[] queryIsExist(String table, String idName, DataSource dataSource, Map<String, Object> whereMap) {
 		String[] insertFileds = whereMap.keySet().toArray(new String[]{});
 		List<Object> params = getParams(insertFileds, whereMap);
-		
+
 		QueryRunner sqlRunner = new QueryRunner(dataSource);
-        String sql = buildSelectSQL(table, idName, insertFileds);
-        Object[] result = null;
+		String sql = buildSelectSQL(table, idName, insertFileds);
+		Object[] result = null;
 		try {
 			result = sqlRunner.query(sql, new ArrayHandler(), params.toArray());
 		} catch (SQLException e) {
-			log.error("sqlRunner.query error ",e);
+			log.error("sqlRunner.query error ", e);
 		}
 		return result;
 	}
-	
-	private static void getValueOrWhere(StringBuffer sBuffers, String[] insertFileds, String connector){
+
+	private static void getValueOrWhere(StringBuffer sBuffers, String[] insertFileds, String connector) {
 		for (int i = 0; i < insertFileds.length; i++) {
 			if (i == insertFileds.length - 1) {
 				//最后一次
-				sBuffers.append(insertFileds[i] + " = ? ");
+				sBuffers.append(insertFileds[i]).append(" = ? ");
 			} else {
-				sBuffers.append(insertFileds[i] + " = ? " + connector);
+				sBuffers.append(insertFileds[i]).append(" = ? ").append(connector);
 			}
 		}
 	}
 
-	public static List<Object> getParams(String[] insertFileds, Map<String, Object> map){
+	public static List<Object> getParams(String[] insertFileds, Map<String, Object> map) {
 		List<Object> paramsList = new ArrayList<>();
 		for (String key : insertFileds) {
 			paramsList.add(map.get(key));
 		}
 		return paramsList;
-		
+
 	}
 
-	public static List<Map<String, Object>> queryListMap(String sql, DataSource dataSource){
+	public static List<Map<String, Object>> queryListMap(String sql, DataSource dataSource) {
 		QueryRunner sqlRunner = new QueryRunner(dataSource);
 		List<Map<String, Object>> result = null;
 		try {
-			result = sqlRunner.query(sql, new MapListHandler(), new Object[]{});
+			result = sqlRunner.query(sql, new MapListHandler());
 		} catch (SQLException e) {
-			log.error("sqlRunner.queryListMap error ",e);
+			log.error("sqlRunner.queryListMap error ", e);
 		}
 		return result;
 	}
-	public static Map<String, Object> queryMap(String sql, DataSource dataSource){
+
+	public static List<Map<String, Object>> queryListMapPage(String sql, DataSource dataSource, int offset, int limit) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(sql).append(" LIMIT ").append(offset).append(",").append(limit);
+		String limitSql = sb.toString();
 		QueryRunner sqlRunner = new QueryRunner(dataSource);
-		Map<String, Object> result = null;
+		List<Map<String, Object>> result = null;
 		try {
-			result = sqlRunner.query(sql, new MapHandler(), new Object[]{});
+			result = sqlRunner.query(limitSql, new MapListHandler());
 		} catch (SQLException e) {
-			log.error("sqlRunner.queryMap error ",e);
+			log.error("sqlRunner.queryListMap error ", e);
 		}
 		return result;
 	}
-	
-	public static Long queryCount(String sql, DataSource dataSource){
+
+	public static Map<String, Object> queryMap(String sql, DataSource dataSource) {
 		QueryRunner sqlRunner = new QueryRunner(dataSource);
 		Map<String, Object> result = null;
 		try {
-			result = sqlRunner.query(sql, new MapHandler(), new Object[]{});
+			result = sqlRunner.query(sql, new MapHandler());
+		} catch (SQLException e) {
+			log.error("sqlRunner.queryMap error ", e);
+		}
+		return result;
+	}
+
+	public static Integer queryCount(String sql, DataSource dataSource) {
+		QueryRunner sqlRunner = new QueryRunner(dataSource);
+		Map<String, Object> result = null;
+		try {
+			result = sqlRunner.query(sql, new MapHandler());
 			Object object = result.values().iterator().next();
-			return Long.valueOf(String.valueOf(object));
+			return Integer.valueOf(String.valueOf(object));
 		} catch (SQLException e) {
-			log.error("sqlRunner.queryCount error ",e);
+			log.error("sqlRunner.queryCount error ", e);
 		}
-		return 0L;
+		return 0;
 	}
-	
-	public static boolean checkIsExist(String sql, DataSource dataSource){
+
+	public static boolean checkIsExist(String sql, DataSource dataSource) {
 		QueryRunner sqlRunner = new QueryRunner(dataSource);
 		Object[] result = null;
 		try {
-			result = sqlRunner.query(sql, new ArrayHandler(), new Object[]{});
+			result = sqlRunner.query(sql, new ArrayHandler());
 		} catch (SQLException e) {
-			log.error("sqlRunner.query error ",e);
+			log.error("sqlRunner.query error ", e);
 		}
 		if (null == result || result.length == 0) {
 			return false;
@@ -176,8 +192,8 @@ public class SimpleDBUtils {
 
 		return false;
 	}
-	
-	public static void insert(String sql, DataSource dataSource){
+
+	public static void insert(String sql, DataSource dataSource) {
 		if (StringUtils.isBlank(sql)) {
 			log.debug("sqlRunner.insert sql is null");
 			return;
@@ -186,11 +202,11 @@ public class SimpleDBUtils {
 		try {
 			sqlRunner.insert(sql, new ScalarHandler<Long>());
 		} catch (SQLException e) {
-			log.error("sqlRunner.insert error ",e);
+			log.error("sqlRunner.insert error ", e);
 		}
 	}
-	
-	public static void update(String sql, DataSource dataSource){
+
+	public static void update(String sql, DataSource dataSource) {
 		if (StringUtils.isBlank(sql)) {
 			log.debug("sqlRunner.update sql is null");
 			return;
@@ -199,7 +215,7 @@ public class SimpleDBUtils {
 		try {
 			sqlRunner.update(sql);
 		} catch (SQLException e) {
-			log.error("sqlRunner.update error ",e);
+			log.error("sqlRunner.update error ", e);
 		}
 	}
 
