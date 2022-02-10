@@ -1,21 +1,29 @@
 package com.github.hls.simplejob.base.disruptor.info;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.concurrent.CountDownLatch;
 
-@Getter@Setter
-public class CheckUpInInfo {
-	private String checkExistSql;//检查更新的
-	private String updateSql;//更新
-	private String insertSql;//插入
+@Data
+public class DataInfo {
+	/**校验是否存在*/
+	private String checkExistSql;
+	/**更新*/
+	private String updateSql;
+	/**插入*/
+	private String insertSql;
+	/**任务id*/
 	private Long skynetJobId;
+	/**CountDownLatch*/
 	private CountDownLatch latch;
+	/**批量(0),校验_插入_更新(1),删除(2);*/
 	private int handleType;
-	private String batchSql;//批量入库SQL
-	private Object[][] batchParams;//批量入库参数
-	private String upDateSource;//更新数据源
+	/**批量入库SQL*/
+	private String batchSql;
+	/**批量入库参数*/
+	private Object[][] batchParams;
+	/**更新数据源*/
+	private String upDateSource;
 
 	public void empty() {
 		checkExistSql = null;

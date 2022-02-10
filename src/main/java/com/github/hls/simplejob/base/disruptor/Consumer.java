@@ -1,8 +1,8 @@
 package com.github.hls.simplejob.base.disruptor;
 
+import com.github.hls.simplejob.base.disruptor.info.DBTypeEnum;
 import com.lmax.disruptor.WorkHandler;
-import com.github.hls.simplejob.base.disruptor.info.CheckUpInInfo;
-import com.github.hls.simplejob.base.disruptor.info.HandleType;
+import com.github.hls.simplejob.base.disruptor.info.DataInfo;
 import com.github.hls.simplejob.utils.SimpleDBUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.QueryRunner;
@@ -18,7 +18,7 @@ import javax.sql.DataSource;
  * @author sunlihuo
  */
 @Slf4j
-public class Consumer implements WorkHandler<CheckUpInInfo> {
+public class Consumer implements WorkHandler<DataInfo> {
 
 	private DataSource datacenterDataSource;
 
@@ -28,16 +28,16 @@ public class Consumer implements WorkHandler<CheckUpInInfo> {
 	}
 
 	@Override
-	public void onEvent(CheckUpInInfo info) throws Exception {
+	public void onEvent(DataInfo info) throws Exception {
 		String sql = "";
 		DataSource targetDatesource = this.datacenterDataSource;
 		
 		try {
-			if (HandleType.BATCH_HANDLE == info.getHandleType()) {
+			if (DBTypeEnum.批量.getCode() == info.getHandleType()) {
 				QueryRunner sqlRunner = new QueryRunner(targetDatesource);
 				sql = info.getBatchSql();
 				sqlRunner.insertBatch(sql, new ScalarHandler<Long>(), info.getBatchParams());
-			} else if (HandleType.CKUPIN_HANDLE == info.getHandleType()){
+			} else if (DBTypeEnum.校验_插入_更新.getCode() == info.getHandleType()){
 				sql = info.getCheckExistSql();
 				if (SimpleDBUtils.checkIsExist(sql, targetDatesource)) {
 					// 大于零的场合执行update语句
@@ -49,7 +49,7 @@ public class Consumer implements WorkHandler<CheckUpInInfo> {
 					SimpleDBUtils.insert(sql, targetDatesource);
 				}
 				
-			} else if (HandleType.DELETE_HANDLE == info.getHandleType()) {
+			} else if (DBTypeEnum.删除.getCode() == info.getHandleType()) {
 				sql = info.getUpdateSql();
 				SimpleDBUtils.update(sql, targetDatesource);
 			} else {

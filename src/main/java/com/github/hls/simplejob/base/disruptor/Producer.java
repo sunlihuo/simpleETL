@@ -1,8 +1,8 @@
 package com.github.hls.simplejob.base.disruptor;
 
+import com.github.hls.simplejob.base.disruptor.info.DBTypeEnum;
 import com.lmax.disruptor.RingBuffer;
-import com.github.hls.simplejob.base.disruptor.info.CheckUpInInfo;
-import com.github.hls.simplejob.base.disruptor.info.HandleType;
+import com.github.hls.simplejob.base.disruptor.info.DataInfo;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -14,9 +14,9 @@ import java.util.concurrent.CountDownLatch;
  */
 public class Producer {
 
-	private final RingBuffer<CheckUpInInfo> ringBuffer;
+	private final RingBuffer<DataInfo> ringBuffer;
 	
-	public Producer(RingBuffer<CheckUpInInfo> ringBuffer){
+	public Producer(RingBuffer<DataInfo> ringBuffer){
 		this.ringBuffer = ringBuffer;
 	}
 	
@@ -29,7 +29,7 @@ public class Producer {
 		long sequence = ringBuffer.next();
 		try {
 			//用上面的索引取出一个空的事件用于填充（获取该序号对应的事件对象）
-			CheckUpInInfo task = ringBuffer.get(sequence);
+			DataInfo task = ringBuffer.get(sequence);
 			//获取要通过事件传递的业务数据
 			task.setCheckExistSql(checkExistSql);
 			task.setUpdateSql(updateSql);
@@ -46,15 +46,15 @@ public class Producer {
 		}
 	}
 	public void onDataDel(String updateSql, Long skynetJobId, CountDownLatch latch){
-		onData(null, updateSql, null, skynetJobId, latch, HandleType.DELETE_HANDLE, null, null);
+		onData(null, updateSql, null, skynetJobId, latch, DBTypeEnum.删除.getCode(), null, null);
 	}
 
 	public void onUpInData(String checkExistSql, String updateSql, String insertSql, Long skynetJobId, CountDownLatch latch){
-		onData(checkExistSql, updateSql, insertSql, skynetJobId, latch, HandleType.CKUPIN_HANDLE, null, null);
+		onData(checkExistSql, updateSql, insertSql, skynetJobId, latch, DBTypeEnum.校验_插入_更新.getCode(), null, null);
 	}
 
 	public void onBatchData(String batchSql, Object[][] batchParams, CountDownLatch latch){
-		onData(null, null, null, null, latch, HandleType.BATCH_HANDLE, batchSql, batchParams);
+		onData(null, null, null, null, latch, DBTypeEnum.批量.getCode(), batchSql, batchParams);
 	}
 	
 }

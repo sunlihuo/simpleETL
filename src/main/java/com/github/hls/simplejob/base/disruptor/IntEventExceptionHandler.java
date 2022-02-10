@@ -1,14 +1,14 @@
 package com.github.hls.simplejob.base.disruptor;
 
 import com.lmax.disruptor.ExceptionHandler;
-import com.github.hls.simplejob.base.disruptor.info.CheckUpInInfo;
+import com.github.hls.simplejob.base.disruptor.info.DataInfo;
 import lombok.extern.slf4j.Slf4j;
 
 
 @Slf4j
-public class IntEventExceptionHandler implements ExceptionHandler<CheckUpInInfo> {
+public class IntEventExceptionHandler implements ExceptionHandler<DataInfo> {
 
-	public void handleEventException(Throwable ex, long sequence, CheckUpInInfo event) {
+	public void handleEventException(Throwable ex, long sequence, DataInfo event) {
 		log.error("handleEventException", ex);
 	}
 

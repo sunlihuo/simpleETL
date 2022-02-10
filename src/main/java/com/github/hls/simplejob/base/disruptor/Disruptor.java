@@ -3,7 +3,7 @@ package com.github.hls.simplejob.base.disruptor;
 
 import com.lmax.disruptor.*;
 import com.lmax.disruptor.dsl.ProducerType;
-import com.github.hls.simplejob.base.disruptor.info.CheckUpInInfo;
+import com.github.hls.simplejob.base.disruptor.info.DataInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -24,16 +24,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 @Component
 public class Disruptor {
-    private RingBuffer<CheckUpInInfo> ringBuffer;
+    private RingBuffer<DataInfo> ringBuffer;
 
     private static final int CONSUMER_SIZE = 10;
     private Producer producer;
-    private WorkerPool<CheckUpInInfo> workerPool;
+    private WorkerPool<DataInfo> workerPool;
     private ExecutorService executor;
     /**引用记数*/
     private final AtomicInteger callCount = new AtomicInteger(0);
 
-    public WorkerPool<CheckUpInInfo> getWorkerPool() {
+    public WorkerPool<DataInfo> getWorkerPool() {
         return workerPool;
     }
 
@@ -73,7 +73,7 @@ public class Disruptor {
         log.info("==========disruptor.drainAndHalt()============");
     }
 
-    public RingBuffer<CheckUpInInfo> getRingBuffer() {
+    public RingBuffer<DataInfo> getRingBuffer() {
         return ringBuffer;
     }
 
@@ -82,10 +82,10 @@ public class Disruptor {
         // 创建缓冲池
         executor = Executors.newFixedThreadPool(CONSUMER_SIZE);
         // 创建工厂
-        EventFactory<CheckUpInInfo> factory = new EventFactory<CheckUpInInfo>() {
+        EventFactory<DataInfo> factory = new EventFactory<DataInfo>() {
             @Override
-            public CheckUpInInfo newInstance() {
-                return new CheckUpInInfo();
+            public DataInfo newInstance() {
+                return new DataInfo();
             }
         };
         // 创建bufferSize ,也就是RingBuffer大小，必须是2的N次方
@@ -102,7 +102,7 @@ public class Disruptor {
             consumers[i] = new Consumer(datacenterDataSource);
         }
 
-        workerPool = new WorkerPool<CheckUpInInfo>(ringBuffer, barriers,
+        workerPool = new WorkerPool<DataInfo>(ringBuffer, barriers,
                 new IntEventExceptionHandler(), consumers);
 
         ringBuffer.addGatingSequences(workerPool.getWorkerSequences());
