@@ -43,7 +43,7 @@ public class SimpleJobEntity {
     private String parentJobName;
     @ApiModelProperty(value="记录更新时间", required=false)
     private Date gmtUpdate;
-    @ApiModelProperty(value="This field corresponds to the database column simple_job.gmt_create", required=false)
+    @ApiModelProperty(value="创建时间", required=false)
     private Date gmtCreate;
     @ApiModelProperty(value="0 未删除， 1 已删除", required=false)
     private Boolean isDel;

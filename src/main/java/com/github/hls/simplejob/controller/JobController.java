@@ -5,11 +5,9 @@ import com.github.hls.simplejob.domain.SimpleJobEntity;
 import com.github.hls.simplejob.service.SimpleJobService;
 import com.github.hls.simplejob.utils.SimpleJobUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @RequestMapping("/simplejob")
 @RestController
@@ -28,7 +26,7 @@ public class JobController {
 
     @RequestMapping("/update")
     public String update(SimpleJobEntity simpleJobDO, String password){
-        if (!"453JGHg#dl5fe".equals(password)) {
+        if (!"fewf14#653#g".equals(password)) {
             return "error";
         }
         simpleJobService.updateById(simpleJobDO);
@@ -37,7 +35,7 @@ public class JobController {
 
     @RequestMapping("/job")
     public String job(SimpleJobEntity simpleJobDO, String password){
-        if (!"453JGHg#dl5fe".equals(password)) {
+        if (!"fewf14#653#g".equals(password)) {
             return "password error";
         }
 

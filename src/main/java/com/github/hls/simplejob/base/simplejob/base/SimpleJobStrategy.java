@@ -92,7 +92,7 @@ public abstract class SimpleJobStrategy {
                 updateSql = getReplaceSql(updateSql, oneRecordMap, 0);
             }
             String insertSql = getReplaceSql(job.getInsertSql(), oneRecordMap, 0);
-            producer.onUpInData(checkExistSQL, updateSql, insertSql, job.getSimpleJobId(), latch);
+            producer.sendUpIn(checkExistSQL, updateSql, insertSql, job.getSimpleJobId(), latch);
 
         }
         try {
@@ -234,7 +234,7 @@ public abstract class SimpleJobStrategy {
                     log.info("deleteSql = {}", deleteSql);
 
                     CountDownLatch latch = new CountDownLatch(1);
-                    producer.onDataDel(deleteSql,job.getSimpleJobId(), latch);
+                    producer.sendDel(deleteSql,job.getSimpleJobId(), latch);
                     try {
                         latch.await(120, TimeUnit.MINUTES);
                     } catch (InterruptedException e) {

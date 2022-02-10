@@ -16,13 +16,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 园区通数据入库工具类
+ * QueryRunner DB工具类
  *
  * @author sunlihuo
  */
 @Slf4j
 public class SimpleDBUtils {
 
+	/**
+	 * 插入
+	 * @param dataSource
+	 * @param tableName
+	 * @param map
+	 */
 	public static void insert(DataSource dataSource, String tableName, Map<String, Object> map) {
 		String[] insertFileds = map.keySet().toArray(new String[]{});
 		String sql = buildInsertSQL(tableName, insertFileds);
@@ -35,6 +41,14 @@ public class SimpleDBUtils {
 		}
 	}
 
+	/**
+	 * 更新
+	 * @param dataSource
+	 * @param tableName
+	 * @param map
+	 * @param idName
+	 * @param id
+	 */
 	private static void update(DataSource dataSource, String tableName, Map<String, Object> map, String idName, long id) {
 		String[] insertFileds = map.keySet().toArray(new String[]{});
 		String sql = buildUpdateSQL(tableName, insertFileds, idName);
@@ -50,6 +64,12 @@ public class SimpleDBUtils {
 		}
 	}
 
+	/**
+	 * 生成插入sql
+	 * @param tableName
+	 * @param insertFileds
+	 * @return
+	 */
 	public static String buildInsertSQL(String tableName, String[] insertFileds) {
 		StringBuffer insertSB = new StringBuffer("INSERT INTO ");
 		// 表字段
@@ -69,6 +89,13 @@ public class SimpleDBUtils {
 		return insertSB.toString();
 	}
 
+	/**
+	 * 生成更新sql
+	 * @param tableName
+	 * @param insertFileds
+	 * @param idName
+	 * @return
+	 */
 	private static String buildUpdateSQL(String tableName, String[] insertFileds, String idName) {
 		StringBuffer updateDB = new StringBuffer("update " + tableName + " set ");
 		getValueOrWhere(updateDB, insertFileds, ", ");
@@ -76,6 +103,13 @@ public class SimpleDBUtils {
 		return updateDB.toString();
 	}
 
+	/**
+	 * 生成查询sql
+	 * @param tableName
+	 * @param idName
+	 * @param insertFileds
+	 * @return
+	 */
 	private static String buildSelectSQL(String tableName, String idName, String[] insertFileds) {
 		StringBuffer sBuilder = new StringBuffer("select ");
 		sBuilder.append(idName).append(" from ").append(tableName).append(" where ");
@@ -83,6 +117,14 @@ public class SimpleDBUtils {
 		return sBuilder.toString();
 	}
 
+	/**
+	 * 校验是否存在
+	 * @param table
+	 * @param idName
+	 * @param dataSource
+	 * @param whereMap
+	 * @return
+	 */
 	private static Object[] queryIsExist(String table, String idName, DataSource dataSource, Map<String, Object> whereMap) {
 		String[] insertFileds = whereMap.keySet().toArray(new String[]{});
 		List<Object> params = getParams(insertFileds, whereMap);
@@ -118,6 +160,12 @@ public class SimpleDBUtils {
 
 	}
 
+	/**
+	 * 查询
+	 * @param sql
+	 * @param dataSource
+	 * @return
+	 */
 	public static List<Map<String, Object>> queryListMap(String sql, DataSource dataSource) {
 		QueryRunner sqlRunner = new QueryRunner(dataSource);
 		List<Map<String, Object>> result = null;
@@ -129,6 +177,14 @@ public class SimpleDBUtils {
 		return result;
 	}
 
+	/**
+	 * 分页查询
+	 * @param sql
+	 * @param dataSource
+	 * @param offset
+	 * @param limit
+	 * @return
+	 */
 	public static List<Map<String, Object>> queryListMapPage(String sql, DataSource dataSource, int offset, int limit) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(sql).append(" LIMIT ").append(offset).append(",").append(limit);
@@ -143,6 +199,12 @@ public class SimpleDBUtils {
 		return result;
 	}
 
+	/**
+	 * 查询单行
+	 * @param sql
+	 * @param dataSource
+	 * @return
+	 */
 	public static Map<String, Object> queryMap(String sql, DataSource dataSource) {
 		QueryRunner sqlRunner = new QueryRunner(dataSource);
 		Map<String, Object> result = null;
@@ -154,6 +216,12 @@ public class SimpleDBUtils {
 		return result;
 	}
 
+	/**
+	 * 查询count
+	 * @param sql
+	 * @param dataSource
+	 * @return
+	 */
 	public static Integer queryCount(String sql, DataSource dataSource) {
 		QueryRunner sqlRunner = new QueryRunner(dataSource);
 		Map<String, Object> result = null;
@@ -167,6 +235,12 @@ public class SimpleDBUtils {
 		return 0;
 	}
 
+	/**
+	 * 校验是否存在
+	 * @param sql
+	 * @param dataSource
+	 * @return
+	 */
 	public static boolean checkIsExist(String sql, DataSource dataSource) {
 		QueryRunner sqlRunner = new QueryRunner(dataSource);
 		Object[] result = null;
@@ -193,6 +267,11 @@ public class SimpleDBUtils {
 		return false;
 	}
 
+	/**
+	 * 插入
+	 * @param sql
+	 * @param dataSource
+	 */
 	public static void insert(String sql, DataSource dataSource) {
 		if (StringUtils.isBlank(sql)) {
 			log.debug("sqlRunner.insert sql is null");
@@ -206,6 +285,11 @@ public class SimpleDBUtils {
 		}
 	}
 
+	/**
+	 * 更新
+	 * @param sql
+	 * @param dataSource
+	 */
 	public static void update(String sql, DataSource dataSource) {
 		if (StringUtils.isBlank(sql)) {
 			log.debug("sqlRunner.update sql is null");

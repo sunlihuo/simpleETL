@@ -79,6 +79,11 @@ public class SimpleJobUtils {
         return check2NULL(sql);
     }
 
+    /**
+     * 填充NULL
+     * @param sql
+     * @return
+     */
     public static String check2NULL(String sql) {
         //Pattern p = Pattern.compile("\\'\\#(.*?)\\#\\'");//正则表达式，取#和#之间的字符串，不包括#和#
         Matcher m = check2NULLPattern.matcher(sql);
@@ -89,6 +94,11 @@ public class SimpleJobUtils {
         return sql;
     }
 
+    /**
+     * list转map
+     * @param list
+     * @return
+     */
     public static Map<String, List<SimpleJobEntity>> transList2Map(List<SimpleJobEntity> list) {
         Map<String, List<SimpleJobEntity>> map = new HashMap<>();
         for (SimpleJobEntity simpleJobDO : list) {

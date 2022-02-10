@@ -41,9 +41,6 @@ public class QueryRunnerUtils {
 		String[] insertFileds = null;
 		for (int i = 0; i < resultList.size(); i++) {
 			Map<String, Object> valueMap = resultList.get(i);
-//			if (!valueMap.containsKey("isDelete")) {
-//				valueMap.put("isDelete", "NO");
-//			}
 			
 			if (!isInit) {
 				insertFileds = valueMap.keySet().toArray(new String[]{});
@@ -55,7 +52,7 @@ public class QueryRunnerUtils {
 
 			k++;
 			if (k == ROWS) {
-				producer.onBatchData(sql, params, latch);
+				producer.sendBatch(sql, params, latch);
 				k = 0;
 				params  = new Object[ROWS][];
 			} else if (i == (resultSize - 1)) {
@@ -63,7 +60,7 @@ public class QueryRunnerUtils {
 				for (int j = 0; j < lastResultSize; j++) {
 					LastParams[j] = params[j];
 				}
-				producer.onBatchData(sql, LastParams, latch);
+				producer.sendBatch(sql, LastParams, latch);
 			}
 		}
 		

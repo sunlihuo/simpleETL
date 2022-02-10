@@ -45,15 +45,15 @@ public class Producer {
 			ringBuffer.publish(sequence);
 		}
 	}
-	public void onDataDel(String updateSql, Long skynetJobId, CountDownLatch latch){
+	public void sendDel(String updateSql, Long skynetJobId, CountDownLatch latch){
 		onData(null, updateSql, null, skynetJobId, latch, DBTypeEnum.删除.getCode(), null, null);
 	}
 
-	public void onUpInData(String checkExistSql, String updateSql, String insertSql, Long skynetJobId, CountDownLatch latch){
+	public void sendUpIn(String checkExistSql, String updateSql, String insertSql, Long skynetJobId, CountDownLatch latch){
 		onData(checkExistSql, updateSql, insertSql, skynetJobId, latch, DBTypeEnum.校验_插入_更新.getCode(), null, null);
 	}
 
-	public void onBatchData(String batchSql, Object[][] batchParams, CountDownLatch latch){
+	public void sendBatch(String batchSql, Object[][] batchParams, CountDownLatch latch){
 		onData(null, null, null, null, latch, DBTypeEnum.批量.getCode(), batchSql, batchParams);
 	}
 	
