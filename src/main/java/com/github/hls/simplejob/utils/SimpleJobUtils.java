@@ -22,7 +22,17 @@ public class SimpleJobUtils {
     /**
      * 系统参数
      */
-    public final static Map<String, String> sysParam = new HashMap<>();
+    private final static Map<String, String> sysParam = new HashMap<>();
+
+    public static void putSysParam(String k, String v){
+        if (StringUtils.isEmpty(k) || StringUtils.isEmpty(v)) {
+            return;
+        }
+        SimpleJobUtils.sysParam.put(k, v);
+    }
+    public static void clearSysParam(){
+        SimpleJobUtils.sysParam.clear();
+    }
 
     /**
      * 替换系统参数
