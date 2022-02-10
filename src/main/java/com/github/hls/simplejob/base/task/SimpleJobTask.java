@@ -8,6 +8,7 @@ import com.github.hls.simplejob.base.simplejob.base.SimpleJobStrategy;
 import com.github.hls.simplejob.domain.SimpleJobEntity;
 import com.github.hls.simplejob.service.SimpleJobService;
 import com.github.hls.simplejob.utils.DateUtils;
+import com.github.hls.simplejob.utils.SimpleJobUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -100,6 +101,7 @@ public class SimpleJobTask {
                     log.info("结束第{}个任务, jobId:{},jobName:{},耗时:{}", i, simpleJob.getSimpleJobId(), simpleJob.getJobName(), DateUtils.dateDiff(current, System.currentTimeMillis()));
                     simpleJobService.subtractStatus(simpleJob);
                 }
+                SimpleJobUtils.sectionList.clear();
 
                 if (isSuccess) {
                     //一组任务完成
