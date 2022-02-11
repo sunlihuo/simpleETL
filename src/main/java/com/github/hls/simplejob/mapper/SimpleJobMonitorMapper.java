@@ -1,7 +1,7 @@
 package com.github.hls.simplejob.mapper;
 
-import org.springframework.stereotype.Repository;
+import org.apache.ibatis.annotations.Mapper;
 
-@Repository
+@Mapper
 public interface SimpleJobMonitorMapper {
 }
