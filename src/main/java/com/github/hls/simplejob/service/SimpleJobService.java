@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.hls.simplejob.domain.SimpleJobEntity;
 import com.github.hls.simplejob.mapper.SimpleJobMapper;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -41,8 +42,8 @@ public class SimpleJobService extends ServiceImpl<SimpleJobMapper, SimpleJobEnti
      * @param simpleJob
      */
     public void subtractStatus(SimpleJobEntity simpleJob){
-        if (simpleJob.getStatus().longValue() >= 1L) {
-            Long status = simpleJob.getStatus();
+        if (simpleJob.getStatus().intValue() >= 1) {
+            Integer status = simpleJob.getStatus();
             status--;
             simpleJob.setStatus(status);
             this.updateById(simpleJob);
