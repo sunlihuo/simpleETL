@@ -33,18 +33,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
-			<!--<exclusions>-->
-				<!--<exclusion>-->
-					<!--<groupId>org.apache.tomcat</groupId>-->
-					<!--<artifactId>tomcat-jdbc</artifactId>-->
-				<!--</exclusion>-->
-			<!--</exclusions>-->
-		</dependency>
-		<!-- 引入Druid依赖 -->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>druid</artifactId>
-			<version>1.1.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -55,11 +43,6 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>tk.mybatis</groupId>
-			<artifactId>mapper</artifactId>
-			<version>3.4.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>

@@ -81,7 +81,7 @@ public class SimpleJobTask {
                         }
 
                         log.error("SimpleJobTask error", e);
-                        if (!"Y".equalsIgnoreCase(simpleJob.getErrorGoOn())) {
+                        if (simpleJob.getErrorGoOn() == 1) {
                             break;
                         }
                     }
