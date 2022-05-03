@@ -2,10 +2,10 @@ package com.github.hls.simplejob.base.task;
 
 import com.github.hls.simplejob.base.disruptor.Disruptor;
 import com.github.hls.simplejob.base.disruptor.Producer;
-import com.github.hls.simplejob.base.enums.SimpleJobEnum;
 import com.github.hls.simplejob.base.exception.DependenceException;
 import com.github.hls.simplejob.base.simplejob.base.SimpleJobStrategy;
 import com.github.hls.simplejob.domain.SimpleJobEntity;
+import com.github.hls.simplejob.base.enums.HandleTypeEnum;
 import com.github.hls.simplejob.service.SimpleJobService;
 import com.github.hls.simplejob.utils.DateUtils;
 import com.github.hls.simplejob.utils.SimpleJobUtils;
@@ -67,11 +67,10 @@ public class SimpleJobTask {
                     Long current = System.currentTimeMillis();
                     log.info("开始第{}个任务,jobId:{},jobName:{},sourceType:{}", ++i, simpleJob.getSimpleJobId(), simpleJob.getJobName(), simpleJob.getHandleType());
                     try {
-                        String beanName = SimpleJobEnum.SOURCE_TYPE.valueOf(simpleJob.getHandleType()).getBeanName();
-                        if ("sectionValueStrategy".equalsIgnoreCase(beanName)) {
+                        if (HandleTypeEnum.分段_参数.getCode().equals(simpleJob.getHandleType())) {
                             sectionValueStrategy.setProducer(producer);
                             sectionValueStrategy.handle(simpleJob);
-                        } else if ("autoPageStrategy".equalsIgnoreCase(beanName)) {
+                        } else{
                             autoPageStrategy.setProducer(producer);
                             autoPageStrategy.handle(simpleJob);
                         }

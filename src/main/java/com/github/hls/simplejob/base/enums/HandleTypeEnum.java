@@ -1,9 +1,11 @@
-package com.github.hls.simplejob.enums;
+package com.github.hls.simplejob.base.enums;
 
 public enum HandleTypeEnum {
     正常("normal"),
     自动SQL("auto"),
-    批量("batch");
+    批量("batch"),
+
+    分段_参数("section_value");
 
     private String code;
 

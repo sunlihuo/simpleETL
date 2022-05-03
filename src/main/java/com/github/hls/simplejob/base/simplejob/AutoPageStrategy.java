@@ -2,7 +2,7 @@ package com.github.hls.simplejob.base.simplejob;
 
 import com.github.hls.simplejob.base.simplejob.base.SimpleJobStrategy;
 import com.github.hls.simplejob.domain.SimpleJobEntity;
-import com.github.hls.simplejob.enums.HandleTypeEnum;
+import com.github.hls.simplejob.base.enums.HandleTypeEnum;
 import com.github.hls.simplejob.utils.SimpleDBUtils;
 import com.github.hls.simplejob.utils.SimpleJobUtils;
 import lombok.extern.slf4j.Slf4j;
