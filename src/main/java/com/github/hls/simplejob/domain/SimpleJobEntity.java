@@ -29,6 +29,8 @@ public class SimpleJobEntity {
     private String selectSql;
     @ApiModelProperty(value="校对记录是否存在", required=false)
     private String checkExistSql;
+    @ApiModelProperty(value="批量SQL", required=false)
+    private String batchSql;
     @ApiModelProperty(value="修改SQL", required=false)
     private String updateSql;
     @ApiModelProperty(value="insert SQL", required=false)

@@ -7,6 +7,7 @@ import com.github.hls.simplejob.utils.SimpleDBBatchUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -73,7 +74,7 @@ public abstract class SimpleJobStrategy {
      * @param job
      * @param recordList
      */
-    protected void doCheckUpIn(SimpleJobEntity job, List<Map<String, Object>> recordList) {
+    public void doCheckUpIn(SimpleJobEntity job, List<Map<String, Object>> recordList) {
         if (null == recordList || recordList.size() == 0) {
             log.error("jobId:{},jobName:{}, 没有可操作数据", job.getSimpleJobId(), job.getJobName());
             return;
@@ -113,7 +114,7 @@ public abstract class SimpleJobStrategy {
      * @param job
      * @param recordList
      */
-    private void doAutoCheckUpIn(SimpleJobEntity job, List<Map<String, Object>> recordList) {
+    public void doAutoCheckUpIn(SimpleJobEntity job, List<Map<String, Object>> recordList) {
         if (null == recordList || recordList.size() == 0) {
             log.error("jobId:{},jobName:{}, 没有可操作数据", job.getSimpleJobId(), job.getJobName());
             return;
@@ -154,7 +155,6 @@ public abstract class SimpleJobStrategy {
                 String key = entry.getKey();
                 if (i == 0) {
                     i++;
-//                    upSql.append("isDelete=").append("'NO',");
                     upSql.append(key).append("='#").append(key).append("#'");
                 } else {
                     upSql.append(",").append(key).append("='#").append(key).append("#'");
@@ -175,8 +175,6 @@ public abstract class SimpleJobStrategy {
             String key = entry.getKey();
             if (i == 0) {
                 i++;
-//                columnSql.append("isDelete,");
-//                valuesSql.append("'NO',");
                 columnSql.append(key);
                 valuesSql.append("'#").append(key).append("#'");
             } else {
@@ -195,37 +193,29 @@ public abstract class SimpleJobStrategy {
 
     /**
      * 批量删除 并 批量插入
-     * @param job
-     * @param isAuto
-     * @param resultList
-     * @param sectionMap
      */
-    protected void doBatchOrSelUpIn(SimpleJobEntity job, boolean isAuto, List<Map<String, Object>> resultList, Map<String, Object> sectionMap) {
-
-        if (null == resultList || resultList.size() == 0) {
+    public void doBatch(SimpleJobEntity job, List<Map<String, Object>> resultList, Map<String, Object> sectionMap) {
+        if (CollectionUtils.isEmpty(resultList)) {
             log.error("jobId:{},jobName:{}, 没有可操作数据", job.getSimpleJobId(), job.getJobName());
             return;
         }
 
-        String checkSql = job.getCheckExistSql();
-        String insertTable = "";
-        String deleteWhere = "";
+        String batchSql = job.getBatchSql();
         //批量入库流程
-        if (checkSql.contains(BATCH_UPPERCASE_STR) || checkSql.contains(BATCH_LOWERCASE_STR)) {
+        if (batchSql.contains(BATCH_UPPERCASE_STR) || batchSql.contains(BATCH_LOWERCASE_STR)) {
             try {
-                String €_ = checkSql.split("€_")[1];
-                insertTable = €_.split("_€")[0];
+                String €_ = batchSql.split("€_")[1];
+                String insertTable = €_.split("_€")[0];
                 //batch€_表_isInsert='WHD'
                 int count = 0;
                 Pattern p = Pattern.compile("_");
-                Matcher m = p.matcher(checkSql);
+                Matcher m = p.matcher(batchSql);
                 while (m.find()) {
                     count++;
                 }
 
                 if (count >= 2) {
-                    deleteWhere = checkSql.split("_€")[1];
-                    //deleteWhere = deleteWhere.substring(deleteWhere.indexOf("_") + 1);
+                    String deleteWhere = batchSql.split("_€")[1];
                     if (null != sectionMap) {
                         deleteWhere = getReplaceSql(deleteWhere, sectionMap, 0);
                     }
@@ -247,12 +237,7 @@ public abstract class SimpleJobStrategy {
                 log.error("insertTable = checkSql.split(_)[1]; error", e);
             }
         } else {
-            //普通流程
-            if (isAuto) {
-                doAutoCheckUpIn(job, resultList);
-            } else {
-                doCheckUpIn(job, resultList);
-            }
+            log.error("BatchSQL 格式错误参考: batch€_unimall_user_daily_€where table_source='oldmain'");
         }
     }
 

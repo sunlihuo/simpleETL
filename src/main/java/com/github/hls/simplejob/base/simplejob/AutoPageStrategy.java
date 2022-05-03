@@ -2,6 +2,7 @@ package com.github.hls.simplejob.base.simplejob;
 
 import com.github.hls.simplejob.base.simplejob.base.SimpleJobStrategy;
 import com.github.hls.simplejob.domain.SimpleJobEntity;
+import com.github.hls.simplejob.enums.HandleTypeEnum;
 import com.github.hls.simplejob.utils.SimpleDBUtils;
 import com.github.hls.simplejob.utils.SimpleJobUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -48,26 +49,29 @@ public class AutoPageStrategy extends SimpleJobStrategy {
     /**
      * 自动分页
      */
-    private void autoPage(SimpleJobEntity simpleJob, DataSource dataSource, String sql, Integer total, Integer offset, Integer limit) {
+    private void autoPage(SimpleJobEntity job, DataSource dataSource, String sql, Integer total, Integer offset, Integer limit) {
         if (total == 0) {
-            log.error("jobId:{},jobName:{}, 没有可操作数据", simpleJob.getSimpleJobId(), simpleJob.getJobName());
+            log.error("jobId:{},jobName:{}, 没有可操作数据", job.getSimpleJobId(), job.getJobName());
             return;
         }
         if (offset > total) {
             return;
         }
-        log.info("自动分页,Job:{},名称:{},total:{},offset:{},limit:{}", simpleJob.getSimpleJobId(), simpleJob.getJobName(), total, offset, limit);
+        log.info("自动分页,Job:{},名称:{},total:{},offset:{},limit:{}", job.getSimpleJobId(), job.getJobName(), total, offset, limit);
 
         List<Map<String, Object>> resultList = SimpleDBUtils.queryListMapPage(sql, dataSource, offset, limit);
-        if ("auto_mysql".equals(simpleJob.getHandleType())) {
-            //自动生成 插入或更新sql
-            doBatchOrSelUpIn(simpleJob, true, resultList, null);
-        } else if("mysql".equals(simpleJob.getHandleType())) {
+
+        if (HandleTypeEnum.正常.getCode().equals(job.getHandleType())) {
             //正常模式 校验 更新 插入
-            doCheckUpIn(simpleJob, resultList);
+            doCheckUpIn(job, resultList);
+        } else if (HandleTypeEnum.自动SQL.getCode().equals(job.getHandleType())) {
+            doAutoCheckUpIn(job, resultList);
+        } else if (HandleTypeEnum.批量.getCode().equals(job.getHandleType())) {
+            doBatch(job, resultList, null);
         }
+
         offset += limit;
         //递归
-        autoPage(simpleJob, dataSource, sql, total, offset, limit);
+        autoPage(job, dataSource, sql, total, offset, limit);
     }
 }
