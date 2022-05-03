@@ -9,6 +9,7 @@ import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -46,8 +47,9 @@ public class SimpleJobService extends ServiceImpl<SimpleJobMapper, SimpleJobEnti
             Integer status = simpleJob.getStatus();
             status--;
             simpleJob.setStatus(status);
-            this.updateById(simpleJob);
         }
+        simpleJob.setGmtRunning(LocalDateTime.now());
+        this.updateById(simpleJob);
     }
 
 }

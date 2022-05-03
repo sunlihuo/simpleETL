@@ -50,6 +50,8 @@ public class SimpleJobEntity {
     private LocalDateTime gmtCreate;
     @ApiModelProperty(value="0 未删除， 1 已删除", required=false)
     private Integer isDel;
+    @ApiModelProperty(value="最后执行时间", required=false)
+    private LocalDateTime gmtRunning;
 
 }
 
