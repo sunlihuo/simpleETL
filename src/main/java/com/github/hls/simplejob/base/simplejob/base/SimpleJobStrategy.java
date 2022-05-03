@@ -25,8 +25,17 @@ import static com.github.hls.simplejob.utils.SimpleJobUtils.getReplaceSql;
 @Data
 public abstract class SimpleJobStrategy {
 
+    /**
+     * 批量标识
+     */
     private static final String BATCH_LOWERCASE_STR = "batch€_";
+    /**
+     * 批量标识
+     */
     private static final String BATCH_UPPERCASE_STR = "BATCH€_";
+    /**
+     * 强制不更新标识
+     */
     private static final String NOUP_STR = "noup€";
 
     @Resource
@@ -36,6 +45,9 @@ public abstract class SimpleJobStrategy {
     @Resource
     private DataSource storeDataSource;
 
+    /**
+     * 多线程
+     */
     private Producer producer;
 
     /**
@@ -137,7 +149,7 @@ public abstract class SimpleJobStrategy {
         table = table.trim();
         //String tableId = table.substring(0, 1).toLowerCase() + table.substring(1, table.length()) + "Id";
         String tableId = "id";
-        log.info("========table="+table+";tableId="+tableId);
+        log.info("========目标表={};主健={}", table, tableId);
 
         Map<String, Object> map = recordList.get(0);
 
