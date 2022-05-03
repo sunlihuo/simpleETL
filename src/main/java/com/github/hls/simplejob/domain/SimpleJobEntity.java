@@ -21,8 +21,8 @@ public class SimpleJobEntity {
     private String jobName;
     @ApiModelProperty(value="描述", required=false)
     private String description;
-    @ApiModelProperty(value="数据源类型，mysql,hive", required=false)
-    private String sourceType;
+    @ApiModelProperty(value="处理方式类型，normal auto batch batch_clear", required=false)
+    private String handleType;
     @ApiModelProperty(value="来源数据源类型", required=false)
     private String sourceDb;
     @ApiModelProperty(value="查询SQL", required=false)
