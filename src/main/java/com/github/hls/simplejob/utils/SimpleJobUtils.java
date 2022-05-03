@@ -113,7 +113,7 @@ public class SimpleJobUtils {
         Map<String, List<SimpleJobEntity>> map = new HashMap<>();
         for (SimpleJobEntity simpleJobDO : list) {
             if (map.get(simpleJobDO.getJobName()) == null) {
-                map.put(simpleJobDO.getJobName(), new ArrayList<SimpleJobEntity>());
+                map.put(simpleJobDO.getJobName(), new ArrayList<>());
             }
             map.get(simpleJobDO.getJobName()).add(simpleJobDO);
         }

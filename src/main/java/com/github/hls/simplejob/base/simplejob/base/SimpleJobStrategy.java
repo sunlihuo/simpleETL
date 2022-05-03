@@ -3,7 +3,7 @@ package com.github.hls.simplejob.base.simplejob.base;
 
 import com.github.hls.simplejob.base.disruptor.Producer;
 import com.github.hls.simplejob.domain.SimpleJobEntity;
-import com.github.hls.simplejob.utils.QueryRunnerUtils;
+import com.github.hls.simplejob.utils.SimpleDBBatchUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -242,7 +242,7 @@ public abstract class SimpleJobStrategy {
                     }
                 }
 
-                QueryRunnerUtils.insertBatchByDisruptor(producer, resultList, insertTable);
+                SimpleDBBatchUtils.insertBatchByDisruptor(producer, resultList, insertTable);
             } catch (Exception e) {
                 log.error("insertTable = checkSql.split(_)[1]; error", e);
             }

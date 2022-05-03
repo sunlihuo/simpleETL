@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  *
  */
 @Slf4j
-public class QueryRunnerUtils {
+public class SimpleDBBatchUtils {
 	/**每几行分批入库*/
 	private static final int ROWS = 10;
 	

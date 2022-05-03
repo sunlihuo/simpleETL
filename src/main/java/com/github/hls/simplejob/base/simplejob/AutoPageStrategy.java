@@ -59,10 +59,10 @@ public class AutoPageStrategy extends SimpleJobStrategy {
         log.info("自动分页,Job:{},名称:{},total:{},offset:{},limit:{}", simpleJob.getSimpleJobId(), simpleJob.getJobName(), total, offset, limit);
 
         List<Map<String, Object>> resultList = SimpleDBUtils.queryListMapPage(sql, dataSource, offset, limit);
-        if ("auto_mysql".equals(simpleJob.getSourceType())) {
+        if ("auto_mysql".equals(simpleJob.getHandleType())) {
             //自动生成 插入或更新sql
             doBatchOrSelUpIn(simpleJob, true, resultList, null);
-        } else if("mysql".equals(simpleJob.getSourceType())) {
+        } else if("mysql".equals(simpleJob.getHandleType())) {
             //正常模式 校验 更新 插入
             doCheckUpIn(simpleJob, resultList);
         }

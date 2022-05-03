@@ -15,6 +15,12 @@ import java.util.List;
 public class SimpleJobService extends ServiceImpl<SimpleJobMapper, SimpleJobEntity> {
 
 
+    /**
+     * 查询需要执行的任务
+     * @param simpleJobEntity
+     * @param admin
+     * @return
+     */
     public List<SimpleJobEntity> queryRunningJob(SimpleJobEntity simpleJobEntity, String admin){
         LambdaQueryWrapper<SimpleJobEntity> query = Wrappers.lambdaQuery();
         query.eq(simpleJobEntity.getSimpleJobId()!= null, SimpleJobEntity::getSimpleJobId, simpleJobEntity.getSimpleJobId());
@@ -27,6 +33,13 @@ public class SimpleJobService extends ServiceImpl<SimpleJobMapper, SimpleJobEnti
         return jobList;
     }
 
+    /**
+     * 减一次使用
+     * -1为永远执行
+     * 0不执行
+     * 2表示可执行2次
+     * @param simpleJob
+     */
     public void subtractStatus(SimpleJobEntity simpleJob){
         if (simpleJob.getStatus().longValue() >= 1L) {
             Long status = simpleJob.getStatus();

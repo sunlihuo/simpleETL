@@ -25,16 +25,13 @@ import static com.github.hls.simplejob.utils.SimpleJobUtils.transList2Map;
 public class SimpleJobTask {
 
     @Resource
-    SimpleJobStrategy sectionValueStrategy;
+    private SimpleJobStrategy sectionValueStrategy;
     @Resource
-    SimpleJobStrategy autoPageStrategy;
-
+    private SimpleJobStrategy autoPageStrategy;
     @Resource
     private SimpleJobService simpleJobService;
     @Resource
     private Disruptor disruptor;
-//    @Resource
-//    private DependenceTask dependenceTask;
 
     /**
      * 任务执行
@@ -60,22 +57,17 @@ public class SimpleJobTask {
             long countCurrent = System.currentTimeMillis();
             int i = 0;
             final Map<String, List<SimpleJobEntity>> simpleJobMap = transList2Map(simpleJobList);
-
             log.info("开始执行任务{}", simpleJobMap.values().size());
 
             final Iterator<List<SimpleJobEntity>> iterator = simpleJobMap.values().iterator();
             while (iterator.hasNext()) {
-                boolean isSuccess = true;
                 List<SimpleJobEntity> jobList = iterator.next();
 
                 for (SimpleJobEntity simpleJob : jobList) {
                     Long current = System.currentTimeMillis();
-                    log.info("开始第{}个任务,jobId:{},jobName:{},sourceType:{}", ++i, simpleJob.getSimpleJobId(), simpleJob.getJobName(), simpleJob.getSourceType());
+                    log.info("开始第{}个任务,jobId:{},jobName:{},sourceType:{}", ++i, simpleJob.getSimpleJobId(), simpleJob.getJobName(), simpleJob.getHandleType());
                     try {
-                        //dependenceTask.isNotKeepGoing(simpleJob);
-
-                        String beanName = SimpleJobEnum.SOURCE_TYPE.valueOf(simpleJob.getSourceType()).getBeanName();
-//                        SimpleJobStrategy simpleJobStrategy = SpringUtil.getBean(beanName);
+                        String beanName = SimpleJobEnum.SOURCE_TYPE.valueOf(simpleJob.getHandleType()).getBeanName();
                         if ("sectionValueStrategy".equalsIgnoreCase(beanName)) {
                             sectionValueStrategy.setProducer(producer);
                             sectionValueStrategy.handle(simpleJob);
@@ -85,14 +77,11 @@ public class SimpleJobTask {
                         }
 
                     } catch (Exception e) {
-                        isSuccess = false;
                         if (e instanceof DependenceException) {
-                            //simpleJobService.insertJobMonitor(jobList.get(0), "waiting");
                             break;
                         }
 
                         log.error("SimpleJobTask error", e);
-                        //simpleJobService.insertJobMonitor(jobList.get(0), "waiting");
                         if (!"Y".equalsIgnoreCase(simpleJob.getErrorGoOn())) {
                             break;
                         }
@@ -102,14 +91,6 @@ public class SimpleJobTask {
                     simpleJobService.subtractStatus(simpleJob);
                 }
                 SimpleJobUtils.sectionList.clear();
-
-                if (isSuccess) {
-                    //一组任务完成
-                    //simpleJobService.insertJobMonitor(jobList.get(0), "success");
-                    //每组完成后，依赖子任务触发
-                    //dependenceTask.handleWaitingSimpleJob(jobList.get(0));
-                }
-
             }
 
             log.info("结束任务, 耗时:{}", DateUtils.dateDiff(countCurrent, System.currentTimeMillis()));
@@ -118,8 +99,5 @@ public class SimpleJobTask {
         } finally {
             disruptor.drainAndHalt();
         }
-
     }
-
-
 }
