@@ -3,6 +3,7 @@ package com.github.hls.simplejob.utils;
 import com.github.hls.simplejob.domain.SimpleJobEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,6 +59,10 @@ public class SimpleJobUtils {
      * @return
      */
     public static String getSectionValueReplaceSql(String sql, Map<String, Object> map, Object defaultValue) {
+        if (map==null || CollectionUtils.isEmpty(map.keySet())) {
+            return sql;
+        }
+
         if (defaultValue == null) {
             defaultValue = "0";
         }
@@ -84,6 +89,10 @@ public class SimpleJobUtils {
      */
     public static String getSysValueReplaceSql(String sql) {
         Map<String, String> sysValueMap = SimpleJobUtils.sysParam;
+        if (CollectionUtils.isEmpty(sysValueMap.keySet())) {
+            return sql;
+        }
+
         //Pattern p = Pattern.compile("\\#(.*?)\\#");//正则表达式，取#和#之间的字符串，不包括#和#
         Matcher m = replaceSqlPattern.matcher(sql);
         while (m.find()) {
