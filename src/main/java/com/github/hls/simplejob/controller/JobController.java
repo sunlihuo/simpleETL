@@ -49,10 +49,8 @@ public class JobController {
             return "password error";
         }
         sectionValueStrategy.doHandle(simpleJobEntity, datacenterDataSource);
-
-        SimpleJobUtils.putSysParam(simpleJobRO.getSourceValue(), simpleJobRO.getTargetValue());
         simpleJobTask.handleHttp(simpleJobEntity, "admin");
-        SimpleJobUtils.clearSysParam();
+
         /*new Thread(() -> simpleJobTask.handleHttp(simpleJobDO));*/
         return "success";
     }

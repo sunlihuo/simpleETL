@@ -46,8 +46,8 @@ public class SimpleJobTask {
      */
     public boolean handleHttp(SimpleJobEntity job, String admin) {
         List<SimpleJobEntity> sysValueRunningJobList = simpleJobService.querySysValueRunningJob(job);
-        if (CollectionUtils.isEmpty(sysValueRunningJobList)) {
-
+        if (!CollectionUtils.isEmpty(sysValueRunningJobList)) {
+            handleSysValue(sysValueRunningJobList);
         }
 
         final List<SimpleJobEntity> jobList = simpleJobService.queryRunningJob(job, admin);

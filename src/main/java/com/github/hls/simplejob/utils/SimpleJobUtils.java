@@ -1,6 +1,7 @@
 package com.github.hls.simplejob.utils;
 
 import com.github.hls.simplejob.domain.SimpleJobEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Slf4j
 public class SimpleJobUtils {
 
     private final static Pattern replaceSqlPattern = Pattern.compile("\\#(.*?)\\#");//正则表达式，取#和#之间的字符串，不包括#和#
@@ -29,9 +31,11 @@ public class SimpleJobUtils {
             return;
         }
         SimpleJobUtils.sysParam.put(k, v);
+        log.info("======全局参数:{}", sysParam);
     }
     public static void clearSysParam(){
         SimpleJobUtils.sysParam.clear();
+        log.info("======全局参数清空======");
     }
 
     /**
