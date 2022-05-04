@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.hls.simplejob.base.enums.HandleTypeEnum;
 import com.github.hls.simplejob.domain.SimpleJobEntity;
 import com.github.hls.simplejob.mapper.SimpleJobMapper;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
-@Service("simpleJobService")
+@Service
 public class SimpleJobService extends ServiceImpl<SimpleJobMapper, SimpleJobEntity> {
 
 
