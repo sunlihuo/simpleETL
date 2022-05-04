@@ -8,11 +8,14 @@ import com.github.hls.simplejob.domain.SimpleJobEntity;
 import com.github.hls.simplejob.base.enums.HandleTypeEnum;
 import com.github.hls.simplejob.service.SimpleJobService;
 import com.github.hls.simplejob.utils.DateUtils;
+import com.github.hls.simplejob.utils.SimpleDBUtils;
 import com.github.hls.simplejob.utils.SimpleJobUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -32,22 +35,49 @@ public class SimpleJobTask {
     private SimpleJobService simpleJobService;
     @Resource
     private Disruptor disruptor;
+    @Resource
+    private DataSource datacenterDataSource;
 
     /**
      * 任务执行
-     * @param simpleJobDO
+     * @param job
      * @param admin 不为空时可以执行任何job
      * @return
      */
-    public boolean handleHttp(SimpleJobEntity simpleJobDO, String admin) {
-        final List<SimpleJobEntity> simpleJobS = simpleJobService.queryRunningJob(simpleJobDO, admin);
-        if (simpleJobS == null || simpleJobS.size() == 0) {
+    public boolean handleHttp(SimpleJobEntity job, String admin) {
+        List<SimpleJobEntity> sysValueRunningJobList = simpleJobService.querySysValueRunningJob(job);
+        if (CollectionUtils.isEmpty(sysValueRunningJobList)) {
+
+        }
+
+        final List<SimpleJobEntity> jobList = simpleJobService.queryRunningJob(job, admin);
+        if (CollectionUtils.isEmpty(jobList)){
             log.error("simplejob is null");
             return false;
         }
 
-        handleJob(simpleJobS);
+        handleJob(jobList);
         return true;
+    }
+
+    /**
+     * 全局参数
+     * @param jobList
+     */
+    public void handleSysValue(List<SimpleJobEntity> jobList) {
+        if (CollectionUtils.isEmpty(jobList)) {
+            return;
+        }
+
+        SimpleJobUtils.clearSysParam();
+        jobList.stream().forEach(m->{
+            List<Map<String, Object>> maps = SimpleDBUtils.queryListMap(m.getSelectSql(), datacenterDataSource);
+            maps.stream().forEach(map->{
+                map.keySet().stream().forEach(key->{
+                    SimpleJobUtils.putSysParam(key, map.get(key)==null?"":String.valueOf(map.get(key)));
+                });
+            });
+        });
     }
 
     public void handleJob(List<SimpleJobEntity> simpleJobList) {
@@ -89,7 +119,7 @@ public class SimpleJobTask {
                     log.info("结束第{}个任务, jobId:{},jobName:{},耗时:{}", i, simpleJob.getSimpleJobId(), simpleJob.getJobName(), DateUtils.dateDiff(current, System.currentTimeMillis()));
                     simpleJobService.subtractStatus(simpleJob);
                 }
-                SimpleJobUtils.sectionList.clear();
+                SimpleJobUtils.sectionValueList.clear();
             }
 
             log.info("结束任务, 耗时:{}", DateUtils.dateDiff(countCurrent, System.currentTimeMillis()));

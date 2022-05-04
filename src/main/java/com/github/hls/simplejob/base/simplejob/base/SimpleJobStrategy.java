@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.github.hls.simplejob.utils.SimpleJobUtils.getReplaceSql;
+import static com.github.hls.simplejob.utils.SimpleJobUtils.getSectionValueReplaceSql;
 
 
 @Slf4j
@@ -99,12 +99,12 @@ public abstract class SimpleJobStrategy {
                 log.info("开始 doCheckUpIn; jobId:{},jobName:{},count:{}",job.getSimpleJobId(), job.getJobName(), recordList.size());
             }
 
-            String checkExistSQL = getReplaceSql(job.getCheckExistSql(), oneRecordMap, null);
+            String checkExistSQL = getSectionValueReplaceSql(job.getCheckExistSql(), oneRecordMap, null);
             String updateSql = job.getUpdateSql();
             if (StringUtils.isNotBlank(updateSql)) {
-                updateSql = getReplaceSql(updateSql, oneRecordMap, 0);
+                updateSql = getSectionValueReplaceSql(updateSql, oneRecordMap, 0);
             }
-            String insertSql = getReplaceSql(job.getInsertSql(), oneRecordMap, 0);
+            String insertSql = getSectionValueReplaceSql(job.getInsertSql(), oneRecordMap, 0);
             producer.sendUpIn(checkExistSQL, updateSql, insertSql, job.getSimpleJobId(), latch);
 
         }
@@ -229,7 +229,7 @@ public abstract class SimpleJobStrategy {
                 if (count >= 2) {
                     String deleteWhere = batchSql.split("_€")[1];
                     if (null != sectionMap) {
-                        deleteWhere = getReplaceSql(deleteWhere, sectionMap, 0);
+                        deleteWhere = getSectionValueReplaceSql(deleteWhere, sectionMap, 0);
                     }
                     String needWhere = deleteWhere.toUpperCase().contains("WHERE") ? " " : " WHERE ";
                     String deleteSql = "DELETE FROM " + insertTable + needWhere + deleteWhere;

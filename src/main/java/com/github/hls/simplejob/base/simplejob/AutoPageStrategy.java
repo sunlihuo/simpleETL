@@ -24,9 +24,9 @@ public class AutoPageStrategy extends SimpleJobStrategy {
         Integer offset = 0;
         Integer limit = 10000;
 
-        if (SimpleJobUtils.sectionList == null || SimpleJobUtils.sectionList.size() == 0) {
+        if (SimpleJobUtils.sectionValueList == null || SimpleJobUtils.sectionValueList.size() == 0) {
             String selectSQL = simpleJob.getSelectSql();
-            String sql = SimpleJobUtils.replaceSysParam(selectSQL);
+            String sql = SimpleJobUtils.getSysValueReplaceSql(selectSQL);
 
             String countSql = SimpleJobUtils.getCountSql(sql);
             Integer count = SimpleDBUtils.queryCount(countSql, dataSource);
@@ -34,11 +34,11 @@ public class AutoPageStrategy extends SimpleJobStrategy {
             return;
         }
 
-        for (Map<String, Object> sectionMap : SimpleJobUtils.sectionList) {
+        for (Map<String, Object> sectionMap : SimpleJobUtils.sectionValueList) {
             log.info("参数:sectionMap:{}", sectionMap);
             String selectSQL = simpleJob.getSelectSql();
-            String sqlSection = SimpleJobUtils.getReplaceSql(selectSQL, sectionMap, 0);
-            String sql = SimpleJobUtils.replaceSysParam(sqlSection);
+            String sysValueSelectSQL = SimpleJobUtils.getSysValueReplaceSql(selectSQL);
+            String sql = SimpleJobUtils.getSectionValueReplaceSql(sysValueSelectSQL, sectionMap, 0);
 
             String countSql = SimpleJobUtils.getCountSql(sql);
             Integer count = SimpleDBUtils.queryCount(countSql, dataSource);

@@ -20,9 +20,9 @@ public class SectionValueStrategy extends SimpleJobStrategy {
 
     @Override
     public void doHandle(SimpleJobEntity simpleJob, DataSource dataSource) {
-        SimpleJobUtils.sectionList.clear();
+        SimpleJobUtils.sectionValueList.clear();
         if (StringUtils.isNotBlank(simpleJob.getSelectSql())) {
-            SimpleJobUtils.sectionList.addAll(SimpleDBUtils.queryListMap(simpleJob.getSelectSql(), dataSource));
+            SimpleJobUtils.sectionValueList.addAll(SimpleDBUtils.queryListMap(simpleJob.getSelectSql(), dataSource));
         }
     }
 }
