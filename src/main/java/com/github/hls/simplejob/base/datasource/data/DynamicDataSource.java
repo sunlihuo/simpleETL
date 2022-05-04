@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * 动态数据源
- * @author lc
+ * @author sunlihuo
  */
 public class DynamicDataSource extends AbstractRoutingDataSource {
     private static final ThreadLocal<String> contextHolder = new ThreadLocal<>();

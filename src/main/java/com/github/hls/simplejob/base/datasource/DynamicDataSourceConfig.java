@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * 配置多数据源
  *
- * @author lc
+ * @author sunlihuo
  */
 @Slf4j
 @Configuration

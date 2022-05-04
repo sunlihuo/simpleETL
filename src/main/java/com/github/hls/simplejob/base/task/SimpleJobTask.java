@@ -40,6 +40,7 @@ public class SimpleJobTask {
 
     /**
      * 任务执行
+     *
      * @param job
      * @param admin 不为空时可以执行任何job
      * @return
@@ -51,7 +52,7 @@ public class SimpleJobTask {
         }
 
         final List<SimpleJobEntity> jobList = simpleJobService.queryRunningJob(job, admin);
-        if (CollectionUtils.isEmpty(jobList)){
+        if (CollectionUtils.isEmpty(jobList)) {
             log.error("simplejob is null");
             return false;
         }
@@ -62,6 +63,7 @@ public class SimpleJobTask {
 
     /**
      * 全局参数
+     *
      * @param jobList
      */
     public void handleSysValue(List<SimpleJobEntity> jobList) {
@@ -70,11 +72,11 @@ public class SimpleJobTask {
         }
 
         SimpleJobUtils.clearSysParam();
-        jobList.stream().forEach(m->{
+        jobList.stream().forEach(m -> {
             List<Map<String, Object>> maps = SimpleDBUtils.queryListMap(m.getSelectSql(), datacenterDataSource);
-            maps.stream().forEach(map->{
-                map.keySet().stream().forEach(key->{
-                    SimpleJobUtils.putSysParam(key, map.get(key)==null?"":String.valueOf(map.get(key)));
+            maps.stream().forEach(map -> {
+                map.keySet().stream().forEach(key -> {
+                    SimpleJobUtils.putSysParam(key, map.get(key) == null ? "" : String.valueOf(map.get(key)));
                 });
             });
         });
@@ -100,7 +102,7 @@ public class SimpleJobTask {
                         if (HandleTypeEnum.分段_参数.getCode().equals(simpleJob.getHandleType())) {
                             sectionValueStrategy.setProducer(producer);
                             sectionValueStrategy.handle(simpleJob);
-                        } else{
+                        } else {
                             autoPageStrategy.setProducer(producer);
                             autoPageStrategy.handle(simpleJob);
                         }

@@ -4,7 +4,7 @@ package com.github.hls.simplejob.base.datasource.data;
 
 /**
  * 数据源名称
- * @author lc
+ * @author sunlihuo
 */
 public interface DataSourceNames {
     String oldmain = "oldmain";

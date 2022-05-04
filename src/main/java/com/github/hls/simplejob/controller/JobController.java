@@ -34,7 +34,7 @@ public class JobController {
 //    }
 
     @RequestMapping("/update")
-    public String update(SimpleJobEntity simpleJobDO, String password){
+    public String update(SimpleJobEntity simpleJobDO, String password) {
         if (!"fewf14#653#g".equals(password)) {
             return "error";
         }
@@ -43,7 +43,7 @@ public class JobController {
     }
 
     @RequestMapping("/job")
-    public String job(SimpleJobRO simpleJobRO, String password){
+    public String job(SimpleJobRO simpleJobRO, String password) {
         SimpleJobEntity simpleJobEntity = BeanUtils.copyProperties(simpleJobRO, SimpleJobEntity.class);
         if (!"fewf14#653#g".equals(password)) {
             return "password error";
@@ -54,7 +54,6 @@ public class JobController {
         /*new Thread(() -> simpleJobTask.handleHttp(simpleJobDO));*/
         return "success";
     }
-
 
 
 }

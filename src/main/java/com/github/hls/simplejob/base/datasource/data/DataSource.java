@@ -2,7 +2,7 @@ package com.github.hls.simplejob.base.datasource.data;
 
 /**
  * 多数据源注解
- * @author lc
+ * @author sunlihuo
  */
 
 import java.lang.annotation.*;

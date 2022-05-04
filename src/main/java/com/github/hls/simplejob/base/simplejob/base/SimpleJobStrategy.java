@@ -52,6 +52,7 @@ public abstract class SimpleJobStrategy {
 
     /**
      * 执行 按数据源 分次执行
+     *
      * @param simpleJob
      */
     public void handle(SimpleJobEntity simpleJob) {
@@ -76,6 +77,7 @@ public abstract class SimpleJobStrategy {
 
     /**
      * 子类实现具体执行方法
+     *
      * @param simpleJob
      * @param dataSource
      */
@@ -83,6 +85,7 @@ public abstract class SimpleJobStrategy {
 
     /**
      * 校验存在 并更新或插入
+     *
      * @param job
      * @param recordList
      */
@@ -96,7 +99,7 @@ public abstract class SimpleJobStrategy {
         for (Map<String, Object> oneRecordMap : recordList) {
             if (null == latch) {
                 latch = new CountDownLatch(recordList.size());
-                log.info("开始 doCheckUpIn; jobId:{},jobName:{},count:{}",job.getSimpleJobId(), job.getJobName(), recordList.size());
+                log.info("开始 doCheckUpIn; jobId:{},jobName:{},count:{}", job.getSimpleJobId(), job.getJobName(), recordList.size());
             }
 
             String checkExistSQL = getSectionValueReplaceSql(job.getCheckExistSql(), oneRecordMap, null);
@@ -114,15 +117,16 @@ public abstract class SimpleJobStrategy {
             log.info("doCheckUpIn set resultList.clear()");
             latch.await(120, TimeUnit.MINUTES);
         } catch (InterruptedException e) {
-            log.error("latchFinal.await();",e);
+            log.error("latchFinal.await();", e);
         }
 
-        log.info("结束 doCheckUpIn; jobId:{},jobName:{},count:{}",job.getSimpleJobId(), job.getJobName(), recordList.size());
+        log.info("结束 doCheckUpIn; jobId:{},jobName:{},count:{}", job.getSimpleJobId(), job.getJobName(), recordList.size());
     }
 
     /**
      * 校验存在 并更新或插入
      * 自动生成 更新或插入sql
+     *
      * @param job
      * @param recordList
      */
@@ -180,8 +184,8 @@ public abstract class SimpleJobStrategy {
 
         //INSERT INTO table_name (列1, 列2,...) VALUES (值1, 值2,....)
         StringBuilder inSql = new StringBuilder("INSERT INTO ").append(table);
-        StringBuilder columnSql =  new StringBuilder("(");
-        StringBuilder valuesSql =  new StringBuilder(")VALUES(");
+        StringBuilder columnSql = new StringBuilder("(");
+        StringBuilder valuesSql = new StringBuilder(")VALUES(");
         i = 0;
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             String key = entry.getKey();
@@ -236,11 +240,11 @@ public abstract class SimpleJobStrategy {
                     log.info("deleteSql = {}", deleteSql);
 
                     CountDownLatch latch = new CountDownLatch(1);
-                    producer.sendDel(deleteSql,job.getSimpleJobId(), latch);
+                    producer.sendDel(deleteSql, job.getSimpleJobId(), latch);
                     try {
                         latch.await(120, TimeUnit.MINUTES);
                     } catch (InterruptedException e) {
-                        log.error("latchFinal.await();",e);
+                        log.error("latchFinal.await();", e);
                     }
                 }
 
@@ -252,8 +256,6 @@ public abstract class SimpleJobStrategy {
             log.error("BatchSQL 格式错误参考: batch€_unimall_user_daily_€where table_source='oldmain'");
         }
     }
-
-
 
 
 }

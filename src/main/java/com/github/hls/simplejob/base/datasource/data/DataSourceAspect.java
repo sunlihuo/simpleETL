@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 
 /**
  * 数据源AOP切面处理
- * @author lc
+ * @author sunlihuo
  */
 @Aspect
 @Component
