@@ -56,7 +56,7 @@ public class SimpleETLTask {
             return false;
         }
 
-        handleetl(etlList);
+        handleETL(etlList);
         return true;
     }
 
@@ -81,7 +81,7 @@ public class SimpleETLTask {
         });
     }
 
-    public void handleetl(List<SimpleETLDO> etlList) {
+    public void handleETL(List<SimpleETLDO> etlList) {
         Producer producer = disruptor.getProducer();
 
         try {
