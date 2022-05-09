@@ -27,6 +27,9 @@ public class Consumer implements WorkHandler<DataDTO> {
 
 	@Override
 	public void onEvent(DataDTO info) throws Exception {
+		/**切换目标数据源*/
+		//String targetDb = info.getTargetDb();
+
 		String sql = "";
 		DataSource targetDatesource = this.datacenterDataSource;
 		
