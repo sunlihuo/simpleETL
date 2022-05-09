@@ -1,6 +1,6 @@
-package com.github.hls.etl.base.simplejob;
+package com.github.hls.etl.base.etl;
 
-import com.github.hls.etl.base.simplejob.base.SimpleETLStrategy;
+import com.github.hls.etl.base.etl.base.AbsSimpleETLStrategy;
 import com.github.hls.etl.domain.SimpleETLDO;
 import com.github.hls.etl.utils.SimpleDBUtils;
 import com.github.hls.etl.utils.SimpleETLUtils;
@@ -16,13 +16,13 @@ import javax.sql.DataSource;
  * #id# 赋值
  */
 @Service
-public class SectionValueStrategy extends SimpleETLStrategy {
+public class SectionValueStrategy extends AbsSimpleETLStrategy {
 
     @Override
-    public void doHandle(SimpleETLDO simpleJob, DataSource dataSource) {
+    public void doHandle(SimpleETLDO etl, DataSource dataSource) {
         SimpleETLUtils.sectionValueList.clear();
-        if (StringUtils.isNotBlank(simpleJob.getSelectSql())) {
-            SimpleETLUtils.sectionValueList.addAll(SimpleDBUtils.queryListMap(simpleJob.getSelectSql(), dataSource));
+        if (StringUtils.isNotBlank(etl.getSelectSql())) {
+            SimpleETLUtils.sectionValueList.addAll(SimpleDBUtils.queryListMap(etl.getSelectSql(), dataSource));
         }
     }
 }

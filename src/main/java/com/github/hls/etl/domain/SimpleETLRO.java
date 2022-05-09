@@ -10,9 +10,9 @@ import java.util.Date;
 public class SimpleETLRO {
 
     @ApiModelProperty(value = "主键", required = false)
-    private Long simpleJobId;
+    private Long etlId;
     @ApiModelProperty(value = "任务名称", required = false)
-    private String jobName;
+    private String etlName;
     @ApiModelProperty(value = "描述", required = false)
     private String description;
     @ApiModelProperty(value = "数据源类型，mysql,hive", required = false)
@@ -34,7 +34,7 @@ public class SimpleETLRO {
     @ApiModelProperty(value = "异常是否继续,Y 继续，N 不再接下去进行", required = false)
     private String errorGoOn;
     @ApiModelProperty(value = "依赖父任务", required = false)
-    private String parentJobName;
+    private String parentetlName;
     @ApiModelProperty(value = "记录更新时间", required = false)
     private Date gmtUpdate;
     @ApiModelProperty(value = "创建时间", required = false)

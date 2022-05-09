@@ -1,6 +1,6 @@
 package com.github.hls.etl.controller;
 
-import com.github.hls.etl.base.simplejob.SectionValueStrategy;
+import com.github.hls.etl.base.etl.SectionValueStrategy;
 import com.github.hls.etl.base.task.SimpleETLTask;
 import com.github.hls.etl.domain.SimpleETLDO;
 import com.github.hls.etl.domain.SimpleETLRO;
@@ -13,37 +13,37 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
-@RequestMapping("/simplejob")
+@RequestMapping("/etl")
 @RestController
 public class ETLController {
     @Resource
-    private SimpleETLTask simpleJobTask;
+    private SimpleETLTask etlTask;
     @Resource
-    private SimpleETLService simpleJobService;
+    private SimpleETLService etlService;
     @Autowired
     private SectionValueStrategy sectionValueStrategy;
     @Resource
     private DataSource datacenterDataSource;
 
     @RequestMapping("/update")
-    public String update(SimpleETLDO simpleJobDO, String password) {
+    public String update(SimpleETLDO etlDO, String password) {
         if (!"fewf14#653#g".equals(password)) {
             return "error";
         }
-        simpleJobService.updateById(simpleJobDO);
+        etlService.updateById(etlDO);
         return "success";
     }
 
-    @RequestMapping("/job")
-    public String job(SimpleETLRO simpleJobRO, String password) {
-        SimpleETLDO simpleJobEntity = BeanUtils.copyProperties(simpleJobRO, SimpleETLDO.class);
+    @RequestMapping("/etl")
+    public String etl(SimpleETLRO etlRO, String password) {
+        SimpleETLDO etlEntity = BeanUtils.copyProperties(etlRO, SimpleETLDO.class);
         if (!"fewf14#653#g".equals(password)) {
             return "password error";
         }
-        sectionValueStrategy.doHandle(simpleJobEntity, datacenterDataSource);
-        simpleJobTask.handleHttp(simpleJobEntity, "admin");
+        sectionValueStrategy.doHandle(etlEntity, datacenterDataSource);
+        etlTask.handleHttp(etlEntity, "admin");
 
-        /*new Thread(() -> simpleJobTask.handleHttp(simpleJobDO));*/
+        /*new Thread(() -> etlTask.handleHttp(etlDO));*/
         return "success";
     }
 

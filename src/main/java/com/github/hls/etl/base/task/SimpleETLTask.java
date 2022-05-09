@@ -3,7 +3,7 @@ package com.github.hls.etl.base.task;
 import com.github.hls.etl.base.disruptor.Disruptor;
 import com.github.hls.etl.base.disruptor.Producer;
 import com.github.hls.etl.base.enums.HandleTypeEnum;
-import com.github.hls.etl.base.simplejob.base.SimpleETLStrategy;
+import com.github.hls.etl.base.etl.base.AbsSimpleETLStrategy;
 import com.github.hls.etl.domain.SimpleETLDO;
 import com.github.hls.etl.service.SimpleETLService;
 import com.github.hls.etl.utils.DateUtils;
@@ -27,11 +27,11 @@ import static com.github.hls.etl.utils.SimpleETLUtils.transList2Map;
 public class SimpleETLTask {
 
     @Resource
-    private SimpleETLStrategy sectionValueStrategy;
+    private AbsSimpleETLStrategy sectionValueStrategy;
     @Resource
-    private SimpleETLStrategy autoPageStrategy;
+    private AbsSimpleETLStrategy autoPageStrategy;
     @Resource
-    private SimpleETLService simpleJobService;
+    private SimpleETLService etlService;
     @Resource
     private Disruptor disruptor;
     @Resource
@@ -40,38 +40,38 @@ public class SimpleETLTask {
     /**
      * 任务执行
      *
-     * @param job
-     * @param admin 不为空时可以执行任何job
+     * @param etl
+     * @param admin 不为空时可以执行任何etl
      * @return
      */
-    public boolean handleHttp(SimpleETLDO job, String admin) {
-        List<SimpleETLDO> sysValueRunningJobList = simpleJobService.querySysValueRunningJob(job);
-        if (!CollectionUtils.isEmpty(sysValueRunningJobList)) {
-            handleSysValue(sysValueRunningJobList);
+    public boolean handleHttp(SimpleETLDO etl, String admin) {
+        List<SimpleETLDO> sysValueRunningetlList = etlService.querySysValueRunningetl(etl);
+        if (!CollectionUtils.isEmpty(sysValueRunningetlList)) {
+            handleSysValue(sysValueRunningetlList);
         }
 
-        final List<SimpleETLDO> jobList = simpleJobService.queryRunningJob(job, admin);
-        if (CollectionUtils.isEmpty(jobList)) {
-            log.error("simplejob is null");
+        final List<SimpleETLDO> etlList = etlService.queryRunningetl(etl, admin);
+        if (CollectionUtils.isEmpty(etlList)) {
+            log.error("etl is null");
             return false;
         }
 
-        handleJob(jobList);
+        handleetl(etlList);
         return true;
     }
 
     /**
      * 全局参数
      *
-     * @param jobList
+     * @param etlList
      */
-    public void handleSysValue(List<SimpleETLDO> jobList) {
-        if (CollectionUtils.isEmpty(jobList)) {
+    public void handleSysValue(List<SimpleETLDO> etlList) {
+        if (CollectionUtils.isEmpty(etlList)) {
             return;
         }
 
         SimpleETLUtils.clearSysParam();
-        jobList.stream().forEach(m -> {
+        etlList.stream().forEach(m -> {
             List<Map<String, Object>> maps = SimpleDBUtils.queryListMap(m.getSelectSql(), datacenterDataSource);
             maps.stream().forEach(map -> {
                 map.keySet().stream().forEach(key -> {
@@ -81,47 +81,47 @@ public class SimpleETLTask {
         });
     }
 
-    public void handleJob(List<SimpleETLDO> simpleJobList) {
+    public void handleetl(List<SimpleETLDO> etlList) {
         Producer producer = disruptor.getProducer();
 
         try {
             long countCurrent = System.currentTimeMillis();
             int i = 0;
-            final Map<String, List<SimpleETLDO>> simpleJobMap = transList2Map(simpleJobList);
-            log.info("开始执行任务{}", simpleJobMap.values().size());
+            final Map<String, List<SimpleETLDO>> etlMap = transList2Map(etlList);
+            log.info("开始执行任务{}", etlMap.values().size());
 
-            final Iterator<List<SimpleETLDO>> iterator = simpleJobMap.values().iterator();
+            final Iterator<List<SimpleETLDO>> iterator = etlMap.values().iterator();
             while (iterator.hasNext()) {
-                List<SimpleETLDO> jobList = iterator.next();
+                List<SimpleETLDO> groupEtlList = iterator.next();
 
-                for (SimpleETLDO simpleJob : jobList) {
+                for (SimpleETLDO etl : groupEtlList) {
                     Long current = System.currentTimeMillis();
-                    log.info("开始第{}个任务,jobId:{},jobName:{},sourceType:{}", ++i, simpleJob.getSimpleJobId(), simpleJob.getJobName(), simpleJob.getHandleType());
+                    log.info("开始第{}个任务,etlId:{},etlName:{},sourceType:{}", ++i, etl.getId(), etl.getName(), etl.getHandleType());
                     try {
-                        if (HandleTypeEnum.分段_参数.getCode().equals(simpleJob.getHandleType())) {
+                        if (HandleTypeEnum.分段_参数.getCode().equals(etl.getHandleType())) {
                             sectionValueStrategy.setProducer(producer);
-                            sectionValueStrategy.handle(simpleJob);
+                            sectionValueStrategy.handle(etl);
                         } else {
                             autoPageStrategy.setProducer(producer);
-                            autoPageStrategy.handle(simpleJob);
+                            autoPageStrategy.handle(etl);
                         }
 
                     } catch (Exception e) {
-                        log.error("SimpleJobTask error", e);
-                        if (simpleJob.getErrorGoOn() == 1) {
+                        log.error("etlTask error", e);
+                        if (etl.getErrorGoOn() == 1) {
                             break;
                         }
                     }
 
-                    log.info("结束第{}个任务, jobId:{},jobName:{},耗时:{}", i, simpleJob.getSimpleJobId(), simpleJob.getJobName(), DateUtils.dateDiff(current, System.currentTimeMillis()));
-                    simpleJobService.subtractStatus(simpleJob);
+                    log.info("结束第{}个任务, etlId:{},etlName:{},耗时:{}", i, etl.getId(), etl.getName(), DateUtils.dateDiff(current, System.currentTimeMillis()));
+                    etlService.subtractStatus(etl);
                 }
                 SimpleETLUtils.sectionValueList.clear();
             }
 
             log.info("结束任务, 耗时:{}", DateUtils.dateDiff(countCurrent, System.currentTimeMillis()));
         } catch (Exception e) {
-            log.error("SimpleJobTask error", e);
+            log.error("etlTask error", e);
         } finally {
             disruptor.drainAndHalt();
         }

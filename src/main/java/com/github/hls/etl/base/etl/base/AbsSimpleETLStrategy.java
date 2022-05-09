@@ -1,4 +1,4 @@
-package com.github.hls.etl.base.simplejob.base;
+package com.github.hls.etl.base.etl.base;
 
 
 import com.github.hls.etl.base.disruptor.Producer;
@@ -23,7 +23,7 @@ import static com.github.hls.etl.utils.SimpleETLUtils.getSectionValueReplaceSql;
 
 @Slf4j
 @Data
-public abstract class SimpleETLStrategy {
+public abstract class AbsSimpleETLStrategy {
 
     /**
      * 批量标识
@@ -53,11 +53,11 @@ public abstract class SimpleETLStrategy {
     /**
      * 执行 按数据源 分次执行
      *
-     * @param simpleJob
+     * @param etl
      */
-    public void handle(SimpleETLDO simpleJob) {
+    public void handle(SimpleETLDO etl) {
         DataSource dataSource = this.getOldmainDataSource();
-        String sourceData = simpleJob.getSourceDb();
+        String sourceData = etl.getSourceDb();
         if (StringUtils.isEmpty(sourceData)) {
             dataSource = this.getOldmainDataSource();
         }
@@ -71,27 +71,27 @@ public abstract class SimpleETLStrategy {
                 dataSource = this.getDatacenterDataSource();
             }
 
-            doHandle(simpleJob, dataSource);
+            doHandle(etl, dataSource);
         }
     }
 
     /**
      * 子类实现具体执行方法
      *
-     * @param simpleJob
+     * @param etl
      * @param dataSource
      */
-    public abstract void doHandle(SimpleETLDO simpleJob, DataSource dataSource);
+    public abstract void doHandle(SimpleETLDO etl, DataSource dataSource);
 
     /**
      * 校验存在 并更新或插入
      *
-     * @param job
+     * @param etl
      * @param recordList
      */
-    public void doCheckUpIn(SimpleETLDO job, List<Map<String, Object>> recordList) {
+    public void doCheckUpIn(SimpleETLDO etl, List<Map<String, Object>> recordList) {
         if (null == recordList || recordList.size() == 0) {
-            log.error("jobId:{},jobName:{}, 没有可操作数据", job.getSimpleJobId(), job.getJobName());
+            log.error("etlId:{},etlName:{}, 没有可操作数据", etl.getId(), etl.getName());
             return;
         }
         CountDownLatch latch = null;
@@ -99,16 +99,16 @@ public abstract class SimpleETLStrategy {
         for (Map<String, Object> oneRecordMap : recordList) {
             if (null == latch) {
                 latch = new CountDownLatch(recordList.size());
-                log.info("开始 doCheckUpIn; jobId:{},jobName:{},count:{}", job.getSimpleJobId(), job.getJobName(), recordList.size());
+                log.info("开始 doCheckUpIn; etlId:{},etlName:{},count:{}", etl.getId(), etl.getName(), recordList.size());
             }
 
-            String checkExistSQL = getSectionValueReplaceSql(job.getCheckExistSql(), oneRecordMap, null);
-            String updateSql = job.getUpdateSql();
+            String checkExistSQL = getSectionValueReplaceSql(etl.getCheckExistSql(), oneRecordMap, null);
+            String updateSql = etl.getUpdateSql();
             if (StringUtils.isNotBlank(updateSql)) {
                 updateSql = getSectionValueReplaceSql(updateSql, oneRecordMap, 0);
             }
-            String insertSql = getSectionValueReplaceSql(job.getInsertSql(), oneRecordMap, 0);
-            producer.sendETL(checkExistSQL, updateSql, insertSql, job.getSimpleJobId(), latch);
+            String insertSql = getSectionValueReplaceSql(etl.getInsertSql(), oneRecordMap, 0);
+            producer.sendETL(checkExistSQL, updateSql, insertSql, etl.getId(), latch);
 
         }
         try {
@@ -120,23 +120,23 @@ public abstract class SimpleETLStrategy {
             log.error("latchFinal.await();", e);
         }
 
-        log.info("结束 doCheckUpIn; jobId:{},jobName:{},count:{}", job.getSimpleJobId(), job.getJobName(), recordList.size());
+        log.info("结束 doCheckUpIn; etlId:{},etlName:{},count:{}", etl.getId(), etl.getName(), recordList.size());
     }
 
     /**
      * 校验存在 并更新或插入
      * 自动生成 更新或插入sql
      *
-     * @param job
+     * @param etl
      * @param recordList
      */
-    public void doAutoCheckUpIn(SimpleETLDO job, List<Map<String, Object>> recordList) {
+    public void doAutoCheckUpIn(SimpleETLDO etl, List<Map<String, Object>> recordList) {
         if (null == recordList || recordList.size() == 0) {
-            log.error("jobId:{},jobName:{}, 没有可操作数据", job.getSimpleJobId(), job.getJobName());
+            log.error("etlId:{},etlName:{}, 没有可操作数据", etl.getId(), etl.getName());
             return;
         }
 
-        String checkSql = job.getCheckExistSql();
+        String checkSql = etl.getCheckExistSql();
         String table;
         String where;
         try {
@@ -157,7 +157,7 @@ public abstract class SimpleETLStrategy {
 
         Map<String, Object> map = recordList.get(0);
 
-        String updateSql = job.getUpdateSql();
+        String updateSql = etl.getUpdateSql();
 
         StringBuilder upSql = new StringBuilder();
         int i = 0;
@@ -201,22 +201,22 @@ public abstract class SimpleETLStrategy {
         inSql.append(columnSql).append(valuesSql);
         inSql.append(")");
 
-        job.setUpdateSql(upSql.toString());
-        job.setInsertSql(inSql.toString());
+        etl.setUpdateSql(upSql.toString());
+        etl.setInsertSql(inSql.toString());
 
-        doCheckUpIn(job, recordList);
+        doCheckUpIn(etl, recordList);
     }
 
     /**
      * 批量删除 并 批量插入
      */
-    public void doBatch(SimpleETLDO job, List<Map<String, Object>> resultList, Map<String, Object> sectionMap) {
+    public void doBatch(SimpleETLDO etl, List<Map<String, Object>> resultList, Map<String, Object> sectionMap) {
         if (CollectionUtils.isEmpty(resultList)) {
-            log.error("jobId:{},jobName:{}, 没有可操作数据", job.getSimpleJobId(), job.getJobName());
+            log.error("etlId:{},etlName:{}, 没有可操作数据", etl.getId(), etl.getName());
             return;
         }
 
-        String batchSql = job.getBatchSql();
+        String batchSql = etl.getBatchSql();
         //批量入库流程
         if (batchSql.contains(BATCH_UPPERCASE_STR) || batchSql.contains(BATCH_LOWERCASE_STR)) {
             try {
@@ -240,7 +240,7 @@ public abstract class SimpleETLStrategy {
                     log.info("deleteSql = {}", deleteSql);
 
                     CountDownLatch latch = new CountDownLatch(1);
-                    producer.sendETLDel(deleteSql, job.getSimpleJobId(), latch);
+                    producer.sendETLDel(deleteSql, etl.getId(), latch);
                     try {
                         latch.await(120, TimeUnit.MINUTES);
                     } catch (InterruptedException e) {

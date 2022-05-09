@@ -1,6 +1,6 @@
-package com.github.hls.etl.base.simplejob;
+package com.github.hls.etl.base.etl;
 
-import com.github.hls.etl.base.simplejob.base.SimpleETLStrategy;
+import com.github.hls.etl.base.etl.base.AbsSimpleETLStrategy;
 import com.github.hls.etl.domain.SimpleETLDO;
 import com.github.hls.etl.base.enums.HandleTypeEnum;
 import com.github.hls.etl.utils.SimpleDBUtils;
@@ -17,61 +17,61 @@ import java.util.Map;
  */
 @Slf4j
 @Service
-public class AutoPageStrategy extends SimpleETLStrategy {
+public class AutoPageStrategy extends AbsSimpleETLStrategy {
 
     @Override
-    public void doHandle(SimpleETLDO simpleJob, DataSource dataSource) {
+    public void doHandle(SimpleETLDO etl, DataSource dataSource) {
         Integer offset = 0;
         Integer limit = 10000;
 
         if (SimpleETLUtils.sectionValueList == null || SimpleETLUtils.sectionValueList.size() == 0) {
-            String selectSQL = simpleJob.getSelectSql();
+            String selectSQL = etl.getSelectSql();
             String sql = SimpleETLUtils.getSysValueReplaceSql(selectSQL);
 
             String countSql = SimpleETLUtils.getCountSql(sql);
             Integer count = SimpleDBUtils.queryCount(countSql, dataSource);
-            autoPage(simpleJob, dataSource, sql, count, offset, limit);
+            autoPage(etl, dataSource, sql, count, offset, limit);
             return;
         }
 
         for (Map<String, Object> sectionMap : SimpleETLUtils.sectionValueList) {
             log.info("参数:sectionMap:{}", sectionMap);
-            String selectSQL = simpleJob.getSelectSql();
+            String selectSQL = etl.getSelectSql();
             String sysValueSelectSQL = SimpleETLUtils.getSysValueReplaceSql(selectSQL);
             String sql = SimpleETLUtils.getSectionValueReplaceSql(sysValueSelectSQL, sectionMap, 0);
 
             String countSql = SimpleETLUtils.getCountSql(sql);
             Integer count = SimpleDBUtils.queryCount(countSql, dataSource);
-            autoPage(simpleJob, dataSource, sql, count, offset, limit);
+            autoPage(etl, dataSource, sql, count, offset, limit);
         }
     }
 
     /**
      * 自动分页
      */
-    private void autoPage(SimpleETLDO job, DataSource dataSource, String sql, Integer total, Integer offset, Integer limit) {
+    private void autoPage(SimpleETLDO etl, DataSource dataSource, String sql, Integer total, Integer offset, Integer limit) {
         if (total == 0) {
-            log.error("jobId:{},jobName:{}, 没有可操作数据", job.getSimpleJobId(), job.getJobName());
+            log.error("etlId:{},etlName:{}, 没有可操作数据", etl.getId(), etl.getName());
             return;
         }
         if (offset > total) {
             return;
         }
-        log.info("自动分页,Job:{},名称:{},total:{},offset:{},limit:{}", job.getSimpleJobId(), job.getJobName(), total, offset, limit);
+        log.info("自动分页,etl:{},名称:{},total:{},offset:{},limit:{}", etl.getId(), etl.getName(), total, offset, limit);
 
         List<Map<String, Object>> resultList = SimpleDBUtils.queryListMapPage(sql, dataSource, offset, limit);
 
-        if (HandleTypeEnum.正常.getCode().equals(job.getHandleType())) {
+        if (HandleTypeEnum.正常.getCode().equals(etl.getHandleType())) {
             //正常模式 校验 更新 插入
-            doCheckUpIn(job, resultList);
-        } else if (HandleTypeEnum.自动SQL.getCode().equals(job.getHandleType())) {
-            doAutoCheckUpIn(job, resultList);
-        } else if (HandleTypeEnum.批量.getCode().equals(job.getHandleType())) {
-            doBatch(job, resultList, null);
+            doCheckUpIn(etl, resultList);
+        } else if (HandleTypeEnum.自动SQL.getCode().equals(etl.getHandleType())) {
+            doAutoCheckUpIn(etl, resultList);
+        } else if (HandleTypeEnum.批量.getCode().equals(etl.getHandleType())) {
+            doBatch(etl, resultList, null);
         }
 
         offset += limit;
         //递归
-        autoPage(job, dataSource, sql, total, offset, limit);
+        autoPage(etl, dataSource, sql, total, offset, limit);
     }
 }

@@ -19,37 +19,37 @@ public class SimpleETLService extends ServiceImpl<SimpleETLMapper, SimpleETLDO> 
 
     /**
      * 查询需要执行的任务
-     * @param job
+     * @param etl
      * @param admin
      * @return
      */
-    public List<SimpleETLDO> queryRunningJob(SimpleETLDO job, String admin){
+    public List<SimpleETLDO> queryRunningetl(SimpleETLDO etl, String admin){
         LambdaQueryWrapper<SimpleETLDO> query = Wrappers.lambdaQuery();
-        query.eq(job.getSimpleJobId()!= null, SimpleETLDO::getSimpleJobId, job.getSimpleJobId());
-        query.eq(job.getJobName()!= null, SimpleETLDO::getJobName, job.getJobName());
+        query.eq(etl.getId()!= null, SimpleETLDO::getId, etl.getId());
+        query.eq(etl.getName()!= null, SimpleETLDO::getName, etl.getName());
         if (admin == null) {
             query.ne(SimpleETLDO::getStatus, 0);
         }
         query.ne(SimpleETLDO::getHandleType, HandleTypeEnum.全局_参数.getCode());
-        query.orderByAsc(SimpleETLDO::getJobName, SimpleETLDO::getExecuteOrder, SimpleETLDO::getGmtCreate);
-        List<SimpleETLDO> jobList = this.list(query);
-        return jobList;
+        query.orderByAsc(SimpleETLDO::getName, SimpleETLDO::getExecuteOrder, SimpleETLDO::getGmtCreate);
+        List<SimpleETLDO> etlList = this.list(query);
+        return etlList;
     }
 
     /**
      * 查询全局参数任务
-     * @param job
+     * @param etl
      * @return
      */
-    public List<SimpleETLDO> querySysValueRunningJob(SimpleETLDO job){
+    public List<SimpleETLDO> querySysValueRunningetl(SimpleETLDO etl){
         LambdaQueryWrapper<SimpleETLDO> query = Wrappers.lambdaQuery();
-        query.eq(job.getSimpleJobId()!= null, SimpleETLDO::getSimpleJobId, job.getSimpleJobId());
-        query.eq(job.getJobName()!= null, SimpleETLDO::getJobName, job.getJobName());
+        query.eq(etl.getId()!= null, SimpleETLDO::getId, etl.getId());
+        query.eq(etl.getName()!= null, SimpleETLDO::getName, etl.getName());
         query.ne(SimpleETLDO::getStatus, 0);
         query.eq(SimpleETLDO::getHandleType, HandleTypeEnum.全局_参数.getCode());
-        query.orderByAsc(SimpleETLDO::getJobName, SimpleETLDO::getExecuteOrder, SimpleETLDO::getGmtCreate);
-        List<SimpleETLDO> jobList = this.list(query);
-        return jobList;
+        query.orderByAsc(SimpleETLDO::getName, SimpleETLDO::getExecuteOrder, SimpleETLDO::getGmtCreate);
+        List<SimpleETLDO> etlList = this.list(query);
+        return etlList;
     }
 
     /**
@@ -57,16 +57,16 @@ public class SimpleETLService extends ServiceImpl<SimpleETLMapper, SimpleETLDO> 
      * -1为永远执行
      * 0不执行
      * 2表示可执行2次
-     * @param simpleJob
+     * @param etl
      */
-    public void subtractStatus(SimpleETLDO simpleJob){
-        if (simpleJob.getStatus().intValue() >= 1) {
-            Integer status = simpleJob.getStatus();
+    public void subtractStatus(SimpleETLDO etl){
+        if (etl.getStatus().intValue() >= 1) {
+            Integer status = etl.getStatus();
             status--;
-            simpleJob.setStatus(status);
+            etl.setStatus(status);
         }
-        simpleJob.setGmtRunning(LocalDateTime.now());
-        this.updateById(simpleJob);
+        etl.setGmtRunning(LocalDateTime.now());
+        this.updateById(etl);
     }
 
 }

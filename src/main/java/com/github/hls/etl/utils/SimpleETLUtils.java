@@ -129,11 +129,11 @@ public class SimpleETLUtils {
      */
     public static Map<String, List<SimpleETLDO>> transList2Map(List<SimpleETLDO> list) {
         Map<String, List<SimpleETLDO>> map = new HashMap<>();
-        for (SimpleETLDO simpleJobDO : list) {
-            if (map.get(simpleJobDO.getJobName()) == null) {
-                map.put(simpleJobDO.getJobName(), new ArrayList<>());
+        for (SimpleETLDO etl : list) {
+            if (map.get(etl.getName()) == null) {
+                map.put(etl.getName(), new ArrayList<>());
             }
-            map.get(simpleJobDO.getJobName()).add(simpleJobDO);
+            map.get(etl.getName()).add(etl);
         }
         return map;
     }

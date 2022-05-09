@@ -1,4 +1,4 @@
-# simpleETL
+# ETL
 ```
 一个简单的ETL处理框架，将数据从来源端经过抽取（extract）、转换（transform）、加载（load）至目的端
 
@@ -36,7 +36,7 @@ batch€_table_€[where condition]
 * 表死锁及解决办法：
 ```
 引入Disruptor，sql高并发执行，引起mysql死锁，主要原因是update语句条件范围过大，多条sql锁住了相同一批数据，
-解决方法是按主键更新，skynetJob会自动生成如下sql
+解决方法是按主键更新，skynetetl会自动生成如下sql
 UPDATE 表名称 SET 列名称 = 新值 WHERE id in (select a.id from (select id from 表 where 列名称 = 某值)a)
 而你只要写 UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
 ```

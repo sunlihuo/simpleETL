@@ -13,7 +13,7 @@ public class DataDTO {
 	/**插入*/
 	private String insertSql;
 	/**任务id*/
-	private Long skynetJobId;
+	private Long skynetetlId;
 	/**CountDownLatch*/
 	private CountDownLatch latch;
 	/**批量(0),校验_插入_更新(1),删除(2);*/
@@ -29,7 +29,7 @@ public class DataDTO {
 		checkExistSql = null;
 		updateSql = null;
 		insertSql = null;
-		skynetJobId = null;
+		skynetetlId = null;
 		batchSql = null;
 		batchParams = null;
 		upDateSource = null;
