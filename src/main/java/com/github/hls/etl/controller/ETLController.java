@@ -34,7 +34,7 @@ public class ETLController {
         return "success";
     }
 
-    @RequestMapping("/etl")
+    @RequestMapping("/run")
     public String etl(SimpleETLRO etlRO, String password) {
         SimpleETLDO etlEntity = BeanUtils.copyProperties(etlRO, SimpleETLDO.class);
         if (!"fewf14#653#g".equals(password)) {

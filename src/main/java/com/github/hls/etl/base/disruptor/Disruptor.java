@@ -1,6 +1,7 @@
 package com.github.hls.etl.base.disruptor;
 
 
+import com.github.hls.etl.utils.ThreadPoolUtil;
 import com.lmax.disruptor.*;
 import com.lmax.disruptor.dsl.ProducerType;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 public class Disruptor {
     private RingBuffer<DataDTO> ringBuffer;
-
     private static final int CONSUMER_SIZE = 10;
     private Producer producer;
     private WorkerPool<DataDTO> workerPool;
@@ -79,7 +79,7 @@ public class Disruptor {
     @PostConstruct
     public void init() {
         // 创建缓冲池
-        executor = Executors.newFixedThreadPool(CONSUMER_SIZE);
+        executor = ThreadPoolUtil.getExecutor();
         // 创建工厂
         EventFactory<DataDTO> factory = new EventFactory<DataDTO>() {
             @Override
@@ -88,7 +88,7 @@ public class Disruptor {
             }
         };
         // 创建bufferSize ,也就是RingBuffer大小，必须是2的N次方
-        int ringBufferSize = 1024; //
+        int ringBufferSize = 1024;
         WaitStrategy WAIT_STRATEGY = new BlockingWaitStrategy();
 
         // 创建ringBuffer
@@ -101,7 +101,7 @@ public class Disruptor {
             consumers[i] = new Consumer(datacenterDataSource);
         }
 
-        workerPool = new WorkerPool<DataDTO>(ringBuffer, barriers,
+        workerPool = new WorkerPool<>(ringBuffer, barriers,
                 new IntEventExceptionHandler(), consumers);
 
         ringBuffer.addGatingSequences(workerPool.getWorkerSequences());
