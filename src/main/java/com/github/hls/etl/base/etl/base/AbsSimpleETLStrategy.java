@@ -34,9 +34,9 @@ public abstract class AbsSimpleETLStrategy {
      */
     private static final String BATCH_UPPERCASE_STR = "BATCH€_";
     /**
-     * 强制不更新标识
+     * AUTO模式下 强制不更新标识
      */
-    private static final String NOUP_STR = "noup€";
+    private static final String NO€_FLAG = "NO€";
 
     @Resource
     private DataSource datacenterDataSource;
@@ -107,7 +107,10 @@ public abstract class AbsSimpleETLStrategy {
             if (StringUtils.isNotBlank(updateSql)) {
                 updateSql = getSectionValueReplaceSql(updateSql, oneRecordMap, 0);
             }
-            String insertSql = getSectionValueReplaceSql(etl.getInsertSql(), oneRecordMap, 0);
+            String insertSql = etl.getInsertSql();
+            if (StringUtils.isNotBlank(insertSql)) {
+                insertSql = getSectionValueReplaceSql(etl.getInsertSql(), oneRecordMap, 0);
+            }
             producer.sendETL(checkExistSQL, updateSql, insertSql, etl.getId(), latch);
 
         }
@@ -160,13 +163,15 @@ public abstract class AbsSimpleETLStrategy {
         String updateSql = etl.getUpdateSql();
 
         StringBuilder upSql = new StringBuilder();
+        StringBuilder inSql = new StringBuilder();
+
         int i = 0;
 
-        if (NOUP_STR.equalsIgnoreCase(updateSql)) {
-            log.debug("updateSql is " + updateSql);
+        if (NO€_FLAG.equalsIgnoreCase(updateSql)) {
+            log.debug("auto模式强制不更新, updateSql is {}", updateSql);
         } else {
             //UPDATE 表名称 SET 列名称 = 新值 WHERE id in (select a.id from (select id from 表 where 列名称 = 某值)a)
-            upSql = upSql.append("UPDATE ").append(table).append(" SET ");
+            upSql.append("UPDATE ").append(table).append(" SET ");
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String key = entry.getKey();
                 if (i == 0) {
@@ -181,26 +186,28 @@ public abstract class AbsSimpleETLStrategy {
             upSql.append(" SELECT ").append(tableId).append(" FROM ").append(table).append(" WHERE ").append(where).append(" LIMIT 1 )a)");
         }
 
-
-        //INSERT INTO table_name (列1, 列2,...) VALUES (值1, 值2,....)
-        StringBuilder inSql = new StringBuilder("INSERT INTO ").append(table);
-        StringBuilder columnSql = new StringBuilder("(");
-        StringBuilder valuesSql = new StringBuilder(")VALUES(");
-        i = 0;
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            String key = entry.getKey();
-            if (i == 0) {
-                i++;
-                columnSql.append(key);
-                valuesSql.append("'#").append(key).append("#'");
-            } else {
-                columnSql.append(",").append(key);
-                valuesSql.append(",").append("'#").append(key).append("#'");
+        if (NO€_FLAG.equalsIgnoreCase(updateSql)) {
+            log.debug("auto模式强制不更新, updateSql is {}", updateSql);
+        } else {
+            //INSERT INTO table_name (列1, 列2,...) VALUES (值1, 值2,....)
+            inSql.append("INSERT INTO ").append(table);
+            StringBuilder columnSql = new StringBuilder("(");
+            StringBuilder valuesSql = new StringBuilder(")VALUES(");
+            i = 0;
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                String key = entry.getKey();
+                if (i == 0) {
+                    i++;
+                    columnSql.append(key);
+                    valuesSql.append("'#").append(key).append("#'");
+                } else {
+                    columnSql.append(",").append(key);
+                    valuesSql.append(",").append("'#").append(key).append("#'");
+                }
             }
+            inSql.append(columnSql).append(valuesSql);
+            inSql.append(")");
         }
-        inSql.append(columnSql).append(valuesSql);
-        inSql.append(")");
-
         etl.setUpdateSql(upSql.toString());
         etl.setInsertSql(inSql.toString());
 
