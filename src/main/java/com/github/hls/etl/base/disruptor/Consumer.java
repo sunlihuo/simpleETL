@@ -31,11 +31,11 @@ public class Consumer implements WorkHandler<DataDTO> {
 		DataSource targetDatesource = this.datacenterDataSource;
 		
 		try {
-			if (ETLTypeEnum.ETL_BATCH.getCode() == info.getHandleType()) {
+			if (ETLTypeEnum.ETL_BATCH.getCode() == info.getEtlType()) {
 				QueryRunner sqlRunner = new QueryRunner(targetDatesource);
 				sql = info.getBatchSql();
 				sqlRunner.insertBatch(sql, new ScalarHandler<Long>(), info.getBatchParams());
-			} else if (ETLTypeEnum.ETL.getCode() == info.getHandleType()){
+			} else if (ETLTypeEnum.ETL.getCode() == info.getEtlType()){
 				sql = info.getCheckExistSql();
 				if (SimpleDBUtils.checkIsExist(sql, targetDatesource)) {
 					// 大于零的场合执行update语句
@@ -47,7 +47,7 @@ public class Consumer implements WorkHandler<DataDTO> {
 					SimpleDBUtils.insert(sql, targetDatesource);
 				}
 				
-			} else if (ETLTypeEnum.ETL_DEL.getCode() == info.getHandleType()) {
+			} else if (ETLTypeEnum.ETL_DEL.getCode() == info.getEtlType()) {
 				sql = info.getUpdateSql();
 				SimpleDBUtils.update(sql, targetDatesource);
 			} else {

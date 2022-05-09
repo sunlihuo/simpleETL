@@ -17,7 +17,7 @@ public class DataDTO {
 	/**CountDownLatch*/
 	private CountDownLatch latch;
 	/**批量(0),校验_插入_更新(1),删除(2);*/
-	private int handleType;
+	private int etlType;
 	/**批量入库SQL*/
 	private String batchSql;
 	/**批量入库参数*/
