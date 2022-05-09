@@ -46,15 +46,15 @@ public class Producer {
 		}
 	}
 	public void sendDel(String updateSql, Long skynetJobId, CountDownLatch latch){
-		onData(null, updateSql, null, skynetJobId, latch, DBTypeEnum.删除.getCode(), null, null);
+		onData(null, updateSql, null, skynetJobId, latch, DBTypeEnum.ETL_DEL.getCode(), null, null);
 	}
 
 	public void sendUpIn(String checkExistSql, String updateSql, String insertSql, Long skynetJobId, CountDownLatch latch){
-		onData(checkExistSql, updateSql, insertSql, skynetJobId, latch, DBTypeEnum.校验_插入_更新.getCode(), null, null);
+		onData(checkExistSql, updateSql, insertSql, skynetJobId, latch, DBTypeEnum.ETL.getCode(), null, null);
 	}
 
 	public void sendBatch(String batchSql, Object[][] batchParams, CountDownLatch latch){
-		onData(null, null, null, null, latch, DBTypeEnum.批量.getCode(), batchSql, batchParams);
+		onData(null, null, null, null, latch, DBTypeEnum.ETL_BATCH.getCode(), batchSql, batchParams);
 	}
 	
 }
