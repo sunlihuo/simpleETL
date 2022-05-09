@@ -3,7 +3,7 @@ package com.github.hls.simplejob.base.task;
 import com.github.hls.simplejob.base.disruptor.Disruptor;
 import com.github.hls.simplejob.base.disruptor.Producer;
 import com.github.hls.simplejob.base.exception.DependenceException;
-import com.github.hls.simplejob.base.simplejob.base.SimpleJobStrategy;
+import com.github.hls.simplejob.base.simplejob.base.SimpleETLStrategy;
 import com.github.hls.simplejob.domain.SimpleETLDO;
 import com.github.hls.simplejob.base.enums.HandleTypeEnum;
 import com.github.hls.simplejob.service.SimpleETLService;
@@ -25,12 +25,12 @@ import static com.github.hls.simplejob.utils.SimpleETLUtils.transList2Map;
 
 @Service
 @Slf4j
-public class SimpleJobTask {
+public class SimpleETLTask {
 
     @Resource
-    private SimpleJobStrategy sectionValueStrategy;
+    private SimpleETLStrategy sectionValueStrategy;
     @Resource
-    private SimpleJobStrategy autoPageStrategy;
+    private SimpleETLStrategy autoPageStrategy;
     @Resource
     private SimpleETLService simpleJobService;
     @Resource

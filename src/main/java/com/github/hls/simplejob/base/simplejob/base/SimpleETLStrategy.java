@@ -23,7 +23,7 @@ import static com.github.hls.simplejob.utils.SimpleETLUtils.getSectionValueRepla
 
 @Slf4j
 @Data
-public abstract class SimpleJobStrategy {
+public abstract class SimpleETLStrategy {
 
     /**
      * 批量标识

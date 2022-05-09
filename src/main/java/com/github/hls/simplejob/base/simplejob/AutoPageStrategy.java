@@ -1,6 +1,6 @@
 package com.github.hls.simplejob.base.simplejob;
 
-import com.github.hls.simplejob.base.simplejob.base.SimpleJobStrategy;
+import com.github.hls.simplejob.base.simplejob.base.SimpleETLStrategy;
 import com.github.hls.simplejob.domain.SimpleETLDO;
 import com.github.hls.simplejob.base.enums.HandleTypeEnum;
 import com.github.hls.simplejob.utils.SimpleDBUtils;
@@ -17,7 +17,7 @@ import java.util.Map;
  */
 @Slf4j
 @Service
-public class AutoPageStrategy extends SimpleJobStrategy {
+public class AutoPageStrategy extends SimpleETLStrategy {
 
     @Override
     public void doHandle(SimpleETLDO simpleJob, DataSource dataSource) {

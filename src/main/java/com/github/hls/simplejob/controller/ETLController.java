@@ -1,7 +1,7 @@
 package com.github.hls.simplejob.controller;
 
 import com.github.hls.simplejob.base.simplejob.SectionValueStrategy;
-import com.github.hls.simplejob.base.task.SimpleJobTask;
+import com.github.hls.simplejob.base.task.SimpleETLTask;
 import com.github.hls.simplejob.domain.SimpleETLDO;
 import com.github.hls.simplejob.domain.SimpleETLRO;
 import com.github.hls.simplejob.service.SimpleETLService;
@@ -15,9 +15,9 @@ import javax.sql.DataSource;
 
 @RequestMapping("/simplejob")
 @RestController
-public class JobController {
+public class ETLController {
     @Resource
-    private SimpleJobTask simpleJobTask;
+    private SimpleETLTask simpleJobTask;
     @Resource
     private SimpleETLService simpleJobService;
     @Autowired
