@@ -1,13 +1,13 @@
 package com.github.hls.simplejob.base.disruptor.info;
 
-public enum DBTypeEnum {
+public enum ETLTypeEnum {
     ETL_BATCH(0),
     ETL(1),
     ETL_DEL(2);
 
     private int type;
 
-    DBTypeEnum(int type){
+    ETLTypeEnum(int type){
         this.type = type;
     }
 

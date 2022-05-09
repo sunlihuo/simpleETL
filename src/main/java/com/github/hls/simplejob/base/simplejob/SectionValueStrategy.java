@@ -1,9 +1,9 @@
 package com.github.hls.simplejob.base.simplejob;
 
 import com.github.hls.simplejob.base.simplejob.base.SimpleJobStrategy;
-import com.github.hls.simplejob.domain.SimpleJobDO;
+import com.github.hls.simplejob.domain.SimpleETLDO;
 import com.github.hls.simplejob.utils.SimpleDBUtils;
-import com.github.hls.simplejob.utils.SimpleJobUtils;
+import com.github.hls.simplejob.utils.SimpleETLUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +19,10 @@ import javax.sql.DataSource;
 public class SectionValueStrategy extends SimpleJobStrategy {
 
     @Override
-    public void doHandle(SimpleJobDO simpleJob, DataSource dataSource) {
-        SimpleJobUtils.sectionValueList.clear();
+    public void doHandle(SimpleETLDO simpleJob, DataSource dataSource) {
+        SimpleETLUtils.sectionValueList.clear();
         if (StringUtils.isNotBlank(simpleJob.getSelectSql())) {
-            SimpleJobUtils.sectionValueList.addAll(SimpleDBUtils.queryListMap(simpleJob.getSelectSql(), dataSource));
+            SimpleETLUtils.sectionValueList.addAll(SimpleDBUtils.queryListMap(simpleJob.getSelectSql(), dataSource));
         }
     }
 }

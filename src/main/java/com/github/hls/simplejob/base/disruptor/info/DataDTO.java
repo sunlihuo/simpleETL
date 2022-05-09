@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.concurrent.CountDownLatch;
 
 @Data
-public class DataInfo {
+public class DataDTO {
 	/**校验是否存在*/
 	private String checkExistSql;
 	/**更新*/

@@ -2,9 +2,9 @@ package com.github.hls.simplejob.controller;
 
 import com.github.hls.simplejob.base.simplejob.SectionValueStrategy;
 import com.github.hls.simplejob.base.task.SimpleJobTask;
-import com.github.hls.simplejob.domain.SimpleJobDO;
-import com.github.hls.simplejob.domain.SimpleJobRO;
-import com.github.hls.simplejob.service.SimpleJobService;
+import com.github.hls.simplejob.domain.SimpleETLDO;
+import com.github.hls.simplejob.domain.SimpleETLRO;
+import com.github.hls.simplejob.service.SimpleETLService;
 import com.github.hls.simplejob.utils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,14 +19,14 @@ public class JobController {
     @Resource
     private SimpleJobTask simpleJobTask;
     @Resource
-    private SimpleJobService simpleJobService;
+    private SimpleETLService simpleJobService;
     @Autowired
     private SectionValueStrategy sectionValueStrategy;
     @Resource
     private DataSource datacenterDataSource;
 
     @RequestMapping("/update")
-    public String update(SimpleJobDO simpleJobDO, String password) {
+    public String update(SimpleETLDO simpleJobDO, String password) {
         if (!"fewf14#653#g".equals(password)) {
             return "error";
         }
@@ -35,8 +35,8 @@ public class JobController {
     }
 
     @RequestMapping("/job")
-    public String job(SimpleJobRO simpleJobRO, String password) {
-        SimpleJobDO simpleJobEntity = BeanUtils.copyProperties(simpleJobRO, SimpleJobDO.class);
+    public String job(SimpleETLRO simpleJobRO, String password) {
+        SimpleETLDO simpleJobEntity = BeanUtils.copyProperties(simpleJobRO, SimpleETLDO.class);
         if (!"fewf14#653#g".equals(password)) {
             return "password error";
         }

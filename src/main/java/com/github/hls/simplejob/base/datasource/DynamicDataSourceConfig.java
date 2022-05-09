@@ -4,7 +4,6 @@ import com.github.hls.simplejob.base.datasource.data.DataSourceNames;
 import com.github.hls.simplejob.base.datasource.data.DynamicDataSource;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;

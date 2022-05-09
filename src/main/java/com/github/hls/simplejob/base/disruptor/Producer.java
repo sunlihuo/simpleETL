@@ -1,8 +1,8 @@
 package com.github.hls.simplejob.base.disruptor;
 
-import com.github.hls.simplejob.base.disruptor.info.DBTypeEnum;
+import com.github.hls.simplejob.base.disruptor.info.ETLTypeEnum;
 import com.lmax.disruptor.RingBuffer;
-import com.github.hls.simplejob.base.disruptor.info.DataInfo;
+import com.github.hls.simplejob.base.disruptor.info.DataDTO;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -14,9 +14,9 @@ import java.util.concurrent.CountDownLatch;
  */
 public class Producer {
 
-	private final RingBuffer<DataInfo> ringBuffer;
+	private final RingBuffer<DataDTO> ringBuffer;
 	
-	public Producer(RingBuffer<DataInfo> ringBuffer){
+	public Producer(RingBuffer<DataDTO> ringBuffer){
 		this.ringBuffer = ringBuffer;
 	}
 	
@@ -29,7 +29,7 @@ public class Producer {
 		long sequence = ringBuffer.next();
 		try {
 			//用上面的索引取出一个空的事件用于填充（获取该序号对应的事件对象）
-			DataInfo task = ringBuffer.get(sequence);
+			DataDTO task = ringBuffer.get(sequence);
 			//获取要通过事件传递的业务数据
 			task.setCheckExistSql(checkExistSql);
 			task.setUpdateSql(updateSql);
@@ -46,15 +46,15 @@ public class Producer {
 		}
 	}
 	public void sendETLDel(String updateSql, Long skynetJobId, CountDownLatch latch){
-		onData(null, updateSql, null, skynetJobId, latch, DBTypeEnum.ETL_DEL.getCode(), null, null);
+		onData(null, updateSql, null, skynetJobId, latch, ETLTypeEnum.ETL_DEL.getCode(), null, null);
 	}
 
 	public void sendETL(String checkExistSql, String updateSql, String insertSql, Long skynetJobId, CountDownLatch latch){
-		onData(checkExistSql, updateSql, insertSql, skynetJobId, latch, DBTypeEnum.ETL.getCode(), null, null);
+		onData(checkExistSql, updateSql, insertSql, skynetJobId, latch, ETLTypeEnum.ETL.getCode(), null, null);
 	}
 
 	public void sendETLBatch(String batchSql, Object[][] batchParams, CountDownLatch latch){
-		onData(null, null, null, null, latch, DBTypeEnum.ETL_BATCH.getCode(), batchSql, batchParams);
+		onData(null, null, null, null, latch, ETLTypeEnum.ETL_BATCH.getCode(), batchSql, batchParams);
 	}
 	
 }

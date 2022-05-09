@@ -1,6 +1,6 @@
 package com.github.hls.simplejob.utils;
 
-import com.github.hls.simplejob.domain.SimpleJobDO;
+import com.github.hls.simplejob.domain.SimpleETLDO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.CollectionUtils;
@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Slf4j
-public class SimpleJobUtils {
+public class SimpleETLUtils {
 
     private final static Pattern replaceSqlPattern = Pattern.compile("\\#(.*?)\\#");//正则表达式，取#和#之间的字符串，不包括#和#
     private final static Pattern check2NULLPattern = Pattern.compile("\\'\\#(.*?)\\#\\'");//正则表达式，取#和#之间的字符串，不包括#和#
@@ -31,11 +31,11 @@ public class SimpleJobUtils {
         if (StringUtils.isEmpty(k) || StringUtils.isEmpty(v)) {
             return;
         }
-        SimpleJobUtils.sysParam.put(k, v);
+        SimpleETLUtils.sysParam.put(k, v);
         log.info("======全局参数:{}", sysParam);
     }
     public static void clearSysParam(){
-        SimpleJobUtils.sysParam.clear();
+        SimpleETLUtils.sysParam.clear();
         log.info("======全局参数清空======");
     }
 
@@ -88,7 +88,7 @@ public class SimpleJobUtils {
      * @return
      */
     public static String getSysValueReplaceSql(String sql) {
-        Map<String, String> sysValueMap = SimpleJobUtils.sysParam;
+        Map<String, String> sysValueMap = SimpleETLUtils.sysParam;
         if (CollectionUtils.isEmpty(sysValueMap.keySet())) {
             return sql;
         }
@@ -127,9 +127,9 @@ public class SimpleJobUtils {
      * @param list
      * @return
      */
-    public static Map<String, List<SimpleJobDO>> transList2Map(List<SimpleJobDO> list) {
-        Map<String, List<SimpleJobDO>> map = new HashMap<>();
-        for (SimpleJobDO simpleJobDO : list) {
+    public static Map<String, List<SimpleETLDO>> transList2Map(List<SimpleETLDO> list) {
+        Map<String, List<SimpleETLDO>> map = new HashMap<>();
+        for (SimpleETLDO simpleJobDO : list) {
             if (map.get(simpleJobDO.getJobName()) == null) {
                 map.put(simpleJobDO.getJobName(), new ArrayList<>());
             }
