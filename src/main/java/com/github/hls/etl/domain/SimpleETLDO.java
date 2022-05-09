@@ -41,8 +41,6 @@ public class SimpleETLDO {
     private Byte executeOrder;
     @ApiModelProperty(value = "异常是否继续,1 继续，0 不再接下去进行", required = false)
     private Byte errorGoOn;
-    @ApiModelProperty(value = "依赖父任务", required = false)
-    private String parentetlName;
     @ApiModelProperty(value = "记录更新时间", required = false)
     private LocalDateTime gmtUpdate;
     @ApiModelProperty(value = "创建时间", required = false)
