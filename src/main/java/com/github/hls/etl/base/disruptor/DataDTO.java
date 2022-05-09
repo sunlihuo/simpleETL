@@ -6,14 +6,14 @@ import java.util.concurrent.CountDownLatch;
 
 @Data
 public class DataDTO {
+	/**任务id*/
+	private Long id;
 	/**校验是否存在*/
 	private String checkExistSql;
 	/**更新*/
 	private String updateSql;
 	/**插入*/
 	private String insertSql;
-	/**任务id*/
-	private Long skynetetlId;
 	/**CountDownLatch*/
 	private CountDownLatch latch;
 	/**批量(0),校验_插入_更新(1),删除(2);*/
@@ -22,17 +22,17 @@ public class DataDTO {
 	private String batchSql;
 	/**批量入库参数*/
 	private Object[][] batchParams;
-	/**更新数据源*/
-	private String upDateSource;
+	/**目标数据源*/
+	private String targetDb;
 
 	public void empty() {
 		checkExistSql = null;
 		updateSql = null;
 		insertSql = null;
-		skynetetlId = null;
+		id = null;
 		batchSql = null;
 		batchParams = null;
-		upDateSource = null;
+		targetDb = null;
 	}
 
 	@Override

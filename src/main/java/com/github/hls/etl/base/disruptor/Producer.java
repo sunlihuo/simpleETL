@@ -22,7 +22,7 @@ public class Producer {
 	 * onData用来发布事件，每调用一次就发布一次事件
 	 * 它的参数会用过事件传递给消费者
 	 */
-	public void onData(String checkExistSql, String updateSql, String insertSql, Long skynetetlId, CountDownLatch latch, int handleType, String batchSql, Object[][] batchParams){
+	public void onData(String checkExistSql, String updateSql, String insertSql, Long id, CountDownLatch latch, int handleType, String batchSql, Object[][] batchParams){
 		//可以把ringBuffer看做一个事件队列，那么next就是得到下面一个事件槽
 		long sequence = ringBuffer.next();
 		try {
@@ -32,7 +32,7 @@ public class Producer {
 			task.setCheckExistSql(checkExistSql);
 			task.setUpdateSql(updateSql);
 			task.setInsertSql(insertSql);
-			task.setSkynetetlId(skynetetlId);
+			task.setId(id);
 			task.setLatch(latch);
 			task.setHandleType(handleType);
 			task.setBatchSql(batchSql);
@@ -43,12 +43,12 @@ public class Producer {
 			ringBuffer.publish(sequence);
 		}
 	}
-	public void sendETLDel(String updateSql, Long skynetetlId, CountDownLatch latch){
-		onData(null, updateSql, null, skynetetlId, latch, ETLTypeEnum.ETL_DEL.getCode(), null, null);
+	public void sendETLDel(String updateSql, Long id, CountDownLatch latch){
+		onData(null, updateSql, null, id, latch, ETLTypeEnum.ETL_DEL.getCode(), null, null);
 	}
 
-	public void sendETL(String checkExistSql, String updateSql, String insertSql, Long skynetetlId, CountDownLatch latch){
-		onData(checkExistSql, updateSql, insertSql, skynetetlId, latch, ETLTypeEnum.ETL.getCode(), null, null);
+	public void sendETL(String checkExistSql, String updateSql, String insertSql, Long id, CountDownLatch latch){
+		onData(checkExistSql, updateSql, insertSql, id, latch, ETLTypeEnum.ETL.getCode(), null, null);
 	}
 
 	public void sendETLBatch(String batchSql, Object[][] batchParams, CountDownLatch latch){
