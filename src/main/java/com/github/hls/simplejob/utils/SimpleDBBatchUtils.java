@@ -52,7 +52,7 @@ public class SimpleDBBatchUtils {
 
 			k++;
 			if (k == ROWS) {
-				producer.sendBatch(sql, params, latch);
+				producer.sendETLBatch(sql, params, latch);
 				k = 0;
 				params  = new Object[ROWS][];
 			} else if (i == (resultSize - 1)) {
@@ -60,7 +60,7 @@ public class SimpleDBBatchUtils {
 				for (int j = 0; j < lastResultSize; j++) {
 					LastParams[j] = params[j];
 				}
-				producer.sendBatch(sql, LastParams, latch);
+				producer.sendETLBatch(sql, LastParams, latch);
 			}
 		}
 		

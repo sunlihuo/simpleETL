@@ -1,6 +1,6 @@
 package com.github.hls.simplejob.utils;
 
-import com.github.hls.simplejob.domain.SimpleJobEntity;
+import com.github.hls.simplejob.domain.SimpleJobDO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.CollectionUtils;
@@ -127,9 +127,9 @@ public class SimpleJobUtils {
      * @param list
      * @return
      */
-    public static Map<String, List<SimpleJobEntity>> transList2Map(List<SimpleJobEntity> list) {
-        Map<String, List<SimpleJobEntity>> map = new HashMap<>();
-        for (SimpleJobEntity simpleJobDO : list) {
+    public static Map<String, List<SimpleJobDO>> transList2Map(List<SimpleJobDO> list) {
+        Map<String, List<SimpleJobDO>> map = new HashMap<>();
+        for (SimpleJobDO simpleJobDO : list) {
             if (map.get(simpleJobDO.getJobName()) == null) {
                 map.put(simpleJobDO.getJobName(), new ArrayList<>());
             }

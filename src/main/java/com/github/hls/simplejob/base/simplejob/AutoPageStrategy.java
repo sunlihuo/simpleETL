@@ -1,7 +1,7 @@
 package com.github.hls.simplejob.base.simplejob;
 
 import com.github.hls.simplejob.base.simplejob.base.SimpleJobStrategy;
-import com.github.hls.simplejob.domain.SimpleJobEntity;
+import com.github.hls.simplejob.domain.SimpleJobDO;
 import com.github.hls.simplejob.base.enums.HandleTypeEnum;
 import com.github.hls.simplejob.utils.SimpleDBUtils;
 import com.github.hls.simplejob.utils.SimpleJobUtils;
@@ -20,7 +20,7 @@ import java.util.Map;
 public class AutoPageStrategy extends SimpleJobStrategy {
 
     @Override
-    public void doHandle(SimpleJobEntity simpleJob, DataSource dataSource) {
+    public void doHandle(SimpleJobDO simpleJob, DataSource dataSource) {
         Integer offset = 0;
         Integer limit = 10000;
 
@@ -49,7 +49,7 @@ public class AutoPageStrategy extends SimpleJobStrategy {
     /**
      * 自动分页
      */
-    private void autoPage(SimpleJobEntity job, DataSource dataSource, String sql, Integer total, Integer offset, Integer limit) {
+    private void autoPage(SimpleJobDO job, DataSource dataSource, String sql, Integer total, Integer offset, Integer limit) {
         if (total == 0) {
             log.error("jobId:{},jobName:{}, 没有可操作数据", job.getSimpleJobId(), job.getJobName());
             return;

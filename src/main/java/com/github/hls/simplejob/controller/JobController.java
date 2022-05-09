@@ -2,11 +2,10 @@ package com.github.hls.simplejob.controller;
 
 import com.github.hls.simplejob.base.simplejob.SectionValueStrategy;
 import com.github.hls.simplejob.base.task.SimpleJobTask;
-import com.github.hls.simplejob.domain.SimpleJobEntity;
+import com.github.hls.simplejob.domain.SimpleJobDO;
 import com.github.hls.simplejob.domain.SimpleJobRO;
 import com.github.hls.simplejob.service.SimpleJobService;
 import com.github.hls.simplejob.utils.BeanUtils;
-import com.github.hls.simplejob.utils.SimpleJobUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,15 +25,8 @@ public class JobController {
     @Resource
     private DataSource datacenterDataSource;
 
-//    @RequestMapping("/queryList")
-//    public APIResult<List<SimpleJobEntity>> queryList(){
-//        SimpleJobEntity simpleJobEntity = new SimpleJobEntity();
-//        List<SimpleJobEntity> list = simpleJobService.queryRunningJob(simpleJobEntity, null);
-//        return APIResult.success(list);
-//    }
-
     @RequestMapping("/update")
-    public String update(SimpleJobEntity simpleJobDO, String password) {
+    public String update(SimpleJobDO simpleJobDO, String password) {
         if (!"fewf14#653#g".equals(password)) {
             return "error";
         }
@@ -44,7 +36,7 @@ public class JobController {
 
     @RequestMapping("/job")
     public String job(SimpleJobRO simpleJobRO, String password) {
-        SimpleJobEntity simpleJobEntity = BeanUtils.copyProperties(simpleJobRO, SimpleJobEntity.class);
+        SimpleJobDO simpleJobEntity = BeanUtils.copyProperties(simpleJobRO, SimpleJobDO.class);
         if (!"fewf14#653#g".equals(password)) {
             return "password error";
         }

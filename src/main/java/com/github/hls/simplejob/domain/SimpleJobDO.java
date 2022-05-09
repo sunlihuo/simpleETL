@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @TableName("simple_job")
 @ApiModel(description = "")
-public class SimpleJobEntity {
+public class SimpleJobDO {
 
     @TableId
     @ApiModelProperty(value = "主键", required = false)

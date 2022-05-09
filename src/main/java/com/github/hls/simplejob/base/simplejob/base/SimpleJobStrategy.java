@@ -2,7 +2,7 @@ package com.github.hls.simplejob.base.simplejob.base;
 
 
 import com.github.hls.simplejob.base.disruptor.Producer;
-import com.github.hls.simplejob.domain.SimpleJobEntity;
+import com.github.hls.simplejob.domain.SimpleJobDO;
 import com.github.hls.simplejob.utils.SimpleDBBatchUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +55,7 @@ public abstract class SimpleJobStrategy {
      *
      * @param simpleJob
      */
-    public void handle(SimpleJobEntity simpleJob) {
+    public void handle(SimpleJobDO simpleJob) {
         DataSource dataSource = this.getOldmainDataSource();
         String sourceData = simpleJob.getSourceDb();
         if (StringUtils.isEmpty(sourceData)) {
@@ -81,7 +81,7 @@ public abstract class SimpleJobStrategy {
      * @param simpleJob
      * @param dataSource
      */
-    public abstract void doHandle(SimpleJobEntity simpleJob, DataSource dataSource);
+    public abstract void doHandle(SimpleJobDO simpleJob, DataSource dataSource);
 
     /**
      * 校验存在 并更新或插入
@@ -89,7 +89,7 @@ public abstract class SimpleJobStrategy {
      * @param job
      * @param recordList
      */
-    public void doCheckUpIn(SimpleJobEntity job, List<Map<String, Object>> recordList) {
+    public void doCheckUpIn(SimpleJobDO job, List<Map<String, Object>> recordList) {
         if (null == recordList || recordList.size() == 0) {
             log.error("jobId:{},jobName:{}, 没有可操作数据", job.getSimpleJobId(), job.getJobName());
             return;
@@ -108,7 +108,7 @@ public abstract class SimpleJobStrategy {
                 updateSql = getSectionValueReplaceSql(updateSql, oneRecordMap, 0);
             }
             String insertSql = getSectionValueReplaceSql(job.getInsertSql(), oneRecordMap, 0);
-            producer.sendUpIn(checkExistSQL, updateSql, insertSql, job.getSimpleJobId(), latch);
+            producer.sendETL(checkExistSQL, updateSql, insertSql, job.getSimpleJobId(), latch);
 
         }
         try {
@@ -130,7 +130,7 @@ public abstract class SimpleJobStrategy {
      * @param job
      * @param recordList
      */
-    public void doAutoCheckUpIn(SimpleJobEntity job, List<Map<String, Object>> recordList) {
+    public void doAutoCheckUpIn(SimpleJobDO job, List<Map<String, Object>> recordList) {
         if (null == recordList || recordList.size() == 0) {
             log.error("jobId:{},jobName:{}, 没有可操作数据", job.getSimpleJobId(), job.getJobName());
             return;
@@ -210,7 +210,7 @@ public abstract class SimpleJobStrategy {
     /**
      * 批量删除 并 批量插入
      */
-    public void doBatch(SimpleJobEntity job, List<Map<String, Object>> resultList, Map<String, Object> sectionMap) {
+    public void doBatch(SimpleJobDO job, List<Map<String, Object>> resultList, Map<String, Object> sectionMap) {
         if (CollectionUtils.isEmpty(resultList)) {
             log.error("jobId:{},jobName:{}, 没有可操作数据", job.getSimpleJobId(), job.getJobName());
             return;
@@ -240,7 +240,7 @@ public abstract class SimpleJobStrategy {
                     log.info("deleteSql = {}", deleteSql);
 
                     CountDownLatch latch = new CountDownLatch(1);
-                    producer.sendDel(deleteSql, job.getSimpleJobId(), latch);
+                    producer.sendETLDel(deleteSql, job.getSimpleJobId(), latch);
                     try {
                         latch.await(120, TimeUnit.MINUTES);
                     } catch (InterruptedException e) {

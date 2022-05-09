@@ -4,7 +4,7 @@ import com.github.hls.simplejob.base.disruptor.Disruptor;
 import com.github.hls.simplejob.base.disruptor.Producer;
 import com.github.hls.simplejob.base.exception.DependenceException;
 import com.github.hls.simplejob.base.simplejob.base.SimpleJobStrategy;
-import com.github.hls.simplejob.domain.SimpleJobEntity;
+import com.github.hls.simplejob.domain.SimpleJobDO;
 import com.github.hls.simplejob.base.enums.HandleTypeEnum;
 import com.github.hls.simplejob.service.SimpleJobService;
 import com.github.hls.simplejob.utils.DateUtils;
@@ -45,13 +45,13 @@ public class SimpleJobTask {
      * @param admin 不为空时可以执行任何job
      * @return
      */
-    public boolean handleHttp(SimpleJobEntity job, String admin) {
-        List<SimpleJobEntity> sysValueRunningJobList = simpleJobService.querySysValueRunningJob(job);
+    public boolean handleHttp(SimpleJobDO job, String admin) {
+        List<SimpleJobDO> sysValueRunningJobList = simpleJobService.querySysValueRunningJob(job);
         if (!CollectionUtils.isEmpty(sysValueRunningJobList)) {
             handleSysValue(sysValueRunningJobList);
         }
 
-        final List<SimpleJobEntity> jobList = simpleJobService.queryRunningJob(job, admin);
+        final List<SimpleJobDO> jobList = simpleJobService.queryRunningJob(job, admin);
         if (CollectionUtils.isEmpty(jobList)) {
             log.error("simplejob is null");
             return false;
@@ -66,7 +66,7 @@ public class SimpleJobTask {
      *
      * @param jobList
      */
-    public void handleSysValue(List<SimpleJobEntity> jobList) {
+    public void handleSysValue(List<SimpleJobDO> jobList) {
         if (CollectionUtils.isEmpty(jobList)) {
             return;
         }
@@ -82,20 +82,20 @@ public class SimpleJobTask {
         });
     }
 
-    public void handleJob(List<SimpleJobEntity> simpleJobList) {
+    public void handleJob(List<SimpleJobDO> simpleJobList) {
         Producer producer = disruptor.getProducer();
 
         try {
             long countCurrent = System.currentTimeMillis();
             int i = 0;
-            final Map<String, List<SimpleJobEntity>> simpleJobMap = transList2Map(simpleJobList);
+            final Map<String, List<SimpleJobDO>> simpleJobMap = transList2Map(simpleJobList);
             log.info("开始执行任务{}", simpleJobMap.values().size());
 
-            final Iterator<List<SimpleJobEntity>> iterator = simpleJobMap.values().iterator();
+            final Iterator<List<SimpleJobDO>> iterator = simpleJobMap.values().iterator();
             while (iterator.hasNext()) {
-                List<SimpleJobEntity> jobList = iterator.next();
+                List<SimpleJobDO> jobList = iterator.next();
 
-                for (SimpleJobEntity simpleJob : jobList) {
+                for (SimpleJobDO simpleJob : jobList) {
                     Long current = System.currentTimeMillis();
                     log.info("开始第{}个任务,jobId:{},jobName:{},sourceType:{}", ++i, simpleJob.getSimpleJobId(), simpleJob.getJobName(), simpleJob.getHandleType());
                     try {

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.hls.simplejob.base.enums.HandleTypeEnum;
-import com.github.hls.simplejob.domain.SimpleJobEntity;
+import com.github.hls.simplejob.domain.SimpleJobDO;
 import com.github.hls.simplejob.mapper.SimpleJobMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class SimpleJobService extends ServiceImpl<SimpleJobMapper, SimpleJobEntity> {
+public class SimpleJobService extends ServiceImpl<SimpleJobMapper, SimpleJobDO> {
 
 
     /**
@@ -23,16 +23,16 @@ public class SimpleJobService extends ServiceImpl<SimpleJobMapper, SimpleJobEnti
      * @param admin
      * @return
      */
-    public List<SimpleJobEntity> queryRunningJob(SimpleJobEntity job, String admin){
-        LambdaQueryWrapper<SimpleJobEntity> query = Wrappers.lambdaQuery();
-        query.eq(job.getSimpleJobId()!= null, SimpleJobEntity::getSimpleJobId, job.getSimpleJobId());
-        query.eq(job.getJobName()!= null, SimpleJobEntity::getJobName, job.getJobName());
+    public List<SimpleJobDO> queryRunningJob(SimpleJobDO job, String admin){
+        LambdaQueryWrapper<SimpleJobDO> query = Wrappers.lambdaQuery();
+        query.eq(job.getSimpleJobId()!= null, SimpleJobDO::getSimpleJobId, job.getSimpleJobId());
+        query.eq(job.getJobName()!= null, SimpleJobDO::getJobName, job.getJobName());
         if (admin == null) {
-            query.ne(SimpleJobEntity::getStatus, 0);
+            query.ne(SimpleJobDO::getStatus, 0);
         }
-        query.ne(SimpleJobEntity::getHandleType, HandleTypeEnum.全局_参数.getCode());
-        query.orderByAsc(SimpleJobEntity::getJobName, SimpleJobEntity::getExecuteOrder, SimpleJobEntity::getGmtCreate);
-        List<SimpleJobEntity> jobList = this.list(query);
+        query.ne(SimpleJobDO::getHandleType, HandleTypeEnum.全局_参数.getCode());
+        query.orderByAsc(SimpleJobDO::getJobName, SimpleJobDO::getExecuteOrder, SimpleJobDO::getGmtCreate);
+        List<SimpleJobDO> jobList = this.list(query);
         return jobList;
     }
 
@@ -41,14 +41,14 @@ public class SimpleJobService extends ServiceImpl<SimpleJobMapper, SimpleJobEnti
      * @param job
      * @return
      */
-    public List<SimpleJobEntity> querySysValueRunningJob(SimpleJobEntity job){
-        LambdaQueryWrapper<SimpleJobEntity> query = Wrappers.lambdaQuery();
-        query.eq(job.getSimpleJobId()!= null, SimpleJobEntity::getSimpleJobId, job.getSimpleJobId());
-        query.eq(job.getJobName()!= null, SimpleJobEntity::getJobName, job.getJobName());
-        query.ne(SimpleJobEntity::getStatus, 0);
-        query.eq(SimpleJobEntity::getHandleType, HandleTypeEnum.全局_参数.getCode());
-        query.orderByAsc(SimpleJobEntity::getJobName, SimpleJobEntity::getExecuteOrder, SimpleJobEntity::getGmtCreate);
-        List<SimpleJobEntity> jobList = this.list(query);
+    public List<SimpleJobDO> querySysValueRunningJob(SimpleJobDO job){
+        LambdaQueryWrapper<SimpleJobDO> query = Wrappers.lambdaQuery();
+        query.eq(job.getSimpleJobId()!= null, SimpleJobDO::getSimpleJobId, job.getSimpleJobId());
+        query.eq(job.getJobName()!= null, SimpleJobDO::getJobName, job.getJobName());
+        query.ne(SimpleJobDO::getStatus, 0);
+        query.eq(SimpleJobDO::getHandleType, HandleTypeEnum.全局_参数.getCode());
+        query.orderByAsc(SimpleJobDO::getJobName, SimpleJobDO::getExecuteOrder, SimpleJobDO::getGmtCreate);
+        List<SimpleJobDO> jobList = this.list(query);
         return jobList;
     }
 
@@ -59,7 +59,7 @@ public class SimpleJobService extends ServiceImpl<SimpleJobMapper, SimpleJobEnti
      * 2表示可执行2次
      * @param simpleJob
      */
-    public void subtractStatus(SimpleJobEntity simpleJob){
+    public void subtractStatus(SimpleJobDO simpleJob){
         if (simpleJob.getStatus().intValue() >= 1) {
             Integer status = simpleJob.getStatus();
             status--;
