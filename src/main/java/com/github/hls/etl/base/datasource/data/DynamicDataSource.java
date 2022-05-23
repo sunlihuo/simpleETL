@@ -38,4 +38,8 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
         contextHolder.remove();
     }
 
+    public DataSource getDynamicDataSource(String dataSourceKey) {
+        return this.getResolvedDataSources().get(dataSourceKey);
+    }
+
 }

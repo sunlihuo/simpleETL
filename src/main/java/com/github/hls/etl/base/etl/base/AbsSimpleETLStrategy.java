@@ -1,12 +1,14 @@
 package com.github.hls.etl.base.etl.base;
 
 
+import com.github.hls.etl.base.datasource.data.DynamicDataSource;
 import com.github.hls.etl.base.disruptor.Producer;
 import com.github.hls.etl.domain.SimpleETLDO;
 import com.github.hls.etl.utils.SimpleDBBatchUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -38,12 +40,8 @@ public abstract class AbsSimpleETLStrategy {
      */
     private static final String NO€_FLAG = "NO€";
 
-    @Resource
-    private DataSource datacenterDataSource;
-    @Resource
-    private DataSource oldmainDataSource;
-    @Resource
-    private DataSource storeDataSource;
+    @Autowired
+    private DynamicDataSource dynamicDataSource;
 
     /**
      * 多线程
@@ -56,21 +54,11 @@ public abstract class AbsSimpleETLStrategy {
      * @param etl
      */
     public void handle(SimpleETLDO etl) {
-        DataSource dataSource = this.getOldmainDataSource();
         String sourceData = etl.getSourceDb();
-        if (StringUtils.isEmpty(sourceData)) {
-            dataSource = this.getOldmainDataSource();
-        }
         String[] sourceDataArr = sourceData.split(",");
         for (String sourceDataStr : sourceDataArr) {
-            if ("oldmain".equalsIgnoreCase(sourceDataStr)) {
-                dataSource = this.getOldmainDataSource();
-            } else if ("store".equalsIgnoreCase(sourceDataStr)) {
-                dataSource = this.getStoreDataSource();
-            } else if ("datacenter".equalsIgnoreCase(sourceDataStr)) {
-                dataSource = this.getDatacenterDataSource();
-            }
-
+            DataSource dataSource = dynamicDataSource.getDynamicDataSource(sourceDataStr);
+            log.info("切换使用[{}]数据库", sourceDataStr);
             doHandle(etl, dataSource);
         }
     }
