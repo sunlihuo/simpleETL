@@ -1,6 +1,7 @@
 package com.github.hls.etl.base.disruptor;
 
 
+import com.github.hls.etl.base.task.BatchConsumerTask;
 import com.github.hls.etl.utils.ThreadPoolUtil;
 import com.lmax.disruptor.*;
 import com.lmax.disruptor.dsl.ProducerType;
@@ -42,6 +43,8 @@ public class Disruptor {
 
     @Resource
     private DataSource datacenterDataSource;
+    @Resource
+    private BatchConsumerTask batchConsumerTask;
 
     /**
      * 几次getProducer 要对应几次 drainAndHalt
@@ -51,6 +54,8 @@ public class Disruptor {
         if (!workerPool.isRunning()) {
             log.info("==========disruptor.start()============");
             workerPool.start(executor);
+
+            batchConsumerTask.start();
         }
         callCount.getAndIncrement();
         log.info("==========disruptor is started============callCount= " + callCount.get());
@@ -69,6 +74,8 @@ public class Disruptor {
         }
 
         workerPool.drainAndHalt();
+        batchConsumerTask.stop();
+        BatchConsumerTask.runflag = false;
         log.info("==========disruptor.drainAndHalt()============");
     }
 

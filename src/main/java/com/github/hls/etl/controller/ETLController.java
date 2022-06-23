@@ -55,7 +55,7 @@ public class ETLController {
     public void daily() {
         SimpleETLRO etlRO = new SimpleETLRO();
         SimpleETLDO etlEntity = BeanUtils.copyProperties(etlRO, SimpleETLDO.class);
-        etlEntity.setName("k60");
+        etlEntity.setName("numkk5");
         sectionValueStrategy.doHandle(etlEntity, datacenterDataSource);
         etlTask.handleHttp(etlEntity, "admin");
     }

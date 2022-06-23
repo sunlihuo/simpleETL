@@ -1,5 +1,6 @@
 package com.github.hls.etl.base.disruptor;
 
+import com.github.hls.etl.utils.SimpleDBBatchUtils;
 import com.lmax.disruptor.WorkHandler;
 import com.github.hls.etl.utils.SimpleDBUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,7 @@ import org.apache.commons.dbutils.handlers.ScalarHandler;
 
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 
 
 /**
@@ -32,7 +34,7 @@ public class Consumer implements WorkHandler<DataDTO> {
 
 		String sql = "";
 		DataSource targetDatesource = this.datacenterDataSource;
-		
+
 		try {
 			if (ETLTypeEnum.ETL_BATCH.getCode() == info.getEtlType()) {
 				QueryRunner sqlRunner = new QueryRunner(targetDatesource);
@@ -43,11 +45,13 @@ public class Consumer implements WorkHandler<DataDTO> {
 				if (SimpleDBUtils.checkIsExist(sql, targetDatesource)) {
 					// 大于零的场合执行update语句
 					sql = info.getUpdateSql();
-					SimpleDBUtils.update(sql, targetDatesource);
+					//SimpleDBUtils.update(sql, targetDatesource);
+					SimpleDBBatchUtils.updateBatchQueue.add(sql);
 				} else {
 					// 不存在的场合执行insert语句
 					sql = info.getInsertSql();
-					SimpleDBUtils.insert(sql, targetDatesource);
+					//SimpleDBUtils.insert(sql, targetDatesource);
+					SimpleDBBatchUtils.insertBatchQueue.add(sql);
 				}
 				
 			} else if (ETLTypeEnum.ETL_DEL.getCode() == info.getEtlType()) {
