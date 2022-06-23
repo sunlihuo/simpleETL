@@ -19,22 +19,22 @@ import java.util.Map;
 @Service
 public class AutoPageStrategy extends AbsSimpleETLStrategy {
 
-    private boolean isAutoPageFlag = false;
     @Override
     public void doHandle(SimpleETLDO etl, DataSource dataSource) {
+        Integer autoPageLimit = etl.getAutoPageLimit();
         Integer offset = 0;
-        Integer limit = 10000;
+
 
         if (SimpleETLUtils.sectionValueList == null || SimpleETLUtils.sectionValueList.size() == 0) {
             String selectSQL = etl.getSelectSql();
             String sql = SimpleETLUtils.getSysValueReplaceSql(selectSQL);
 
             Integer total = 1000;
-            if (isAutoPageFlag) {
+            if (autoPageLimit > 0) {
                 String countSql = SimpleETLUtils.getCountSql(sql);
                 total = SimpleDBUtils.queryCount(countSql, dataSource);
             }
-            autoPage(etl, dataSource, sql, total, offset, limit);
+            autoPage(etl, dataSource, sql, total, offset, autoPageLimit);
 
             return;
         }
@@ -46,19 +46,20 @@ public class AutoPageStrategy extends AbsSimpleETLStrategy {
             String sql = SimpleETLUtils.getSectionValueReplaceSql(sysValueSelectSQL, sectionMap, 0);
 
             Integer total = 1000;
-            if (isAutoPageFlag) {
+            if (autoPageLimit > 0) {
                 String countSql = SimpleETLUtils.getCountSql(sql);
                 total = SimpleDBUtils.queryCount(countSql, dataSource);
             }
-            autoPage(etl, dataSource, sql, total, offset, limit);
+            autoPage(etl, dataSource, sql, total, offset, autoPageLimit);
         }
     }
 
     /**
      * 自动分页
      */
-    private void autoPage(SimpleETLDO etl, DataSource dataSource, String sql, Integer total, Integer offset, Integer limit) {
-        if (isAutoPageFlag) {
+    private void autoPage(SimpleETLDO etl, DataSource dataSource, String sql, Integer total, Integer offset, Integer autoPageLimit) {
+        List<Map<String, Object>> resultList = null;
+        if (autoPageLimit > 0) {
             if (total == 0) {
                 log.error("etlId:{},etlName:{}, 没有可操作数据", etl.getId(), etl.getName());
                 return;
@@ -66,10 +67,11 @@ public class AutoPageStrategy extends AbsSimpleETLStrategy {
             if (offset > total) {
                 return;
             }
-            log.info("自动分页,etl:{},名称:{},total:{},offset:{},limit:{}", etl.getId(), etl.getName(), total, offset, limit);
+            log.info("自动分页,etl:{},名称:{},total:{},offset:{},limit:{}", etl.getId(), etl.getName(), total, offset, autoPageLimit);
+            resultList = SimpleDBUtils.queryListMapPage(sql, dataSource, offset, autoPageLimit);
+        } else {
+            resultList = SimpleDBUtils.queryListMap(sql, dataSource);
         }
-
-        List<Map<String, Object>> resultList = SimpleDBUtils.queryListMapPage(sql, dataSource, offset, limit);
 
         if (HandleTypeEnum.正常.getCode().equals(etl.getHandleType())) {
             //正常模式 校验 更新 插入
@@ -80,10 +82,10 @@ public class AutoPageStrategy extends AbsSimpleETLStrategy {
             doBatch(etl, resultList, null);
         }
 
-        if (isAutoPageFlag) {
-            offset += limit;
+        if (autoPageLimit > 0) {
+            offset += autoPageLimit;
             //递归
-            autoPage(etl, dataSource, sql, total, offset, limit);
+            autoPage(etl, dataSource, sql, total, offset, autoPageLimit);
         }
     }
 }

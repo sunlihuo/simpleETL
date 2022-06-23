@@ -50,12 +50,16 @@ public class ETLController {
     }
 
 
+    /**
+SET SESSION sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+SET GLOBAL sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+     */
     @SneakyThrows
     @Scheduled(cron = "0/5 * * * * ? ")
     public void daily() {
         SimpleETLRO etlRO = new SimpleETLRO();
         SimpleETLDO etlEntity = BeanUtils.copyProperties(etlRO, SimpleETLDO.class);
-        etlEntity.setName("numkk5");
+        etlEntity.setName("k60");
         sectionValueStrategy.doHandle(etlEntity, datacenterDataSource);
         etlTask.handleHttp(etlEntity, "admin");
     }

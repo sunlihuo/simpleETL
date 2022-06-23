@@ -37,6 +37,8 @@ public class SimpleETLDO {
     private String insertSql;
     @ApiModelProperty(value = "状态，-1永远执行，0 不再执行  1执行并减1执行一次少一次", required = false)
     private Integer status;
+    @ApiModelProperty(value = "自动分页大小 小于0不分页", required = false)
+    private Integer autoPageLimit;
     @ApiModelProperty(value = "执行顺序", required = false)
     private Byte executeOrder;
     @ApiModelProperty(value = "异常是否继续,1 继续，0 不再接下去进行", required = false)
