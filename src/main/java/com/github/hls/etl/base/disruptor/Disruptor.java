@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 public class Disruptor {
     private RingBuffer<DataDTO> ringBuffer;
-    private static final int CONSUMER_SIZE = 10;
+    private static final int CONSUMER_SIZE = 20;
     private Producer producer;
     private WorkerPool<DataDTO> workerPool;
     private ExecutorService executor;

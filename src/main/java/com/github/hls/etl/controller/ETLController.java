@@ -6,7 +6,9 @@ import com.github.hls.etl.domain.SimpleETLDO;
 import com.github.hls.etl.domain.SimpleETLRO;
 import com.github.hls.etl.service.SimpleETLService;
 import com.github.hls.etl.utils.BeanUtils;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,4 +50,13 @@ public class ETLController {
     }
 
 
+    @SneakyThrows
+    @Scheduled(cron = "0/5 * * * * ? ")
+    public void daily() {
+        SimpleETLRO etlRO = new SimpleETLRO();
+        SimpleETLDO etlEntity = BeanUtils.copyProperties(etlRO, SimpleETLDO.class);
+        etlEntity.setName("k60");
+        sectionValueStrategy.doHandle(etlEntity, datacenterDataSource);
+        etlTask.handleHttp(etlEntity, "admin");
+    }
 }

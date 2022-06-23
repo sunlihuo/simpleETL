@@ -242,6 +242,10 @@ public class SimpleDBUtils {
 	 * @return
 	 */
 	public static boolean checkIsExist(String sql, DataSource dataSource) {
+		if("select 1".equalsIgnoreCase(sql.trim())) {
+			return true;
+		}
+
 		QueryRunner sqlRunner = new QueryRunner(dataSource);
 		Object[] result = null;
 		try {
